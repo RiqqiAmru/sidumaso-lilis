@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Controllers\Admin;
+
+use App\Controllers\BaseController;
+use App\Models\UserModel;
+
+class Manageuser extends BaseController
+{
+    public function index(): string
+    {
+        $userModel = new UserModel();
+
+        // Fetch all users from the database
+        $data['users'] = $userModel->findAll();
+
+        // Load the view and pass the user data to it
+        return view('admin/user/index', $data);
+    }
+
+    public function addUser(): string
+    {
+        return view('admin/user/tambah');
+    }
+
+    public function storeUser()
+    {
+        $userModel = new UserModel();
+        $validation = \Config\Services::validation();
+        // Validasi input form
+        $validation->setRules([
+            'nama' => 'required',
+            'username' => 'required|is_unique[tbl_user.username]',
+            'no_hp' => 'required|numeric|min_length[10]',
+            'password' => 'required|min_length[6]',
+            'confirm_password' => 'required|matches[password]',
+            'user_ktp' => 'uploaded[user_ktp]|max_size[user_ktp,512]|ext_in[user_ktp,jpg,jpeg,png]',
+            'role' => 'required',
+            'row_status' => 'required',
+        ]);
+
+        // Cek apakah validasi gagal
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        // dd('');
+        // Upload file KTP
+        $fileKTP = $this->request->getFile('user_ktp');
+        $namaFileKTP = $fileKTP->getRandomName(); // Generate nama file random
+        $fileKTP->move('uploads/ktp', $namaFileKTP); // Pindahkan file ke folder uploads/ktp
+
+        // Data yang akan disimpan ke database
+        $data = [
+            'nama' => $this->request->getPost('nama'),
+            'username' => $this->request->getPost('username'),
+            'no_hp' => $this->request->getPost('no_hp'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'user_ktp' => $namaFileKTP,
+            'role' => $this->request->getPost('role'),
+            'row_status' => $this->request->getPost('row_status'),
+        ];
+
+        // Simpan data
+        $userModel->save($data);
+
+        // Redirect ke halaman daftar user setelah berhasil menyimpan
+        return redirect()->to('admin/user/index')->with('success', 'User berhasil ditambahkan');
+    }
+}
