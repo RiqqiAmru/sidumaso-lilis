@@ -45,6 +45,14 @@
     <main>
         <div class="container">
 
+            <!-- alert -->
+            <?php if ((session('message'))) : ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong><?= session('message') ?></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <?php endif ?>
+
             <section
                 class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
                 <div class="container">
@@ -66,18 +74,19 @@
                                     </div>
 
                                     <form method="POST" action="Auth/login" class="row g-3 needs-validation" novalidate>
-
                                         <div class="col-12">
                                             <label for="yourUsername" class="form-label">Username</label>
                                             <div class="input-group has-validation">
-                                                <input type="text" name="username" class="form-control"
+                                                <input type="text" name="username" class="form-control <?= (isset(session()->getFlashdata('errors')['username'])) ? 'is-invalid' : '' ?>"
                                                     id="yourUsername" required>
-                                                <div class="invalid-feedback">Username harus diisi</div>
                                                 <!-- Menampilkan pesan error untuk username -->
                                                 <?php if (isset(session()->getFlashdata('errors')['username'])): ?>
-                                                    <div class="text-danger fs-6 ">
+                                                    <br>
+                                                    <div class="invalid-feedback">
                                                         <?= session()->getFlashdata('errors')['username']; ?>
                                                     </div>
+                                                <?php else :  ?>
+                                                    <div class="invalid-feedback">Username harus diisi</div>
                                                 <?php endif; ?>
                                             </div>
                                         </div>

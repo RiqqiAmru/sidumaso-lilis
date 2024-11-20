@@ -67,4 +67,25 @@ class Manageuser extends BaseController
         // Redirect ke halaman daftar user setelah berhasil menyimpan
         return redirect()->to('admin/user/index')->with('success', 'User berhasil ditambahkan');
     }
+
+    public function deleteUser($id)
+    {
+        $userModel = new UserModel();
+        $userModel->delete($id);
+        return redirect()->to('admin/user/index')->with('success', 'User berhasil dihapus');
+    }
+
+    public function verifikasi($id)
+    {
+        $userModel = new UserModel();
+
+        $status = $this->request->getPost('status');
+        if ($status == "terima") {
+            $data = [
+                'row_status' => 'Aktif'
+            ];
+            $userModel->update($id, $data);
+        }
+        return redirect()->to('admin/user/index')->with('success', 'berhasil verifikasi user');
+    }
 }

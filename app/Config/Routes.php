@@ -36,4 +36,7 @@ $routes->get('/admin/manageuser/addUser', 'Admin\Manageuser::addUser'); // Menam
 $routes->get('/admin/user/tambah', 'Admin\Manageuser::addUser');  // Route untuk form tambah user
 $routes->post('/admin/user/store', 'Admin\Manageuser::storeUser');
 $routes->get('admin/user/index', 'Admin\Manageuser::index');
+$routes->post('admin/user/delete/(:num)', 'Admin\Manageuser::deleteUser/$1');
+$routes->post('admin/user/verifikasi/(:num)', 'Admin\Manageuser::verifikasi/$1');
 // Route untuk store user
+$routes->get('masyarakat/pengaduan', 'Admin\Manageuser::index');

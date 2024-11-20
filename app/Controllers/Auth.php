@@ -42,9 +42,8 @@ class Auth extends BaseController
 
             return redirect()->to('/pengaduan');
         } else {
-
             // Jika login gagal, tampilkan pesan error
-            return redirect()->back()->with('error', 'Username atau Password salah');
+            return redirect()->back()->with('errors',  ['username' => 'Username atau Password salah']);
         }
     }
 
@@ -56,6 +55,47 @@ class Auth extends BaseController
     {
         // Hapus session dan redirect ke halaman login
         session()->destroy();
-        return redirect()->to('home');
+        return redirect()->to(base_url('/home'));
+    }
+
+    public function create()
+    {
+        // Form validation
+        if (!$this->validate([
+            'nama' => 'required|min_length[3]|max_length[20]|is_unique[tbl_user.nama]',
+            'username' => 'required|min_length[3]|max_length[20]|is_unique[tbl_user.username]',
+            'password' => 'required|min_length[8]',
+            'password_confirm' => 'matches[password]',
+            'user_ktp' => 'uploaded[user_ktp]|max_size[user_ktp,512]|ext_in[user_ktp,jpg,jpeg,png]',
+            'no_hp' => 'required|numeric|min_length[10]',
+
+        ])) {
+            // If validation fails, return to the form with the errors
+            // dd($this->validator->getErrors());
+            return redirect()->to('/auth/register')->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // uplod file
+        $fileKTP = $this->request->getFile('user_ktp');
+        $namaFileKTP = $fileKTP->getRandomName(); // Generate nama file random
+        $fileKTP->move('uploads/ktp', $namaFileKTP);
+        // If validation is successful, proceed to save the user data
+        $userData = [
+            'username' => $this->request->getPost('username'),
+            'nama' => $this->request->getPost('nama'),
+            'email' => $this->request->getPost('email'),
+            'user_ktp' => $namaFileKTP,
+            'no_hp' => $this->request->getPost('no_hp'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT), // Encrypt password
+        ];
+
+        // Insert the user data into the database
+        if ($this->userModel->insert($userData)) {
+            // Redirect to login page or show success message
+            return redirect()->to('/auth/login')->with('message', 'Registration successful. Please login.');
+        } else {
+            // If insertion failed, show an error message
+            return redirect()->to('/auth/register')->with('errors', ['nama' => 'There was an issue with registration.'])->withInput();
+        }
     }
 }
