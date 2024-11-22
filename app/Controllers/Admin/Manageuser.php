@@ -49,7 +49,7 @@ class Manageuser extends BaseController
         $fileKTP = $this->request->getFile('user_ktp');
         $namaFileKTP = $fileKTP->getRandomName(); // Generate nama file random
         $fileKTP->move('uploads/ktp', $namaFileKTP); // Pindahkan file ke folder uploads/ktp
-
+        
         // Data yang akan disimpan ke database
         $data = [
             'nama' => $this->request->getPost('nama'),
@@ -83,6 +83,11 @@ class Manageuser extends BaseController
         if ($status == "terima") {
             $data = [
                 'row_status' => 'Aktif'
+            ];
+            $userModel->update($id, $data);
+        } else {
+            $data = [
+                'row_status' => 'Non-aktif'
             ];
             $userModel->update($id, $data);
         }

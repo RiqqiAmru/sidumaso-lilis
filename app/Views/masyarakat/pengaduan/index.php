@@ -21,7 +21,7 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Daftar Pengaduan</h5>
-            <a href="<?= base_url('pengaduan'); ?>" button type="button"
+            <a href="<?= base_url('pengaduan/tambah'); ?>" button type="button"
               class="btn btn-primary rounded-pill" style="margin-bottom: 25px;">Tambah
               Pengaduan</a>
 
@@ -33,22 +33,21 @@
                   <th scope="col">Perihal</th>
                   <th scope="col">Rincian</th>
                   <th scope="col">Status Pengirim</th>
-                  <th scope="col">Foto</th>
+                  <th scope="col">Foto Bukti</th>
                   <th scope="col">Status </th>
                   <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
-                <?php if (!empty($users) && is_array($users)): ?>
+                <?php if (!empty($pengaduan) && is_array($pengaduan)): ?>
                   <?php $no = 1;
-                  foreach ($users as $user): ?>
+                  foreach ($pengaduan as $p): ?>
                     <tr>
                       <th scope="row"><?= $no++ ?></th>
-                      <td><?= $user['nama'] ?></td>
-                      <td><?= $user['username'] ?></td>
-                      <td><?= $user['no_hp'] ?></td>
-                      <td><?= ucfirst($user['role']) ?></td>
-                      <td><?= ucfirst($user['row_status']) ?></td>
+                      <td><?= $user['jenis_pengaduan'] ?></td>
+                      <td><?= $user['rincian'] ?></td>
+                      <td><?= $user['status_pengaduan'] ?></td>
+                      <td><?= $user[''] ?></td>
                       <td>
                         <img src="<?= base_url('uploads/ktp/' . $user['user_ktp']) ?>" alt="Foto KTP"
                           width="100">

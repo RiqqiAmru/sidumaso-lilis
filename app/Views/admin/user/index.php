@@ -56,8 +56,10 @@
                                                     width="100">
                                             </td>
                                             <td>
-                                                <button data-bs-name='<?= $user['username'] ?>' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-id='<?= $user['id'] ?>'>
-                                                    hapus</button>
+                                                <?php if ($user['row_status'] != 'Non-aktif'): ?>
+                                                    <button data-bs-name='<?= $user['username'] ?>' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-id='<?= $user['id'] ?>'>
+                                                        hapus</button>
+                                                <?php endif ?>
                                                 <?php if ($user['row_status'] == 'Menunggu'): ?>
                                                     <button data-bs-name='<?= $user['username'] ?>' class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalVerifikasi" data-bs-id='<?= $user['id'] ?>' data-bs-ktp="<?= $user['user_ktp'] ?>">
                                                         verifikasi</button>

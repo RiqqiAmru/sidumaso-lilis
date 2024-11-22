@@ -35,6 +35,7 @@ class CreateTablePengaduan extends Migration
             ],
             'id_admin'   => [
                 'type'           => 'int',
+                'null'           => true,
             ],
             'created_at'        => [
                 'type'           => 'DATETIME',
@@ -66,6 +67,10 @@ class CreateTablePengaduan extends Migration
                 'constraint'     => '255',
             ],
             'created_at'        => [
+                'type'           => 'DATETIME',
+                'null'           => true,
+            ],
+            'updated_at'        => [
                 'type'           => 'DATETIME',
                 'null'           => true,
             ],

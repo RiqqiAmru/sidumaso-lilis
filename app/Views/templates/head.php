@@ -45,7 +45,17 @@
     <?= $this->include('templates/header'); ?>
     <?= $this->include('templates/sidebar'); ?>
     <?= $this->renderSection('content'); ?>
+    <?php if (session('user_id')['role'] == 'Masyarakat' && session('user_id')['row_status'] == 'Menunggu'): ?>
+        <main id="main" class="main">
 
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Menunggu</h4>
+                <p>Mohon menunggu admin untuk memverifikasi status ktp anda. Anda tidak dapat mengajukan pengaduan sampai ktp anda terverifikasi oleh admin</p>
+                <hr>
+                <p class="mb-0">Silahkan hubungi admin jika dalam waktu 3x24 jam tidak ada perbaruan lebih lanjut</p>
+            </div>
+        </main>
+    <?php endif ?>
     <?= $this->include('templates/footer'); ?>
     <!-- Template Main CSS File -->
 

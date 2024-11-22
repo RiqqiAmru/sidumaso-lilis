@@ -37,9 +37,13 @@ class Auth extends BaseController
         }
 
         // Proses validasi login (misalnya, memeriksa username dan password)
-        if ($this->userModel->verifyUser($username, $password)) {
+        $user = $this->userModel->verifyUser($username, $password);
+        if ($user) {
             // Redirect ke halaman dashboard atau halaman utama jika login sukses
-
+            // dd($user);
+            if ($user['row_status'] == 'Non-aktif') {
+                return redirect()->back()->with('errors',  ['username' => 'Mohon maaf ktp anda invalid, silahkan menghubungi admin untuk informasi lebih lanjut']);
+            }
             return redirect()->to('/pengaduan');
         } else {
             // Jika login gagal, tampilkan pesan error

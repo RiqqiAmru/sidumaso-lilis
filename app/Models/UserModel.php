@@ -47,7 +47,7 @@ class UserModel extends Model
         if ($user && password_verify($password, $user['password'])) {
             session()->set('logged_in', true);  // Tandai pengguna sudah login
             session()->set('user_id', $user);
-            return true;
+            return $user;
         }
         return false;
     }

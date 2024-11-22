@@ -67,6 +67,14 @@ class CreateTableTanggapan extends Migration
                 'type'           => 'DATETIME',
                 'null'           => true,
             ],
+            'created_at'        => [
+                'type'           => 'DATETIME',
+                'null'           => true,
+            ],
+            'updated_at'        => [
+                'type'           => 'DATETIME',
+                'null'           => true,
+            ],
         ]);
         $this->forge->addPrimaryKey('id');
         $this->forge->addForeignKey('tanggapan_id', 'tanggapan', 'id', 'CASCADE', 'CASCADE');
