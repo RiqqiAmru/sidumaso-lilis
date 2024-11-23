@@ -33,8 +33,8 @@
                   <th scope="col">Perihal</th>
                   <th scope="col">Rincian</th>
                   <th scope="col">Status Pengirim</th>
-                  <th scope="col">Foto Bukti</th>
                   <th scope="col">Status </th>
+                  <th scope="col">Foto Bukti</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -44,21 +44,29 @@
                   foreach ($pengaduan as $p): ?>
                     <tr>
                       <th scope="row"><?= $no++ ?></th>
-                      <td><?= $user['jenis_pengaduan'] ?></td>
-                      <td><?= $user['rincian'] ?></td>
-                      <td><?= $user['status_pengaduan'] ?></td>
-                      <td><?= $user[''] ?></td>
+                      <td><?= $p['jenis_pengaduan'] ?></td>
+                      <td><?= $p['rincian'] ?></td>
+                      <td><?= $p['status_aduan'] ?></td>
                       <td>
-                        <img src="<?= base_url('uploads/ktp/' . $user['user_ktp']) ?>" alt="Foto KTP"
-                          width="100">
+                        <?php if ($p['ket'] == 0) : ?>
+                          <span class="badge rounded-pill text-bg-primary">Menunggu</span>
+                        <?php elseif ($p['ket'] == 1) : ?>
+                          <span class="badge rounded-pill text-bg-warning">Proses</span>
+                        <?php elseif ($p['ket'] == 2) : ?>
+                          <span class="badge rounded-pill text-bg-warning">Selesai</span>
+                        <?php endif ?>
                       </td>
                       <td>
-                        <button data-bs-name='<?= $user['username'] ?>' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-id='<?= $user['id'] ?>'>
+                        <?php foreach ($p['foto'] as $foto) : ?>
+                          <img src="<?= base_url('uploads/bukti/' . $foto['foto']) ?>" alt="Foto bukti" class="img-thumbnail"
+                            width="100">
+                        <?php endforeach ?>
+                      </td>
+                      <td>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeletePengaduan" data-bs-id='<?= $p['id'] ?>'>
                           hapus</button>
-                        <?php if ($user['row_status'] == 'Menunggu'): ?>
-                          <button data-bs-name='<?= $user['username'] ?>' class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalVerifikasi" data-bs-id='<?= $user['id'] ?>' data-bs-ktp="<?= $user['user_ktp'] ?>">
-                            verifikasi</button>
-                        <?php endif ?>
+                        <button class="btn btn-outline-info ">
+                          <a href="<?= base_url('pengaduan/edit/' . $p['id']) ?>">edit</a></button>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -72,20 +80,19 @@
           </div>
         </div>
 
-        <!-- modal delete user -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modalDeletePengaduan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus User</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus pengaduan</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <p>apakah anda yakin ingin menghapus user <span id="nama_modal"></span> ?</p>
+                <p>apakah anda yakin ingin menghapus pengaduan <span id="nama_modal"></span> ?</p>
               </div>
               <div class="modal-footer">
                 <button type="button" class=" btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <form action="/manageuser" method="post" id="form_hapus_user">
+                <form action="/manageuser" method="post" id="form_hapus_pengaduan">
                   <button type="submit" name="submit" class="btn btn-primary">Hapus</button>
                 </form>
               </div>
@@ -93,40 +100,6 @@
           </div>
         </div>
 
-        <!-- modal verifikasi user -->
-        <div class="modal fade" id="modalVerifikasi" tabindex="-1" aria-labelledby="labelModalVerifikasi" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="labelModalVerifikasi">Verifikasi User</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <form action="" id="form_verifikasi_user" method="post">
-                <div class="modal-body">
-                  <p>Username : <span id="nama_modal"></span> </p>
-                  <img src="" alt="Foto KTP" id="foto_ktp"
-                    width="400">
-                  <div class="form-check mt-2">
-                    <input class="form-check-input" type="radio" value="terima" name="status" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      Terima
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" value="tolak" name="status" id="flexRadioDefault2" checked>
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      Tolak
-                    </label>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class=" btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" name="verifikasi" class="btn btn-primary">Verifikasi</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
 
       </div>
     </div>
@@ -134,38 +107,20 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Mendapatkan elemen modal
-      var modal = document.getElementById('exampleModal');
-
+      var modal = document.getElementById('modalDeletePengaduan');
       // Menangkap event show.bs.modal
       modal.addEventListener('show.bs.modal', function(event) {
         var button = event.relatedTarget; // Tombol yang membuka modal
 
         // Mengambil data dari tombol (data-bs-name dan data-bs-email)
-        var name = button.getAttribute('data-bs-name');
         var id = button.getAttribute('data-bs-id');
+        console.log(id);
 
         // Memasukkan data ke dalam input di dalam modal
-        document.getElementById('nama_modal').innerText = name;
-        document.getElementById('form_hapus_user').action = "<?= base_url('/admin/user/delete') ?>" + "/" + id
+        document.getElementById('form_hapus_pengaduan').action = "<?= base_url('/pengaduan/delete') ?>" + "/" + id
       });
 
-      var modalVerifikasi = document.getElementById('modalVerifikasi');
 
-      // Menangkap event show.bs.modal
-      modalVerifikasi.addEventListener('show.bs.modal', function(event) {
-        var button = event.relatedTarget; // Tombol yang membuka modal
-
-        // Mengambil data dari tombol (data-bs-name dan data-bs-email)
-        var name = button.getAttribute('data-bs-name');
-        var id = button.getAttribute('data-bs-id');
-        var ktp = button.getAttribute('data-bs-ktp');
-
-
-        // Memasukkan data ke dalam input di dalam modal
-        document.getElementById('nama_modal').innerText = name;
-        document.getElementById('foto_ktp').src = "<?= base_url('/uploads/ktp') ?>" + "/" + ktp;
-        document.getElementById('form_verifikasi_user').action = "<?= base_url('/admin/user/verifikasi') ?>" + "/" + id
-      });
     })
   </script>
 

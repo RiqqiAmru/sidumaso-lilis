@@ -31,7 +31,18 @@ class Pengaduan extends BaseController
 
     public function daftarPengaduan()
     {
-        $data['pengaduan'] = $this->pengaduanModel->where('id_pengirim', session('user_id')['id'])->find();
+        $pengaduan = $this->pengaduanModel->where('id_pengirim', session('user_id')['id'])->findAll();
+        $data = [
+            'pengaduan' => []
+        ];
+        foreach ($pengaduan as $p) {
+            $foto = $this->fotoPengaduanModel->getByPengaduanId($p['id']);
+            array_push(
+                $data['pengaduan'],
+                [...$p, 'foto' => $foto]
+            );
+        }
+        // dd($data);
         return view('masyarakat/pengaduan/index', $data);
     }
     public function tambah()
@@ -85,7 +96,7 @@ class Pengaduan extends BaseController
                         // Membuat nama file yang unik
                         $newName = $file->getRandomName();
                         // Memindahkan file ke folder yang diinginkan
-                        $file->move(WRITEPATH . 'uploads', $newName);
+                        $file->move('uploads/bukti', $newName);
 
                         // Menyimpan path file yang telah di-upload
                         $imagePaths[] =  $newName;
@@ -108,5 +119,15 @@ class Pengaduan extends BaseController
 
 
         // Menampilkan halaman sukses upload dan menampilkan gambar yang telah di-upload
+    }
+
+    public function delete($id)
+    {
+        $this->pengaduanModel->delete($id);
+        return redirect()->to('pengaduan/daftarPengaduan')->with('success', 'pengaduan berhasil dihapus');
+    }
+
+    public function edit($id){
+        
     }
 }
