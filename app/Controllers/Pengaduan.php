@@ -39,7 +39,7 @@ class Pengaduan extends BaseController
             $foto = $this->fotoPengaduanModel->getByPengaduanId($p['id']);
             array_push(
                 $data['pengaduan'],
-                [...$p, 'foto' => $foto]
+                ['p' => $p, 'foto' => $foto]
             );
         }
         // dd($data);
@@ -127,7 +127,5 @@ class Pengaduan extends BaseController
         return redirect()->to('pengaduan/daftarPengaduan')->with('success', 'pengaduan berhasil dihapus');
     }
 
-    public function edit($id){
-        
-    }
+    public function edit($id) {}
 }

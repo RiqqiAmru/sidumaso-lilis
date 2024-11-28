@@ -44,15 +44,15 @@
                   foreach ($pengaduan as $p): ?>
                     <tr>
                       <th scope="row"><?= $no++ ?></th>
-                      <td><?= $p['jenis_pengaduan'] ?></td>
-                      <td><?= $p['rincian'] ?></td>
-                      <td><?= $p['status_aduan'] ?></td>
+                      <td><?= $p['p']['jenis_pengaduan'] ?></td>
+                      <td><?= $p['p']['rincian'] ?></td>
+                      <td><?= $p['p']['status_aduan'] ?></td>
                       <td>
-                        <?php if ($p['ket'] == 0) : ?>
+                        <?php if ($p['p']['ket'] == 0) : ?>
                           <span class="badge rounded-pill text-bg-primary">Menunggu</span>
-                        <?php elseif ($p['ket'] == 1) : ?>
+                        <?php elseif ($p['p']['ket'] == 1) : ?>
                           <span class="badge rounded-pill text-bg-warning">Proses</span>
-                        <?php elseif ($p['ket'] == 2) : ?>
+                        <?php elseif ($p['p']['ket'] == 2) : ?>
                           <span class="badge rounded-pill text-bg-warning">Selesai</span>
                         <?php endif ?>
                       </td>
@@ -63,10 +63,10 @@
                         <?php endforeach ?>
                       </td>
                       <td>
-                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeletePengaduan" data-bs-id='<?= $p['id'] ?>'>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeletePengaduan" data-bs-id='<?= $p['p']['id'] ?>'>
                           hapus</button>
                         <button class="btn btn-outline-info ">
-                          <a href="<?= base_url('pengaduan/edit/' . $p['id']) ?>">edit</a></button>
+                          <a href="<?= base_url('pengaduan/edit/' . $p['p']['id']) ?>">edit</a></button>
                       </td>
                     </tr>
                   <?php endforeach; ?>
