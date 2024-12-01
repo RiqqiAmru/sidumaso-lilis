@@ -40,3 +40,4 @@ $routes->post('admin/user/delete/(:num)', 'Admin\Manageuser::deleteUser/$1');
 $routes->post('admin/user/verifikasi/(:num)', 'Admin\Manageuser::verifikasi/$1');
 // Route untuk store user
 $routes->get('masyarakat/pengaduan', 'Admin\Manageuser::index');
+$routes->get('/tanggapan/(:num)', 'Pengaduan::getByPengaduanId/$1');

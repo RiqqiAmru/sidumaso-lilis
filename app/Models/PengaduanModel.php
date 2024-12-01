@@ -39,4 +39,33 @@ class PengaduanModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getPengaduanWithUser()
+    {
+        return $this->select('pengaduan.*, tbl_user.nama ')
+            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim')
+            ->where('pengaduan.ket', 0)
+            ->findAll();
+    }
+    public function getPengaduanWithUserWhereKetIs($ket)
+    {
+        return $this->select('pengaduan.*, tbl_user.nama ')
+            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim')
+            ->where('pengaduan.ket', $ket)
+            ->findAll();
+    }
+
+    /**
+     * Get pengaduan by ID with user information.
+     *
+     * @param int $id
+     * @return array|null
+     */
+    public function getPengaduanById($id)
+    {
+        return $this->select('pengaduan.*, tbl_user.nama ')
+            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim')
+            ->where('pengaduan.id', $id)
+            ->first();
+    }
 }
