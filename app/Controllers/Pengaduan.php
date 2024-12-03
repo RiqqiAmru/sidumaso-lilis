@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\FotoPengaduanModel;
+use App\Models\FotoTanggapanModel;
 use App\Models\PengaduanModel;
 use App\Models\TanggapanModel;
 
@@ -18,7 +19,7 @@ class Pengaduan extends BaseController
         $this->pengaduanModel = new PengaduanModel();
         $this->fotoPengaduanModel = new FotoPengaduanModel();
         $this->tanggapanModel = new TanggapanModel();
-        $this->fotoTanggapanModel = new TanggapanModel();
+        $this->fotoTanggapanModel = new FotoTanggapanModel();
 
 
         // Memeriksa apakah pengguna sudah login sebelum melakukan apa pun di controller ini
@@ -198,7 +199,17 @@ class Pengaduan extends BaseController
     {
         $idAduan = $this->request->getPost('id_aduan');
         $idAdmin = session('user_id')['id'];
+        $validation =  \Config\Services::validation();
 
+        $rules = [
+            'jenis_tanggapan' => 'required',
+            'rincian_admin' => 'required',
+        ];
+        // Memvalidasi file gambar
+        if (!$this->validate($rules)) {
+            // Menampilkan error jika validasi gagal
+            return redirect()->to('/pengaduan/proses/' . $idAduan)->withInput()->with('errors', $validation->getErrors());
+        }
 
         $db = \Config\Database::connect();
         $db->transBegin();
@@ -209,53 +220,59 @@ class Pengaduan extends BaseController
             $data = [
                 'id_aduan' => $this->request->getPost('id_aduan'),
                 'jenis_tanggapan' => $this->request->getPost('jenis_tanggapan'),
-                'rincian_admin' => $this->request->getPost('rincian'),
+                'rincian_admin' => $this->request->getPost('rincian_admin'),
                 'ket' => 0,
             ];
             // input tanggapan = id_aduan, jenis_tanggapan, rincian admin, 
-
             if ($this->tanggapanModel->save($data)) {
+                $tanggapanId = $this->tanggapanModel->getInsertID();
+                // Array untuk menyimpan path gambar yang di-upload
+                $imagePaths = [];
 
+                // Menyimpan gambar ke server
                 // Mengambil file yang di-upload
                 $uploadedFiles = $this->request->getFileMultiple('bukti');
-                // input foto tanggapan jika ada
-                if ($uploadedFiles) {
-                    $tanggapanId = $this->tanggapanModel->getInsertID();
-                    // Array untuk menyimpan path gambar yang di-upload
-                    $imagePaths = [];
 
-                    // Menyimpan gambar ke server
-                    foreach ($uploadedFiles as $file) {
-                        if ($file->isValid() && !$file->hasMoved()) {
-                            // Membuat nama file yang unik
-                            $newName = $file->getRandomName();
-                            // Memindahkan file ke folder yang diinginkan
-                            $file->move('uploads/bukti', $newName);
-
-                            // Menyimpan path file yang telah di-upload
-                            $imagePaths[] =  $newName;
+                foreach ($uploadedFiles as $file) {
+                    if ($file->isValid() && !$file->hasMoved()) {
+                        // input foto tanggapan jika ada
+                        if ($file->getSize() > 554496) { // 541 KB dalam byte
+                            return redirect()->back()->withInput()->with('error', 'Ukuran file tidak boleh lebih dari 541 KB.');
                         }
-                    }
-                    foreach ($imagePaths as $img) {
-                        $this->fotoTanggapanModel->save(['foto' => $img, 'tanggapan_id' => $tanggapanId]);
-                    }
-                    $db->transCommit();
 
-                    return redirect()->to('/pengaduan')->with('success', 'berhasil menanggapi aduan');
-                };
-                dd($this->pengaduanModel->errors());
-                return 'eror ketika input pengaduan';
-            }
+                        // (Opsional) Tambahkan validasi lainnya, seperti tipe MIME
+                        if (!$file->isValid() || !$file->getMimeType() === 'image/jpeg') {
+                            return redirect()->back()->withInput()->with('error', 'File harus berupa gambar JPEG.');
+                        }
+                        // Membuat nama file yang unik
+                        $newName = $file->getRandomName();
+                        // Memindahkan file ke folder yang diinginkan
+                        $file->move('uploads/bukti', $newName);
+
+                        // Menyimpan path file yang telah di-upload
+                        $imagePaths[] =  $newName;
+                    }
+                }
+                foreach ($imagePaths as $img) {
+                    $this->fotoTanggapanModel->insert(['foto' => $img, 'tanggapan_id' => $tanggapanId]);
+                }
+                $db->transCommit();
+
+                return redirect()->to('/pengaduan/masuk')->with('success', 'berhasil menanggapi aduan');
+            };
+
+            return redirect()->to('/pengaduan/proses/' . $idAduan)->with('error', 'Terjadi kesalahan input, silakan coba lagi');
         } catch (\Throwable $th) {
             $db->transRollback();
             // Tampilkan pesan error atau kembalikan form dengan error
-            return redirect()->to('/pengaduan/tambah')->with('error', 'Terjadi kesalahan, silakan coba lagi');
+            return redirect()->to('/pengaduan/proses/' . $idAduan)->with('error', 'terjadi kesalahan' . $th);
         }
     }
 
+    //  /tanggapan/idaduan
     public function getByPengaduanId($id)
     {
-        $tanggapan = $this->tanggapanModel->where('id_aduan', $id)->findAll();
+        $tanggapan = $this->tanggapanModel->getTanggapanByPengaduanid($id);
         return $this->response->setJSON($tanggapan);
     }
 }

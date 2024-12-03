@@ -27,9 +27,10 @@
               <thead>
                 <tr>
                   <th scope="col">No</th>
+                  <th scope="col">Tanggal</th>
                   <th scope="col">Perihal</th>
                   <th scope="col">Rincian</th>
-                  <th scope="col">Status Pengirim</th>
+                  <th scope="col">Pengirim</th>
                   <th scope="col">Status </th>
                   <th scope="col">Foto Bukti</th>
                 </tr>
@@ -40,12 +41,11 @@
                   foreach ($pengaduan as $p): ?>
                     <tr data-id="<?= $p['p']['id'] ?>">
                       <th scope="row"><?= $no++ ?></th>
+                      <td><?= $p['p']['created_at'] ?></td>
                       <td><?= $p['p']['jenis_pengaduan'] ?></td>
                       <td><?= $p['p']['rincian'] ?></td>
-                      <td><?= $p['p']['status_aduan'] ?>
-                        <?php if ($p['p']['status_aduan'] == 'publik'): ?>
-                          [<?= $p['p']['nama'] ?>]
-                        <?php endif ?>
+                      <td>
+                        <?= $p['p']['nama'] ?>
                       </td>
                       <td>
                         <?php if ($p['p']['ket'] == 0) : ?>
@@ -142,7 +142,8 @@
           fetch(`/tanggapan/${idAduan}`)
             .then(response => response.json())
             .then(data => {
-              if (data.length > 0) {
+              console.log(data);
+              if (data) {
                 const tanggapanRow = document.createElement('tr');
                 tanggapanRow.classList.add('tanggapan-row');
                 tanggapanRow.innerHTML = `
@@ -150,25 +151,25 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
+                                                <th>Tanggal</th>
                                                 <th>Jenis Tanggapan</th>
                                                 <th>Rincian</th>
                                                 <th>Foto</th>
-                                                <th>Tanggal</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             ${data.map(tanggapan => `
                                                 <tr>
-                                                    <td>${tanggapan.id}</td>
-                                                    <td>${tanggapan.jenis_tanggapan}</td>
-                                                    <td>${tanggapan.rincian}</td>
-                                                    <td>
-                                                        ${tanggapan.foto 
-                                                            ? `<img src="/${tanggapan.foto}" alt="Foto" style="width: 100px;">` 
-                                                            : 'Tidak Ada'}
-                                                    </td>
                                                     <td>${tanggapan.created_at}</td>
+                                                    <td>${tanggapan.jenis_tanggapan}</td>
+                                                    <td>${tanggapan.rincian_admin}</td>
+                                                    <td>
+                                                         ${tanggapan.foto && tanggapan.foto.length > 0
+                ? tanggapan.foto.map(foto => `
+                    <img src="<?= base_url('uploads/bukti/') ?>${foto}" alt="Foto" style="width: 100px; margin-right: 5px; " class="img-thumbnail">
+                `).join('')
+                : 'Tidak Ada'}
+                                                    </td>
                                                 </tr>
                                             `).join('')}
                                         </tbody>

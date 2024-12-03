@@ -39,4 +39,9 @@ class FotoTanggapanModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function getByTanggapanId($idTanggapan)
+    {
+        return $this->where('tanggapan_id', $idTanggapan)->findAll();
+    }
 }

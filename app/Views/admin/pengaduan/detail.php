@@ -58,6 +58,21 @@
 
                 <hr>
 
+                <?php if (session()->getFlashdata('errors')): ?>
+                  <div class="alert alert-danger" role="alert">
+                    <ul>
+                      <?php foreach (session()->getFlashdata('errors') as $error): ?>
+                        <li><?= esc($error) ?></li>
+                      <?php endforeach; ?>
+                    </ul>
+                  </div>
+                <?php endif; ?>
+                <?php if (session()->getFlashdata('error')): ?>
+                  <div class="alert alert-danger" role="alert">
+                    <?= session()->getFlashdata('error') ?>
+                  </div>
+                <?php endif; ?>
+
                 <!-- tanggapan admin -->
                 <div id="tanggapan-admin">
                   <h5 class="card-title">Tambahkan Tanggapan</h5>
@@ -77,9 +92,9 @@
                     </div>
 
                     <div class="row mb-3">
-                      <label for="rincian" class="col-sm-2 col-form-label">Rincian Tanggapan</label>
+                      <label for="rincian_admin" class="col-sm-2 col-form-label">Rincian Tanggapan</label>
                       <div class="col-sm-10">
-                        <textarea class="form-control" name="rincian" id="rincian" required><?= set_value('rincian') ?></textarea>
+                        <textarea class="form-control" name="rincian_admin" id="rincian_admin" required><?= set_value('rincian') ?></textarea>
                         <small class="text-muted">isikan rincian terkait tanggapan, agar bisa dilihat oleh pengirim aduan</small>
                       </div>
                     </div>

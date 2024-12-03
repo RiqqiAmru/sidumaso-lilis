@@ -1,5 +1,9 @@
 <?= $this->extend('templates/head'); ?>
 <?= $this->section('content'); ?>
+<?php helper('date') ?>
+<?php
+
+use CodeIgniter\I18n\Time; ?>
 
 <main id="main" class="main">
 
@@ -27,9 +31,10 @@
               <thead>
                 <tr>
                   <th scope="col">No</th>
+                  <th scope="col">Tanggal</th>
                   <th scope="col">Perihal</th>
                   <th scope="col">Rincian</th>
-                  <th scope="col">Status Pengirim</th>
+                  <th scope="col">Pengirim</th>
                   <th scope="col">Status </th>
                   <th scope="col">Foto Bukti</th>
                   <th scope="col"></th>
@@ -42,11 +47,10 @@
                     <tr>
                       <th scope="row"><?= $no++ ?></th>
                       <td><?= $p['p']['jenis_pengaduan'] ?></td>
+                      <td><?= Time::parse($p['p']['created_at']) ?></td>
                       <td><?= $p['p']['rincian'] ?></td>
-                      <td><?= $p['p']['status_aduan'] ?>
-                        <?php if ($p['p']['status_aduan'] == 'publik'): ?>
-                          [<?= $p['p']['nama'] ?>]
-                        <?php endif ?>
+                      <td>
+                        <?= $p['p']['nama'] ?>
                       </td>
                       <td>
                         <?php if ($p['p']['ket'] == 0) : ?>

@@ -45,3 +45,27 @@ TABEL FOTO_TANGGAPAN = id, id_tanggapan, foto, ket(admin/pengirim)
 - kurang gambar -> tolong berikan gambar HD -> gambar wajib, rinciann tidak wajib
 - kurang rincian -> berikan rincian lagi -> gambar tidak wajib, rincian wajib
 - selesai -> rincian, gambar tidak wajib, kasus selesai
+
+
+utama
+error foto tanggapan
+view tanggapan (keterangane user admin) ✅
+tambah tanggapan (user masyarakat) 
+view tanggapan (user masyarakat)✅
+edit pengaduan
+filter publik privat (daftar pengaduan)
+dashboard (daftar & total pengaduan)
+
+fungsi lain
+tambah pengumuman
+edit pengumuman
+view pengumuman
+
+laporan (cetak, filter (periode tanggal, status, jenis pengaduan)
+
+dashboard admin dan kepala dusun
+
+landing page (tentang sidumaso, 5 daftar pengaduan teratas, view pengumuman, footer)
+
+
+log aktivitas nek nyandak

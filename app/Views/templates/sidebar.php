@@ -18,13 +18,8 @@
                 </a>
                 <ul id="tables-dp" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                     <li>
-                        <a href="tables-general.html">
-                            <i class="bi bi-circle"></i><span>Belum Terverifikasi</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="<?php echo base_url('/admin/manageuser/') ?>">
-                            <i class="bi bi-circle"></i><span>Pengguna Aktif</span>
+                            <i class="bi bi-circle"></i><span> Daftar Pengguna</span>
                         </a>
                     </li>
                     <li>
@@ -63,26 +58,6 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-heading">Sanggah</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-ds" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Sanggahan</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-ds" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="tables-general.html">
-                            <i class="bi bi-circle"></i><span>Sanggahan Masuk</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="tables-data.html">
-                            <i class="bi bi-circle"></i><span>Sanggahan Diterima atau Ditolak</span>
-                        </a>
-                    </li>
-
-                </ul>
-            </li><!-- End Tables Nav -->
 
             <li class="nav-heading">lainnya</li>
             <li class="nav-item">
