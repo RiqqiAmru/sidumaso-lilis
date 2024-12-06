@@ -42,8 +42,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="tables-data.html">
-                            <i class="bi bi-circle"></i><span>Pengaduan Valid / Tidak Valid</span>
+                        <a href="<?= base_url('/pengaduan/invalid') ?>">
+                            <i class="bi bi-circle"></i><span>Pengaduan Tidak Valid</span>
                         </a>
                     </li>
                     <li>
@@ -52,7 +52,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="tables-data.html">
+                        <a href="<?= base_url('/pengaduan/selesai') ?>">
                             <i class="bi bi-circle"></i><span>Pengaduan Selesai</span>
                         </a>
                     </li>

@@ -39,18 +39,9 @@ class Pengaduan extends BaseController
 
     public function daftarPengaduan()
     {
-        $pengaduan = $this->pengaduanModel->where('id_pengirim', session('user_id')['id'])->findAll();
         $data = [
-            'pengaduan' => []
+            'pengaduan' =>  $this->pengaduanModel->getPengaduanByOneUser(session('user_id')['id'])
         ];
-        foreach ($pengaduan as $p) {
-            $foto = $this->fotoPengaduanModel->getByPengaduanId($p['id']);
-            array_push(
-                $data['pengaduan'],
-                ['p' => $p, 'foto' => $foto]
-            );
-        }
-        // dd($data);
         return view('masyarakat/pengaduan/index', $data);
     }
     public function tambah()
@@ -139,57 +130,52 @@ class Pengaduan extends BaseController
 
     public function masuk()
     {
-        if (session()->get('user_id')['role'] != 'Admin') {
-            // Jika tidak, redirect ke halaman login
-            return redirect()->to('/pengaduan');
+
+        if (session('user_id')['role'] == 'Masyarakat') {
+            return redirect()->to('/pengaduan/daftarPengaduan');
         }
 
-        $pengaduan = $this->pengaduanModel->getPengaduanWithUser();
         $data = [
-            'pengaduan' => []
+            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([0])
         ];
-        foreach ($pengaduan as $p) {
-            $foto = $this->fotoPengaduanModel->getByPengaduanId($p['id']);
-            array_push(
-                $data['pengaduan'],
-                ['p' => $p, 'foto' => $foto]
-            );
-        }
 
         return view('admin/pengaduan/masuk', $data);
     }
+
+    public function invalid()
+    {
+        $data = [
+            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([4])
+        ];
+
+        return view('admin/pengaduan/invalid', $data);
+    }
+    public function selesai()
+    {
+        $data = [
+            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([3])
+        ];
+
+        return view('admin/pengaduan/selesai', $data);
+    }
     public function daftarProses()
     {
-        if (session()->get('user_id')['role'] != 'Admin') {
-            // Jika tidak, redirect ke halaman login
-            return redirect()->to('/pengaduan');
-        }
-
-        $pengaduan = $this->pengaduanModel->getPengaduanWithUserWhereKetIs(1);
         $data = [
-            'pengaduan' => []
+            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([1, 2, 5])
         ];
-        foreach ($pengaduan as $p) {
-            $foto = $this->fotoPengaduanModel->getByPengaduanId($p['id']);
-            array_push(
-                $data['pengaduan'],
-                ['p' => $p, 'foto' => $foto]
-            );
-        }
-
         return view('admin/pengaduan/daftarProses', $data);
     }
 
-    public function proses($id)
+    public function proses($id, $status = 0)
     {
-        if (session()->get('user_id')['role'] != 'Admin') {
-            // Jika tidak, redirect ke halaman login
-            return redirect()->to('/pengaduan');
-        }
         $pengaduan = $this->pengaduanModel->getPengaduanById($id);
+        $tanggapan = $this->tanggapanModel->getTanggapanByPengaduanid($id);
+
         $foto = $this->fotoPengaduanModel->getByPengaduanId($pengaduan['id']);
         $data = [
-            'pengaduan' => ['p' => $pengaduan, 'foto' => $foto]
+            'pengaduan' => ['p' => $pengaduan, 'foto' => $foto],
+            'status' => $status,
+            'tanggapan' => $tanggapan
         ];
 
         return view('admin/pengaduan/detail', $data);
@@ -203,7 +189,7 @@ class Pengaduan extends BaseController
 
         $rules = [
             'jenis_tanggapan' => 'required',
-            'rincian_admin' => 'required',
+            'rincian' => 'required',
         ];
         // Memvalidasi file gambar
         if (!$this->validate($rules)) {
@@ -215,12 +201,34 @@ class Pengaduan extends BaseController
         $db->transBegin();
         try {
             // edit ket aduan jadi 1, inputkan id_admin field
-            $this->pengaduanModel->update($idAduan, ['ket' => 1, 'id_admin' => $idAdmin]);
+            $status = $this->request->getPost('jenis_tanggapan');
+            $ket = 1;
+            switch ($status) {
+                case 'Menunggu Kelengkapan data':
+                    $ket = '2';
+                    break;
+                case 'Selesai':
+                    $ket = '3';
+                    break;
+                case 'Tidak Valid':
+                    $ket = '4';
+                    break;
+                case 'Melengkapi Data':
+                    $ket = '5';
+                    break;
+            }
+
+            if (session('user_id')['role'] == 'Admin') {
+                $this->pengaduanModel->update($idAduan, ['ket' => $ket, 'id_admin' => $idAdmin]);
+            } else {
+                $this->pengaduanModel->update($idAduan, ['ket' => $ket]);
+            }
 
             $data = [
                 'id_aduan' => $this->request->getPost('id_aduan'),
-                'jenis_tanggapan' => $this->request->getPost('jenis_tanggapan'),
-                'rincian_admin' => $this->request->getPost('rincian_admin'),
+                'jenis_tanggapan' => $status,
+                'rincian' => $this->request->getPost('rincian'),
+                'id_user' => session('user_id')['id'],
                 'ket' => 0,
             ];
             // input tanggapan = id_aduan, jenis_tanggapan, rincian admin, 

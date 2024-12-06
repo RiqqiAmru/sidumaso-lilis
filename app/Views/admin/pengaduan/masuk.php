@@ -26,60 +26,8 @@ use CodeIgniter\I18n\Time; ?>
           <div class="card-body">
             <h5 class="card-title">Daftar Pengaduan Masuk</h5>
 
+            <?= $this->include('templates/tablePengaduan'); ?>
 
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th scope="col">No</th>
-                  <th scope="col">Tanggal</th>
-                  <th scope="col">Perihal</th>
-                  <th scope="col">Rincian</th>
-                  <th scope="col">Pengirim</th>
-                  <th scope="col">Status </th>
-                  <th scope="col">Foto Bukti</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if (!empty($pengaduan) && is_array($pengaduan)): ?>
-                  <?php $no = 1;
-                  foreach ($pengaduan as $p): ?>
-                    <tr>
-                      <th scope="row"><?= $no++ ?></th>
-                      <td><?= $p['p']['jenis_pengaduan'] ?></td>
-                      <td><?= Time::parse($p['p']['created_at']) ?></td>
-                      <td><?= $p['p']['rincian'] ?></td>
-                      <td>
-                        <?= $p['p']['nama'] ?>
-                      </td>
-                      <td>
-                        <?php if ($p['p']['ket'] == 0) : ?>
-                          <span class="badge rounded-pill text-bg-primary">Menunggu</span>
-                        <?php elseif ($p['p']['ket'] == 1) : ?>
-                          <span class="badge rounded-pill text-bg-warning">Proses</span>
-                        <?php elseif ($p['p']['ket'] == 2) : ?>
-                          <span class="badge rounded-pill text-bg-warning">Selesai</span>
-                        <?php endif ?>
-                      </td>
-                      <td>
-                        <?php foreach ($p['foto'] as $foto) : ?>
-                          <img src="<?= base_url('uploads/bukti/' . $foto['foto']) ?>" alt="Foto bukti" class="img-thumbnail"
-                            width="100">
-                        <?php endforeach ?>
-                      </td>
-                      <td>
-                        <button class="btn btn-outline-success">
-                          <a href="<?= base_url('pengaduan/proses/' . $p['p']['id']) ?>">Proses</a></button>
-                      </td>
-                    </tr>
-                  <?php endforeach; ?>
-                <?php else: ?>
-                  <tr>
-                    <td colspan="9" class="text-center">Belum ada data pengaduan masuk yang belum di proses.</td>
-                  </tr>
-                <?php endif; ?>
-              </tbody>
-            </table>
           </div>
         </div>
 

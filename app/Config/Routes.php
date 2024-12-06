@@ -41,3 +41,4 @@ $routes->post('admin/user/verifikasi/(:num)', 'Admin\Manageuser::verifikasi/$1')
 // Route untuk store user
 $routes->get('masyarakat/pengaduan', 'Admin\Manageuser::index');
 $routes->get('/tanggapan/(:num)', 'Pengaduan::getByPengaduanId/$1');
+$routes->get('pengaduan/proses/(:num)/(:alpha)?', 'Pengaduan::proses/$1/$2');

@@ -38,7 +38,12 @@
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Status Aduan</div>
-                    <div class="col-lg-9 col-md-8"><?= $pengaduan['p']['status_aduan'] ?>[<?= ($pengaduan['p']['status_aduan'] == 'publik') ? $pengaduan['p']['nama'] : '' ?>]</div>
+                    <div class="col-lg-9 col-md-8"><?= $pengaduan['p']['status_aduan'] ?></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-4 label ">Pengirim</div>
+                    <div class="col-lg-9 col-md-8"><?= $pengaduan['p']['nama'] ?>
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Rincian</div>
@@ -73,6 +78,41 @@
                   </div>
                 <?php endif; ?>
 
+                <!-- tabel tanggapan -->
+                <?php if ($tanggapan): ?>
+                  <div>
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Tanggal</th>
+                          <th>Status</th>
+                          <th>Rincian</th>
+                          <th>Foto</th>
+                          <th>Admin</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach ($tanggapan as $item) : ?>
+                          <tr>
+
+                            <td><?= $item['created_at'] ?></td>
+                            <td><?= $item['jenis_tanggapan'] ?></td>
+                            <td><?= $item['rincian'] ?></td>
+                            <td>
+                              <?php foreach ($item['foto'] as $foto) : ?>
+                                <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail"
+                                  width="100">
+                              <?php endforeach ?>
+                            </td>
+                            <td><?= $item['nama'] ?></td>
+                          </tr>
+                        <?php endforeach ?>
+                      </tbody>
+                    </table>
+                  </div>
+                  <hr>
+                <?php endif; ?>
+
                 <!-- tanggapan admin -->
                 <div id="tanggapan-admin">
                   <h5 class="card-title">Tambahkan Tanggapan</h5>
@@ -82,19 +122,23 @@
                       <label for="jenis_tanggapan" class="col-sm-2 col-form-label">jenis Tanggapan</label>
                       <div class="col-sm-10">
                         <select class="form-select" name="jenis_tanggapan" id="jenis_tanggapan" required>
-                          <option value="Proses" <?= set_select('jenis_tanggapan', 'Proses') ?>>Proses</option>
-                          <option value="Kurang Gambar" <?= set_select('jenis_tanggapan', 'Kurang Gambar') ?>>Kurang Gambar</option>
-                          <option value="Kurang Rincian" <?= set_select('jenis_tanggapan', 'Kurang Rincian') ?>>Kurang Rincian</option>
-                          <option value="Selesai" <?= set_select('jenis_tanggapan', 'Selesai') ?>>Selesai</option>
+                          <?php if (session('user_id')['role'] == 'Admin'): ?>
+                            <option value="Proses" <?= set_select('jenis_tanggapan', 'Proses') ?>>Proses</option>
+                            <option value="Menunggu Kelengkapan data" <?= set_select('jenis_tanggapan', 'Menunggu Kelengkapan data', $status == 'kurang') ?>>Menunggu Kelengkapan data</option>
+                            <option value="Selesai" <?= set_select('jenis_tanggapan', 'Selesai', $status == 'selesai') ?>>Selesai</option>
+                            <option value="Tidak Valid" <?= set_select('jenis_tanggapan', 'Tidak Valid', $status == 'invalid') ?>>Tidak Valid</option>
+                          <?php else: ?>
+                            <option value="Melengkapi Data" <?= set_select('jenis_tanggapan', 'Melengkapi Data') ?>>Melengkapi Data</option>
+                          <?php endif ?>
                         </select>
 
                       </div>
                     </div>
 
                     <div class="row mb-3">
-                      <label for="rincian_admin" class="col-sm-2 col-form-label">Rincian Tanggapan</label>
+                      <label for="rincian" class="col-sm-2 col-form-label">Rincian Tanggapan</label>
                       <div class="col-sm-10">
-                        <textarea class="form-control" name="rincian_admin" id="rincian_admin" required><?= set_value('rincian') ?></textarea>
+                        <textarea class="form-control" name="rincian" id="rincian" required><?= set_value('rincian') ?></textarea>
                         <small class="text-muted">isikan rincian terkait tanggapan, agar bisa dilihat oleh pengirim aduan</small>
                       </div>
                     </div>

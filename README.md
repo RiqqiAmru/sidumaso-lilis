@@ -29,28 +29,20 @@ TABEL ADUAN = id, jenis_aduan, status_aduan(privat/publik), rincian, id_pengadu,
 
 0- menunggu
 1- proses
-2- selesai
+2- kurang data
+3 selesai
+4 invalid
 
 TABEL FOTO_ADUAN =id, id_aduan, foto
 
 tabel tanggapan = id, jenis_tanggapan, rincian_admin, rincian_pengadu, ket
 
-0 menunggu pengirim
-1 menunggu admin
-2 selesai
-
 TABEL FOTO_TANGGAPAN = id, id_tanggapan, foto, ket(admin/pengirim)
 
-- proses -> siap kami sedang usut kepada pihak terkait
-- kurang gambar -> tolong berikan gambar HD -> gambar wajib, rinciann tidak wajib
-- kurang rincian -> berikan rincian lagi -> gambar tidak wajib, rincian wajib
-- selesai -> rincian, gambar tidak wajib, kasus selesai
-
-
 utama
-error foto tanggapan
+error foto tanggapan ✅
 view tanggapan (keterangane user admin) ✅
-tambah tanggapan (user masyarakat) 
+tambah tanggapan (user masyarakat)
 view tanggapan (user masyarakat)✅
 edit pengaduan
 filter publik privat (daftar pengaduan)
@@ -66,6 +58,5 @@ laporan (cetak, filter (periode tanggal, status, jenis pengaduan)
 dashboard admin dan kepala dusun
 
 landing page (tentang sidumaso, 5 daftar pengaduan teratas, view pengumuman, footer)
-
 
 log aktivitas nek nyandak

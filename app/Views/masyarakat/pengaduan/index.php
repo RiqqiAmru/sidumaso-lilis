@@ -25,58 +25,8 @@
               class="btn btn-primary rounded-pill" style="margin-bottom: 25px;">Tambah
               Pengaduan</a>
 
+            <?= $this->include('templates/tablePengaduan'); ?>
 
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th scope="col">No</th>
-                  <th scope="col">Perihal</th>
-                  <th scope="col">Rincian</th>
-                  <th scope="col">Status Pengirim</th>
-                  <th scope="col">Status </th>
-                  <th scope="col">Foto Bukti</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php if (!empty($pengaduan) && is_array($pengaduan)): ?>
-                  <?php $no = 1;
-                  foreach ($pengaduan as $p): ?>
-                    <tr>
-                      <th scope="row"><?= $no++ ?></th>
-                      <td><?= $p['p']['jenis_pengaduan'] ?></td>
-                      <td><?= $p['p']['rincian'] ?></td>
-                      <td><?= $p['p']['status_aduan'] ?></td>
-                      <td>
-                        <?php if ($p['p']['ket'] == 0) : ?>
-                          <span class="badge rounded-pill text-bg-primary">Menunggu</span>
-                        <?php elseif ($p['p']['ket'] == 1) : ?>
-                          <span class="badge rounded-pill text-bg-warning">Proses</span>
-                        <?php elseif ($p['p']['ket'] == 2) : ?>
-                          <span class="badge rounded-pill text-bg-warning">Selesai</span>
-                        <?php endif ?>
-                      </td>
-                      <td>
-                        <?php foreach ($p['foto'] as $foto) : ?>
-                          <img src="<?= base_url('uploads/bukti/' . $foto['foto']) ?>" alt="Foto bukti" class="img-thumbnail"
-                            width="100">
-                        <?php endforeach ?>
-                      </td>
-                      <td>
-                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeletePengaduan" data-bs-id='<?= $p['p']['id'] ?>'>
-                          hapus</button>
-                        <button class="btn btn-outline-info ">
-                          <a href="<?= base_url('pengaduan/edit/' . $p['p']['id']) ?>">edit</a></button>
-                      </td>
-                    </tr>
-                  <?php endforeach; ?>
-                <?php else: ?>
-                  <tr>
-                    <td colspan="9" class="text-center">Belum ada data pengaduan.</td>
-                  </tr>
-                <?php endif; ?>
-              </tbody>
-            </table>
           </div>
         </div>
 

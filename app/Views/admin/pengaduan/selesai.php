@@ -4,11 +4,11 @@
 <main id="main" class="main">
 
   <div class="pagetitle">
-    <h1>Daftar Pengaduan yang di Proses</h1>
+    <h1>Daftar Pengaduan yang Selesai</h1>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="<?= base_url('/pengaduan') ?>">Home</a></li>
-        <li class="breadcrumb-item active">Pengaduan di Proses</li>
+        <li class="breadcrumb-item active">Pengaduan Selesai</li>
       </ol>
     </nav>
   </div><!-- End Page Title -->
@@ -20,7 +20,7 @@
 
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Daftar Pengaduan di Proses</h5>
+            <h5 class="card-title">Daftar Pengaduan Selesai</h5>
 
             <?= $this->include('templates/tablePengaduan'); ?>
 
@@ -70,7 +70,6 @@
 
     })
   </script>
-
 
 
 </main><!-- End #main -->
