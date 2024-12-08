@@ -22,6 +22,7 @@ class Manageuser extends BaseController
     {
         return view('admin/user/tambah');
     }
+    
 
     public function storeUser()
     {
@@ -49,7 +50,7 @@ class Manageuser extends BaseController
         $fileKTP = $this->request->getFile('user_ktp');
         $namaFileKTP = $fileKTP->getRandomName(); // Generate nama file random
         $fileKTP->move('uploads/ktp', $namaFileKTP); // Pindahkan file ke folder uploads/ktp
-        
+
         // Data yang akan disimpan ke database
         $data = [
             'nama' => $this->request->getPost('nama'),
@@ -66,6 +67,51 @@ class Manageuser extends BaseController
 
         // Redirect ke halaman daftar user setelah berhasil menyimpan
         return redirect()->to('admin/user/index')->with('success', 'User berhasil ditambahkan');
+    }
+    public function edit($id)
+    {
+        $userModel = new UserModel();
+        $user = $userModel->find($id);
+
+        if (!$user) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Pengguna tidak ditemukan');
+        }
+
+        return view('admin/user/edit', ['user' => $user]); // Path view sesuai dengan yang Anda sebutkan
+    }
+
+    public function update($id)
+    {
+        $userModel = new UserModel();
+        $validation = \Config\Services::validation();
+
+        // Set rules untuk validasi
+        $validation->setRules([
+            'nama' => 'required',
+            'no_hp' => 'required|numeric',
+            'role' => 'required',
+            'row_status' => 'required',
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            // Jika validasi gagal, kirim kembali dengan flashdata error
+            return redirect()->to('admin/user/edit/' . $id)->withInput()->with('error', 'Data tidak valid.');
+        }
+
+        $data = [
+            'nama' => $this->request->getPost('nama'),
+            'no_hp' => $this->request->getPost('no_hp'),
+            'role' => $this->request->getPost('role'),
+            'row_status' => $this->request->getPost('row_status'),
+        ];
+
+        if ($userModel->update($id, $data)) {
+            session()->setFlashdata('success', 'Data pengguna berhasil diperbarui');
+        } else {
+            session()->setFlashdata('error', 'Gagal memperbarui data pengguna');
+        }
+
+        return redirect()->to('admin/user/edit/' . $id);
     }
 
     public function deleteUser($id)
@@ -93,4 +139,5 @@ class Manageuser extends BaseController
         }
         return redirect()->to('admin/user/index')->with('success', 'berhasil verifikasi user');
     }
+
 }

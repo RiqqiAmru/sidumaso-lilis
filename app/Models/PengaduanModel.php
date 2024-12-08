@@ -128,4 +128,5 @@ class PengaduanModel extends Model
             ->where('pengaduan.id', $id)
             ->first();
     }
+    
 }

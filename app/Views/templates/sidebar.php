@@ -124,7 +124,7 @@
         <li class="nav-heading">lainnya</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="<?php echo base_url('admin/profile') ?>">
+            <a class="nav-link collapsed" href="<?php echo base_url('AkunController/index') ?>">
                 <i class="bi bi-card-list"></i>
                 <span>Akun Saya</span>
             </a>

@@ -57,13 +57,20 @@
                                             </td>
                                             <td>
                                                 <?php if ($user['row_status'] != 'Non-aktif'): ?>
-                                                    <button data-bs-name='<?= $user['username'] ?>' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-id='<?= $user['id'] ?>'>
+                                                    <button data-bs-name='<?= $user['username'] ?>' class="btn btn-danger"
+                                                        data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                        data-bs-id='<?= $user['id'] ?>'>
                                                         hapus</button>
                                                 <?php endif ?>
                                                 <?php if ($user['row_status'] == 'Menunggu'): ?>
-                                                    <button data-bs-name='<?= $user['username'] ?>' class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalVerifikasi" data-bs-id='<?= $user['id'] ?>' data-bs-ktp="<?= $user['user_ktp'] ?>">
+                                                    <button data-bs-name='<?= $user['username'] ?>' class="btn btn-warning"
+                                                        data-bs-toggle="modal" data-bs-target="#modalVerifikasi"
+                                                        data-bs-id='<?= $user['id'] ?>' data-bs-ktp="<?= $user['user_ktp'] ?>">
                                                         verifikasi</button>
                                                 <?php endif ?>
+                                                <a href="<?= base_url('admin/manageuser/edit/' . $user['id']) ?>"
+                                                    class="btn btn-primary  me-2">Edit
+                                                </a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -78,12 +85,14 @@
                 </div>
 
                 <!-- modal delete user -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus User</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <p>apakah anda yakin ingin menghapus user <span id="nama_modal"></span> ?</p>
@@ -99,33 +108,37 @@
                 </div>
 
                 <!-- modal verifikasi user -->
-                <div class="modal fade" id="modalVerifikasi" tabindex="-1" aria-labelledby="labelModalVerifikasi" aria-hidden="true">
+                <div class="modal fade" id="modalVerifikasi" tabindex="-1" aria-labelledby="labelModalVerifikasi"
+                    aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="labelModalVerifikasi">Verifikasi User</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <form action="" id="form_verifikasi_user" method="post">
                                 <div class="modal-body">
                                     <p>Username : <span id="nama_modal"></span> </p>
-                                    <img src="" alt="Foto KTP" id="foto_ktp"
-                                        width="400">
+                                    <img src="" alt="Foto KTP" id="foto_ktp" width="400">
                                     <div class="form-check mt-2">
-                                        <input class="form-check-input" type="radio" value="terima" name="status" id="flexRadioDefault1">
+                                        <input class="form-check-input" type="radio" value="terima" name="status"
+                                            id="flexRadioDefault1">
                                         <label class="form-check-label" for="flexRadioDefault1">
                                             Terima
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" value="tolak" name="status" id="flexRadioDefault2" checked>
+                                        <input class="form-check-input" type="radio" value="tolak" name="status"
+                                            id="flexRadioDefault2" checked>
                                         <label class="form-check-label" for="flexRadioDefault2">
                                             Tolak
                                         </label>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class=" btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class=" btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
                                     <button type="submit" name="verifikasi" class="btn btn-primary">Verifikasi</button>
                                 </div>
                             </form>
@@ -137,12 +150,12 @@
         </div>
     </section>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Mendapatkan elemen modal
             var modal = document.getElementById('exampleModal');
 
             // Menangkap event show.bs.modal
-            modal.addEventListener('show.bs.modal', function(event) {
+            modal.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget; // Tombol yang membuka modal
 
                 // Mengambil data dari tombol (data-bs-name dan data-bs-email)
@@ -157,7 +170,7 @@
             var modalVerifikasi = document.getElementById('modalVerifikasi');
 
             // Menangkap event show.bs.modal
-            modalVerifikasi.addEventListener('show.bs.modal', function(event) {
+            modalVerifikasi.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget; // Tombol yang membuka modal
 
                 // Mengambil data dari tombol (data-bs-name dan data-bs-email)

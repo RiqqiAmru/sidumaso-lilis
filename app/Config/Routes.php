@@ -38,7 +38,22 @@ $routes->post('/admin/user/store', 'Admin\Manageuser::storeUser');
 $routes->get('admin/user/index', 'Admin\Manageuser::index');
 $routes->post('admin/user/delete/(:num)', 'Admin\Manageuser::deleteUser/$1');
 $routes->post('admin/user/verifikasi/(:num)', 'Admin\Manageuser::verifikasi/$1');
+$routes->get('admin/manageuser/edit/(:num)', 'Admin\Manageuser::edit/$1');
+$routes->post('admin/manageuser/update/(:num)', 'Admin\Manageuser::update/$1');
 // Route untuk store user
 $routes->get('masyarakat/pengaduan', 'Admin\Manageuser::index');
 $routes->get('/tanggapan/(:num)', 'Pengaduan::getByPengaduanId/$1');
 $routes->get('pengaduan/proses/(:num)/(:alpha)?', 'Pengaduan::proses/$1/$2');
+
+$routes->get('/pengumuman', 'Pengumuman::index');
+$routes->get('/pengumuman/create', 'Pengumuman::create');
+$routes->post('/pengumuman/store', 'Pengumuman::store');
+$routes->get('/pengumuman/edit/(:num)', 'Pengumuman::edit/$1');
+$routes->post('/pengumuman/update/(:num)', 'Pengumuman::update/$1');
+$routes->get('/pengumuman/detail/(:num)', 'Pengumuman::detail/$1');
+
+$routes->get('/profile', 'AkunController::index');// Halaman Akun
+$routes->get('/akun/edit', 'AkunController::edit'); // Route untuk halaman edit akun
+$routes->post('/akun/update', 'AkunController::update'); // Route untuk proses update akun
+// Menangani proses update akun
+
