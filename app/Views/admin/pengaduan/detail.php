@@ -129,6 +129,7 @@
                             <option value="Tidak Valid" <?= set_select('jenis_tanggapan', 'Tidak Valid', $status == 'invalid') ?>>Tidak Valid</option>
                           <?php else: ?>
                             <option value="Melengkapi Data" <?= set_select('jenis_tanggapan', 'Melengkapi Data') ?>>Melengkapi Data</option>
+                            <option value="Komentar" <?= set_select('jenis_tanggapan', 'Komentar', $status == 'komentar') ?>>Komentar</option>
                           <?php endif ?>
                         </select>
 

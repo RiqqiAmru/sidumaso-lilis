@@ -161,7 +161,7 @@ class Pengaduan extends BaseController
     public function daftarProses()
     {
         $data = [
-            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([1, 2, 5])
+            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([1, 2, 5, 6])
         ];
         return view('admin/pengaduan/daftarProses', $data);
     }
@@ -215,6 +215,9 @@ class Pengaduan extends BaseController
                     break;
                 case 'Melengkapi Data':
                     $ket = '5';
+                    break;
+                case 'Komentar':
+                    $ket = '6';
                     break;
             }
 

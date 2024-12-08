@@ -34,7 +34,7 @@
                 <span class="badge rounded-pill text-bg-success  btn-tanggapan" data-id="<?= $p['id']; ?>">Selesai</span>
               <?php elseif ($p['ket'] == 4) : ?>
                 <span class="badge rounded-pill text-bg-danger  btn-tanggapan" data-id="<?= $p['id']; ?>">Invalid</span>
-              <?php elseif ($p['ket'] == 5) : ?>
+              <?php elseif ($p['ket'] == 5 || $p['ket'] == 6) : ?>
                 <span class="badge rounded-pill text-bg-secondary  btn-tanggapan" data-id="<?= $p['id']; ?>">menunggu admin</span>
               <?php endif ?>
             </button>
@@ -42,7 +42,7 @@
           <td>
             <?php foreach ($p['foto'] as $foto) : ?>
               <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail"
-                width="100">
+                width="100" data-bs-toggle="modal" data-bs-target="#imageModal">
             <?php endforeach ?>
           </td>
 
@@ -69,6 +69,17 @@
     <?php endif; ?>
   </tbody>
 </table>
+
+<!-- modal image -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <img src="" id="modalImage" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -124,13 +135,14 @@
                                                     <td>
                                                     ${tanggapan.foto && tanggapan.foto.length > 0
                                                     ? tanggapan.foto.map(foto => `
-                                                    <img src="<?= base_url('uploads/bukti/') ?>${foto}" alt="Foto" style="width: 50px; margin-right: 5px; " class="img-thumbnail">
+                                                    <img src="<?= base_url('uploads/bukti/') ?>${foto}" alt="Foto" style="width: 50px; margin-right: 5px; " class="img-thumbnail"  data-bs-toggle="modal" data-bs-target="#imageModal">
                                                     `).join('')
                                                     : 'Tidak Ada'}
                                                     </td>
                                                     <td>${tanggapan.nama}</td>
                                                     <td>
-                                        ${index=== data.length-1 && (tanggapan.jenis_tanggapan=='Proses'|tanggapan.jenis_tanggapan=='Melengkapi Data' ) && '<?= session('user_id')['role'] ?>'== 'Admin'? `
+                                        ${index=== data.length-1 && (tanggapan.jenis_tanggapan=='Proses'|tanggapan.jenis_tanggapan=='Melengkapi Data'|tanggapan.jenis_tanggapan=='Komentar' ) && '<?= session('user_id')['role'] ?>'== 'Admin'? `
+                                                     <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}" class="btn badge rounded-pill text-bg-primary " >proses</a> </br>
                                                      <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/selesai" class="btn badge rounded-pill text-bg-success " >tandai selesai</a> </br>
                                                      <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/kurang" class="btn badge rounded-pill text-bg-warning " >data kurang lengkap</a></br>
                                                      <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/invalid" class="btn badge rounded-pill text-bg-danger " >laporan tidak valid</a>
@@ -138,6 +150,10 @@
                                                      ${index=== data.length-1 && tanggapan.jenis_tanggapan=='Menunggu Kelengkapan data' && '<?= session('user_id')['role'] ?>'== 'Masyarakat'?`
                                                      <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/lengkapi" class="btn badge rounded-pill text-bg-info " >lengkapi data</a>
                                                      `:''}
+                                        ${index=== data.length-1 && (tanggapan.jenis_tanggapan=='Proses'|tanggapan.jenis_tanggapan=='Melengkapi Data' ) && '<?= session('user_id')['role'] ?>'== 'Masyarakat'? `
+<a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/komentar" class="btn badge rounded-pill text-bg-primary " >komentar</a> </br>
+                                                     `:''}
+
                                                     </td>
                                                 </tr>
                                             `).join('')}
@@ -152,6 +168,13 @@
           })
           .catch(err => console.error('Error fetching tanggapan:', err));
       }
+    });
+
+    document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
+      img.addEventListener('click', function() {
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = this.src;
+      });
     });
   });
 </script>
