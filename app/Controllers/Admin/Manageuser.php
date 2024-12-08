@@ -49,7 +49,7 @@ class Manageuser extends BaseController
         $fileKTP = $this->request->getFile('user_ktp');
         $namaFileKTP = $fileKTP->getRandomName(); // Generate nama file random
         $fileKTP->move('uploads/ktp', $namaFileKTP); // Pindahkan file ke folder uploads/ktp
-        
+
         // Data yang akan disimpan ke database
         $data = [
             'nama' => $this->request->getPost('nama'),
