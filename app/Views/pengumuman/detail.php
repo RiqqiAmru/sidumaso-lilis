@@ -7,7 +7,7 @@
         <h1>Detail Pengumuman</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/pengumuman">Pengumuman</a></li>
+                <li class="breadcrumb-item"><a>Pengumuman</a></li>
                 <li class="breadcrumb-item active">Detail Pengumuman</li>
             </ol>
         </nav>
@@ -45,7 +45,7 @@
                         <h2 class="mb-3"><?= esc($pengumuman['judul']); ?></h2>
 
                         <!-- Tanggal Pengumuman -->
-                        <p class="text-muted"><?= date('Y-m-d H:i:s', strtotime($pengumuman['tanggal'])); ?></p>
+                        <p class="text-muted"><?= date('d-m-Y H:i:s', strtotime($pengumuman['tanggal'])); ?></p>
 
                         <!-- Deskripsi Pengumuman -->
                         <div class="mt-4">

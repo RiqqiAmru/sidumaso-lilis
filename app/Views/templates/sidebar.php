@@ -4,7 +4,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="index.html">
+            <a class="nav-link collapsed" href="<?= base_url('Dashboard') ?>">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
             </a>
@@ -67,41 +67,40 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-faq.html">
+                <a class="nav-link collapsed" href="<?php echo base_url('pengaduan/laporan') ?>">
                     <i class="bi bi-question-circle"></i>
                     <span>Laporan</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link collapsed" href="<?php echo base_url('sarancontroller') ?>">
                     <i class="bi bi-question-circle"></i>
                     <span>Saran</span>
                 </a>
-            </li><!-- End F.A.Q Page Nav -->
+            </li>End F.A.Q Page Nav -->
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link collapsed" href="<?php echo base_url('log/index') ?>">
                     <i class="bi bi-envelope"></i>
                     <span>Log Aktivitas</span>
                 </a>
-            </li><!-- End Contact Page Nav -->
+            </li>End Contact Page Nav -->
         <?php endif ?>
         <?php if (session('user_id')['role'] == 'Masyarakat'): ?>
             <?php if (session('user_id')['role'] == 'Masyarakat' && session('user_id')['row_status'] == 'Aktif'): ?>
                 <li class="nav-heading">Pengaduan</li>
                 <li class="nav-item">
-                    <a class="nav-link collapsed" data-bs-target="#tables-dpn" data-bs-toggle="collapse" href="#">
-                        <i class="bi bi-layout-text-window-reverse"></i><span>Daftar Pengaduan</span><i
-                            class="bi bi-chevron-down ms-auto"></i>
+                    <a class="nav-link collapsed" href="<?= base_url('/pengaduan/daftarPengaduan') ?>">
+                        <i class="bi bi-layout-text-window-reverse"></i><span>Daftar Pengaduan Saya</span>
                     </a>
-                    <ul id="tables-dpn" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <!-- <ul id="tables-dpn" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                         <li>
-                            <a href="<?= base_url('/pengaduan/daftarPengaduan') ?>">
+                            <a href="<= base_url('/pengaduan/daftarPengaduan') ?>">
                                 <i class="bi bi-circle"></i><span>Pengaduan </span>
                             </a>
                         </li>
-                        <li>
-                            <!-- <a href="tables-data.html">
+                        <li> -->
+                    <!-- <a href="tables-data.html">
                                 <i class="bi bi-circle"></i><span>Pengaduan Valid / Tidak Valid</span>
                             </a>
                         </li>
@@ -115,7 +114,7 @@
                                 <i class="bi bi-circle"></i><span>Pengaduan Selesai</span>
                             </a>
                         </li> -->
-                    </ul>
+                    <!-- </ul> -->
                 </li>
             <?php endif ?>
         <?php endif ?>

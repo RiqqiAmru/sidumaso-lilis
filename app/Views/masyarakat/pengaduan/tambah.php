@@ -8,7 +8,8 @@
         <h1>Halaman Tambah Pengaduan</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= base_url('pengaduan/daftarPengaduan') ?>">Daftar Pengaduan</a></li>
+                <li class="breadcrumb-item"><a href="<?= base_url('pengaduan/daftarPengaduan') ?>">Daftar Pengaduan</a>
+                </li>
                 <li class="breadcrumb-item active">Tambah Pengaduan</li>
             </ol>
         </nav>
@@ -42,10 +43,12 @@
                                     <select class="form-select" name="jenis_pengaduan" id="jenis_pengaduan" required>
                                         <option value="Infrastukrur" <?= set_select('jenis_pengaduan', 'Infrastukrur') ?>>Infrastukrur</option>
                                         <option value="Sengketa Lahan" <?= set_select('jenis_pengaduan', 'Sengketa Lahan') ?>>Sengketa Lahan</option>
-                                        <option value="keamanan dan ketertiban" <?= set_select('jenis_pengaduan', 'keamanan dan ketertiban') ?>>keamanan dan ketertiban</option>
-                                        <option value="lingkungan" <?= set_select('jenis_pengaduan', 'lingkungan') ?>>lingkungan</option>
+                                        <option value="keamanan dan ketertiban" <?= set_select('jenis_pengaduan', 'keamanan dan ketertiban') ?>>Keamanan dan Ketertiban</option>
+                                        <option value="lingkungan" <?= set_select('jenis_pengaduan', 'lingkungan') ?>>
+                                            lingkungan</option>
                                         <option value="pengelolaan dana desa" <?= set_select('jenis_pengaduan', 'pengelolaan dana desa') ?>>pengelolaan dana desa</option>
-                                        <option value="lainnya" <?= set_select('jenis_pengaduan', 'lainnya') ?>>lainnya</option>
+                                        <option value="lainnya" <?= set_select('jenis_pengaduan', 'lainnya') ?>>lainnya
+                                        </option>
                                     </select>
 
                                 </div>
@@ -54,8 +57,10 @@
                             <div class="row mb-3">
                                 <label for="rincian" class="col-sm-2 col-form-label">Rincian</label>
                                 <div class="col-sm-10">
-                                    <textarea class="form-control" name="rincian" id="rincian"><?= set_value('rincian') ?></textarea>
-                                    <small class="text-muted">isikan rincian kasus yang ditemukan, jelaskan dengan sedetail mungkin</small>
+                                    <textarea class="form-control" name="rincian"
+                                        id="rincian"><?= set_value('rincian') ?></textarea>
+                                    <small class="text-muted">isikan rincian kasus yang ditemukan, jelaskan dengan
+                                        sedetail mungkin</small>
                                 </div>
                             </div>
 
@@ -64,19 +69,45 @@
                                 <div class="col-sm-10">
 
                                     <select class="form-select" name="status_pengaduan" id="status_pengaduan" required>
-                                        <option <?= set_select('status_pengaduan', 'publik') ?> value="publik">publik</option>
-                                        <option <?= set_select('status_pengaduan', 'privat') ?> value="privat">privat</option>
+                                        <option <?= set_select('status_pengaduan', 'publik') ?> value="publik">publik
+                                        </option>
+                                        <option <?= set_select('status_pengaduan', 'privat') ?> value="privat">privat
+                                        </option>
                                     </select>
-                                    <small class="text-muted">publik berarti admin dapat melihat nama pengirim, privat berarti admin tidak dapat melihat nama pengirim </small>
+                                    <small class="text-muted">publik berarti semua masyarakat dapat melihat aduan ini,
+                                        privat
+                                        berarti hanya admin yang dapat melihat aduan ini </small>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="detail_lokasi" class="col-sm-2 col-form-label">Detail Lokasi</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" name="detail_lokasi" id="detail_lokasi"
+                                        required><?= set_value('detail_lokasi') ?></textarea>
+                                    <small class="text-muted">Isikan detail lokasi pengaduan</small>
                                 </div>
                             </div>
 
+                            <div class="row mb-3">
+                                <label for="gang" class="col-sm-2 col-form-label">Gang</label>
+                                <div class="col-sm-10">
+                                    <select class="form-select" name="gang" id="gang" required>
+                                        <option value="1" <?= set_select('gang', '1') ?>>1</option>
+                                        <option value="2" <?= set_select('gang', '2') ?>>2</option>
+                                        <option value="3" <?= set_select('gang', '3') ?>>3</option>
+                                        <option value="4" <?= set_select('gang', '4') ?>>4</option>
+                                        <option value="5" <?= set_select('gang', '5') ?>>5</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="row mb-3">
-                                <label for="user_ktp" class="col-sm-2 col-form-label">Upload Foto Bukti</label>
+                                <label for="bukti" class="col-sm-2 col-form-label">Upload Foto Bukti</label>
                                 <div class="col-sm-10">
-                                    <input type="file" class="form-control" id="bukti" name="bukti[]" multiple onchange="previewImages()" required>
-                                    <small class="text-muted">Maksimal 512 KB. boleh lebih dari 1 bukti</small>
+                                    <input type="file" class="form-control" id="bukti" name="bukti[]" multiple
+                                        onchange="previewImages()">
+                                    <small class="text-muted">Maksimal 512 KB. Boleh lebih dari 1 bukti.
+                                        Opsional</small>
                                     <div class="form-group">
                                         <label>Preview:</label>
                                         <div id="image-preview-container" style="display: flex; flex-wrap: wrap;">
@@ -113,10 +144,10 @@
             return;
         }
 
-        Array.from(files).forEach(function(file) {
+        Array.from(files).forEach(function (file) {
             var reader = new FileReader();
 
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 var img = document.createElement('img');
                 img.src = e.target.result;
                 img.style.width = '150px'; // Atur ukuran gambar

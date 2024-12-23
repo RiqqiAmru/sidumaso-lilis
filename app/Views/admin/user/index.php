@@ -2,7 +2,12 @@
 <?= $this->section('content'); ?>
 
 <main id="main" class="main">
-
+    <?php if (session()->getFlashdata('message')): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= session()->getFlashdata('message'); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
     <div class="pagetitle">
         <h1>Daftar Pengguna</h1>
         <nav>
@@ -22,6 +27,16 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Daftar Pengguna</h5>
+                        <?php if (session()->getFlashdata('error')): ?>
+                            <div class="alert alert-danger">
+                                <?= session()->getFlashdata('error'); ?>
+                            </div>
+                        <?php endif; ?>
+                        <?php if (session()->getFlashdata('success')): ?>
+                            <div class="alert alert-success">
+                                <?= session()->getFlashdata('success'); ?>
+                            </div>
+                        <?php endif; ?>
                         <a href="<?= base_url('admin/user/tambah'); ?>" button type="button"
                             class="btn btn-primary rounded-pill" style="margin-bottom: 25px;">Tambah
                             Pengguna</a>
@@ -119,7 +134,7 @@
                             </div>
                             <form action="" id="form_verifikasi_user" method="post">
                                 <div class="modal-body">
-                                    <p>Username : <span id="nama_modal"></span> </p>
+                                    <p>Foto Ktp : <span id="nama_modal"></span> </p>
                                     <img src="" alt="Foto KTP" id="foto_ktp" width="400">
                                     <div class="form-check mt-2">
                                         <input class="form-check-input" type="radio" value="terima" name="status"

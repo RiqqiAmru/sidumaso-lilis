@@ -111,7 +111,7 @@ class Manageuser extends BaseController
             session()->setFlashdata('error', 'Gagal memperbarui data pengguna');
         }
 
-        return redirect()->to('admin/user/edit/' . $id);
+        return redirect()->to('admin/manageuser/edit/' . $id);
     }
 
     public function deleteUser($id)

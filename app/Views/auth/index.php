@@ -10,7 +10,7 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="<?php echo base_url('assets/img/favicon.png') ?>" rel="icon">
+    <link href="<?php echo base_url('assets/img/logo.png') ?>" rel="icon">
     <link href="<?php echo base_url('assets/img/apple-touch-icon.png') ?>" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
@@ -46,7 +46,7 @@
         <div class="container">
 
             <!-- alert -->
-            <?php if ((session('message'))) : ?>
+            <?php if ((session('message'))): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong><?= session('message') ?></strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -59,11 +59,21 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
                             <div class="d-flex justify-content-center py-4">
-                                <a href="index.html" class="logo d-flex align-items-center w-auto">
+                                <a href="/home" class="logo d-flex align-items-center w-auto">
                                     <img src="<?php echo base_url('assets/img/logo.png') ?>" alt="" width="20px">
                                     <span class="d-none d-lg-block">SIDUMASO</span>
                                 </a>
                             </div><!-- End Logo -->
+                            <?php if (session()->getFlashdata('error')): ?>
+                                <div class="alert alert-danger">
+                                    <?= session()->getFlashdata('error'); ?>
+                                </div>
+                            <?php endif; ?>
+                            <?php if (session()->getFlashdata('success')): ?>
+                                <div class="alert alert-success">
+                                    <?= session()->getFlashdata('success'); ?>
+                                </div>
+                            <?php endif; ?>
 
                             <div class="card mb-3">
                                 <div class="card-body">
@@ -73,11 +83,25 @@
                                         <p class="text-center small">Masukkan username dan password</p>
                                     </div>
 
-                                    <form method="POST" action="Auth/login" class="row g-3 needs-validation" novalidate>
+                                    <?php if (isset($_GET['refresh'])): ?>
+                                        <script>
+                                            if (!sessionStorage.getItem('refreshed')) {
+                                                sessionStorage.setItem('refreshed', 'true');
+                                                location.reload();
+                                            } else {
+                                                sessionStorage.removeItem('refreshed');
+                                            }
+                                        </script>
+                                    <?php endif; ?>
+
+                                    <form method="POST" action="<?= site_url('auth/login') ?>"
+                                        class="row g-3 needs-validation" novalidate>
+
                                         <div class="col-12">
                                             <label for="yourUsername" class="form-label">Username</label>
                                             <div class="input-group has-validation">
-                                                <input type="text" name="username" class="form-control <?= (isset(session()->getFlashdata('errors')['username'])) ? 'is-invalid' : '' ?>"
+                                                <input type="text" name="username"
+                                                    class="form-control <?= (isset(session()->getFlashdata('errors')['username'])) ? 'is-invalid' : '' ?>"
                                                     id="yourUsername" required>
                                                 <!-- Menampilkan pesan error untuk username -->
                                                 <?php if (isset(session()->getFlashdata('errors')['username'])): ?>
@@ -85,7 +109,7 @@
                                                     <div class="invalid-feedback">
                                                         <?= session()->getFlashdata('errors')['username']; ?>
                                                     </div>
-                                                <?php else :  ?>
+                                                <?php else: ?>
                                                     <div class="invalid-feedback">Username harus diisi</div>
                                                 <?php endif; ?>
                                             </div>
@@ -156,7 +180,7 @@
     <script src="<?php echo base_url('assets/js/main.js') ?>"></script>
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function() {
+        (function () {
             'use strict'
 
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -164,8 +188,8 @@
 
             // Loop over them and prevent submission
             Array.prototype.slice.call(forms)
-                .forEach(function(form) {
-                    form.addEventListener('submit', function(event) {
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
                         if (!form.checkValidity()) {
                             event.preventDefault()
                             event.stopPropagation()

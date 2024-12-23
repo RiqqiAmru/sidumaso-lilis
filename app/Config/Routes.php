@@ -23,6 +23,9 @@ $routes->setAutoRoute(true);
 $routes->get('/', 'Home::index');
 // $routes->get('/', 'Pengaduan::index');
 // $routes->get('/', 'Pengaduan::addUser');
+$routes->get('Dashboard', 'Dashboard::index');
+
+
 
 //saran
 
@@ -44,6 +47,10 @@ $routes->post('admin/manageuser/update/(:num)', 'Admin\Manageuser::update/$1');
 $routes->get('masyarakat/pengaduan', 'Admin\Manageuser::index');
 $routes->get('/tanggapan/(:num)', 'Pengaduan::getByPengaduanId/$1');
 $routes->get('pengaduan/proses/(:num)/(:alpha)?', 'Pengaduan::proses/$1/$2');
+$routes->get('/pengaduan/edit/(:num)', 'Pengaduan::edit/$1');
+$routes->post('/pengaduan/update/(:num)', 'Pengaduan::update/$1');
+$routes->get('/pengaduan/laporan', 'Pengaduan::laporan');
+
 
 $routes->get('/pengumuman', 'Pengumuman::index');
 $routes->get('/pengumuman/create', 'Pengumuman::create');

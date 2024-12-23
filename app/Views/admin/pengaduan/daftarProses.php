@@ -21,13 +21,47 @@
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Daftar Pengaduan di Proses</h5>
+            <!-- <div class="mb-3">
+              <select id="filterTanggapanJenis" class="form-select" aria-label="Filter Jenis Tanggapan">
+                <option value="">Filter Jenis Tanggapan</option>
+                <option value="Komentar">Komentar</option>
+                <option value="Proses">Proses</option>
+                <option value="Melengkapi Data">Melengkapi Data</option>
+                <option value="Menunggu Kelengkapan Data">Menunggu Kelengkapan Data</option>
+              </select>
+            </div> -->
+
 
             <?= $this->include('templates/tablePengaduan'); ?>
+            <!-- <script>document.addEventListener('DOMContentLoaded', function () {
+                const filterJenis = document.getElementById('filterTanggapanJenis');
 
+                filterJenis.addEventListener('change', function () {
+                  const jenisTanggapan = filterJenis.value;
+
+                  const rows = document.querySelectorAll('#pengaduanTable tbody tr');
+
+                  rows.forEach(row => {
+                    const tanggapanCell = row.querySelector('.tanggapan-cell');
+
+                    if (tanggapanCell) {
+                      const jenisTanggapanRow = tanggapanCell.textContent.trim();
+
+                      if (jenisTanggapan === '' || jenisTanggapanRow === jenisTanggapan) {
+                        row.style.display = '';  // Tampilkan baris
+                      } else {
+                        row.style.display = 'none';  // Sembunyikan baris yang tidak cocok
+                      }
+                    }
+                  });
+                });
+              });
+            </script> -->
           </div>
         </div>
 
-        <div class="modal fade" id="modalDeletePengaduan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modalDeletePengaduan" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -52,11 +86,11 @@
     </div>
   </section>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       // Mendapatkan elemen modal
       var modal = document.getElementById('modalDeletePengaduan');
       // Menangkap event show.bs.modal
-      modal.addEventListener('show.bs.modal', function(event) {
+      modal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget; // Tombol yang membuka modal
 
         // Mengambil data dari tombol (data-bs-name dan data-bs-email)

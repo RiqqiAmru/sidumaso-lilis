@@ -2,9 +2,14 @@
 <?= $this->section('content'); ?>
 
 <main id="main" class="main">
-
+  <?php if (session()->getFlashdata('message')): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <?= session()->getFlashdata('message'); ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <?php endif; ?>
   <div class="pagetitle">
-    <h1>Daftar Pengaduan</h1>
+    <h1>Daftar Pengaduan Saya</h1>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="<?= base_url('/pengaduan') ?>">Home</a></li>
@@ -20,9 +25,19 @@
 
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Daftar Pengaduan</h5>
-            <a href="<?= base_url('pengaduan/tambah'); ?>" button type="button"
-              class="btn btn-primary rounded-pill" style="margin-bottom: 25px;">Tambah
+            <h5 class="card-title">Daftar Pengaduan Saya</h5>
+            <?php if (session()->getFlashdata('error')): ?>
+              <div class="alert alert-danger">
+                <?= session()->getFlashdata('error'); ?>
+              </div>
+            <?php endif; ?>
+            <?php if (session()->getFlashdata('success')): ?>
+              <div class="alert alert-success">
+                <?= session()->getFlashdata('success'); ?>
+              </div>
+            <?php endif; ?>
+            <a href="<?= base_url('pengaduan/tambah'); ?>" button type="button" class="btn btn-primary rounded-pill"
+              style="margin-bottom: 25px;">Tambah
               Pengaduan</a>
 
             <?= $this->include('templates/tablePengaduan'); ?>
@@ -30,7 +45,8 @@
           </div>
         </div>
 
-        <div class="modal fade" id="modalDeletePengaduan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modalDeletePengaduan" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -55,11 +71,11 @@
     </div>
   </section>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       // Mendapatkan elemen modal
       var modal = document.getElementById('modalDeletePengaduan');
       // Menangkap event show.bs.modal
-      modal.addEventListener('show.bs.modal', function(event) {
+      modal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget; // Tombol yang membuka modal
 
         // Mengambil data dari tombol (data-bs-name dan data-bs-email)

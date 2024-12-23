@@ -10,7 +10,7 @@
     <meta name="keywords" content="">
 
     <!-- Favicons -->
-    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/logo.png" rel="icon">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Fonts -->
@@ -52,9 +52,9 @@
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a class="nav-link scrollto active" href="#hero" class="active">Beranda</a></li>
-                    <li><a class="nav-link scrollto" href="#features">Tentang</a></li>
+                    <li><a class="nav-link scrollto" href="#features-details">Tentang</a></li>
                     <li><a class="nav-link scrollto" href="#pengumuman">Pengumuman</a></li>
-                    <li><a href="index.html#services">Daftar Laporan</a></li>
+                    <li><a class="nav-link scrollto" href="#more-features">Alur Pengaduan</a></li>
                     <!-- <li><a href="index.html#pricing">Pricing</a></li>
                     <li class="dropdown"><a href="#"><span>Dropdown</span> <i
                                 class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -75,7 +75,7 @@
                             <li><a href="#">Dropdown 4</a></li>
                         </ul>
                     </li> -->
-                    <li><a class="nav-link scrollto" href="#contact">Saran</a></li>
+                    <li><a class="nav-link scrollto" href="#contact">Kontak</a></li>
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
@@ -214,24 +214,28 @@
                         <?php foreach ($pengumuman as $p): ?>
                             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
                                 <div class="service-item item-cyan position-relative" style="margin-bottom: 20px;">
-                                    <!-- Preview Dokumen -->
-                                    <div class="mb-3">
-                                        <?php if (in_array(pathinfo($p['dokumen'], PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                                            <img src="/uploads/pengumuman/<?= esc($p['dokumen']); ?>" alt="Preview Dokumen"
-                                                style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
-                                        <?php else: ?>
-                                            <p class="text-muted">Preview tidak tersedia untuk file non-gambar.</p>
-                                        <?php endif; ?>
-                                    </div>
-                                    <!-- Konten Pengumuman -->
-                                    <div>
-                                        <h3><?= esc($p['judul']); ?></h3>
-                                        <p><?= esc(substr($p['deskripsi'], 0, 100)) . '...'; ?></p>
-                                        <a href="/pengumuman/detail/<?= $p['id']; ?>" class="read-more stretched-link">
-                                            Learn More <i></i>
-                                        </a>
+                                    <div class="row align-items-start">
+                                        <!-- Kolom untuk Gambar -->
+                                        <div class="col-md-4 mb-3">
+                                            <?php if (in_array(pathinfo($p['dokumen'], PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                                                <img src="/uploads/pengumuman/<?= esc($p['dokumen']); ?>" alt="Preview Dokumen"
+                                                    style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+                                            <?php else: ?>
+                                                <p class="text-muted">Preview tidak tersedia untuk file non-gambar.</p>
+                                            <?php endif; ?>
+                                        </div>
+                                        <!-- Kolom untuk Konten Pengumuman -->
+                                        <div class="col-md-8">
+                                            <h3><?= esc($p['judul']); ?></h3>
+                                            <p><?= esc(substr($p['deskripsi'], 0, 100)) . '...'; ?></p>
+                                            <a href="/pengumuman/detail/<?= esc($p['id']); ?>" class="read-more stretched-link">
+                                                Baca Selengkapnya
+                                            </a>
+
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -249,6 +253,7 @@
                     }
 
                     .service-item img {
+                        margin-bottom: 20px;
                         height: 150px;
                         /* Fixed height for consistency */
                         object-fit: cover;
@@ -283,8 +288,7 @@
 
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
-                <h2>Kontak dan Saran</h2>
-                <p>Kritik dan Saran sangat membantu meningkatkan kualitas pengaduan kami</p>
+                <h2>Kontak</h2>
             </div><!-- End Section Title -->
 
             <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -321,42 +325,14 @@
                 </div>
 
                 <div class="row gy-4 mt-1">
-                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="col-lg-12" data-aos="fade-up" data-aos-delay="300">
                         <iframe
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1873.5496097811981!2d109.65529160764731!3d-6.935438399875723!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e702151013a2d55%3A0xb8bfa42e00584a78!2sKantor%20Kepala%20Desa%20Wonoyoso!5e0!3m2!1sid!2sid!4v1699601526562!5m2!1sid!2sid"
                             frameborder="0" style="border:0; width: 100%; height: 400px;" allowfullscreen=""
                             loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div><!-- End Google Maps -->
 
-                    <div class="col-lg-6">
-                        <form action="/saran/store" method="post" class="php-email-form" data-aos="fade-up"
-                            data-aos-delay="400">
-                            <div class="row gy-4">
-                                <div class="col-md-6">
-                                    <input type="text" name="nama" class="form-control" placeholder="Nama Anda"
-                                        required="">
-                                </div>
 
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="no_hp" placeholder="Nomor HP"
-                                        required="">
-                                </div>
-
-                                <div class="col-md-12">
-                                    <textarea class="form-control" name="saran" rows="6" placeholder="Isi Saran"
-                                        required=""></textarea>
-                                </div>
-
-                                <div class="col-md-12 text-center">
-                                    <div class="loading">Loading</div>
-                                    <div class="error-message"></div>
-                                    <div class="sent-message">Saran Anda telah terkirim. Terima kasih!</div>
-
-                                    <button type="submit">Kirim Saran</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
 
                     <!-- End Contact Form -->
 

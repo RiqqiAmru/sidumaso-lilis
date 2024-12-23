@@ -21,35 +21,75 @@ class Auth extends BaseController
         return view('auth/register');
     }
 
+    // public function login()
+    // {
+    //     // Mengambil data dari form login
+    //     $username = $this->request->getPost('username');
+    //     $password = $this->request->getPost('password');
+
+    //     // Validasi form login
+    //     if (
+    //         !$this->validate([
+    //             'username' => 'required|min_length[3]|max_length[20]',
+    //             'password' => 'required|max_length[255]'
+    //         ])
+    //     ) {
+    //         // Jika validasi gagal, kembali ke form login dengan pesan error
+    //         return redirect()->to('/auth')->withInput()->with('errors', $this->validator->getErrors());
+    //     }
+
+    //     // Proses validasi login (misalnya, memeriksa username dan password)
+    //     $user = $this->userModel->verifyUser($username, $password);
+    //     if ($user) {
+    //         // Redirect ke halaman dashboard atau halaman utama jika login sukses
+    //         // dd($user);
+    //         if ($user['row_status'] == 'Non-aktif') {
+    //             return redirect()->back()->with('errors', ['username' => 'Mohon maaf ktp anda invalid, silahkan menghubungi admin untuk informasi lebih lanjut']);
+    //         }
+    //         return redirect()->to('/pengaduan');
+    //     } else {
+    //         // Jika login gagal, tampilkan pesan error
+    //         return redirect()->back()->with('errors', ['username' => 'Username atau Password salah']);
+    //     }
+    // }
     public function login()
     {
-        // Mengambil data dari form login
-        $username = $this->request->getPost('username');
-        $password = $this->request->getPost('password');
+        // Periksa apakah form login telah dikirim
+        if ($this->request->getMethod() === 'post') {
+            // Mengambil data dari form login
+            $username = $this->request->getPost('username');
+            $password = $this->request->getPost('password');
 
-        // Validasi form login
-        if (!$this->validate([
-            'username' => 'required|min_length[3]|max_length[20]',
-            'password' => 'required|max_length[255]'
-        ])) {
-            // Jika validasi gagal, kembali ke form login dengan pesan error
-            return redirect()->to('/auth')->withInput()->with('errors', $this->validator->getErrors());
-        }
-
-        // Proses validasi login (misalnya, memeriksa username dan password)
-        $user = $this->userModel->verifyUser($username, $password);
-        if ($user) {
-            // Redirect ke halaman dashboard atau halaman utama jika login sukses
-            // dd($user);
-            if ($user['row_status'] == 'Non-aktif') {
-                return redirect()->back()->with('errors',  ['username' => 'Mohon maaf ktp anda invalid, silahkan menghubungi admin untuk informasi lebih lanjut']);
+            // Validasi form login
+            if (
+                !$this->validate([
+                    'username' => 'required|min_length[3]|max_length[20]',
+                    'password' => 'required|max_length[255]'
+                ])
+            ) {
+                // Jika validasi gagal, kembali ke form login dengan pesan error
+                return redirect()->to('/auth')->withInput()->with('errors', $this->validator->getErrors());
             }
-            return redirect()->to('/pengaduan');
-        } else {
-            // Jika login gagal, tampilkan pesan error
-            return redirect()->back()->with('errors',  ['username' => 'Username atau Password salah']);
+
+            // Proses validasi login (misalnya, memeriksa username dan password)
+            $user = $this->userModel->verifyUser($username, $password);
+            if ($user) {
+                session()->set('role', $user['role']);
+                // Redirect ke halaman dashboard atau halaman utama jika login sukses
+                if ($user['row_status'] == 'Non-aktif') {
+                    return redirect()->back()->with('errors', ['username' => 'Mohon maaf KTP Anda invalid, silakan menghubungi admin untuk informasi lebih lanjut']);
+                }
+                return redirect()->to('/dashboard');
+            } else {
+                // Jika login gagal, tampilkan pesan error
+                return redirect()->back()->with('errors', ['username' => 'Username atau Password salah']);
+            }
         }
+
+        // Tampilkan halaman login (GET request)
+        return view('auth/index');
     }
+
 
     // Fungsi untuk mengecek username dan password
 
@@ -65,15 +105,17 @@ class Auth extends BaseController
     public function create()
     {
         // Form validation
-        if (!$this->validate([
-            'nama' => 'required|min_length[3]|max_length[20]|is_unique[tbl_user.nama]',
-            'username' => 'required|min_length[3]|max_length[20]|is_unique[tbl_user.username]',
-            'password' => 'required|min_length[8]',
-            'password_confirm' => 'matches[password]',
-            'user_ktp' => 'uploaded[user_ktp]|max_size[user_ktp,512]|ext_in[user_ktp,jpg,jpeg,png]',
-            'no_hp' => 'required|numeric|min_length[10]',
+        if (
+            !$this->validate([
+                'nama' => 'required|min_length[3]|max_length[20]|is_unique[tbl_user.nama]',
+                'username' => 'required|min_length[3]|max_length[20]|is_unique[tbl_user.username]',
+                'password' => 'required|min_length[8]',
+                'password_confirm' => 'matches[password]',
+                'user_ktp' => 'uploaded[user_ktp]|max_size[user_ktp,512]|ext_in[user_ktp,jpg,jpeg,png]',
+                'no_hp' => 'required|numeric|min_length[10]',
 
-        ])) {
+            ])
+        ) {
             // If validation fails, return to the form with the errors
             // dd($this->validator->getErrors());
             return redirect()->to('/auth/register')->withInput()->with('errors', $this->validator->getErrors());
@@ -96,10 +138,11 @@ class Auth extends BaseController
         // Insert the user data into the database
         if ($this->userModel->insert($userData)) {
             // Redirect to login page or show success message
-            return redirect()->to('/auth/login')->with('message', 'Registration successful. Please login.');
+            return redirect()->to('/auth/login')->with('message', 'Daftar Akun Berhasil. Silahkan login.');
         } else {
             // If insertion failed, show an error message
             return redirect()->to('/auth/register')->with('errors', ['nama' => 'There was an issue with registration.'])->withInput();
         }
     }
+
 }

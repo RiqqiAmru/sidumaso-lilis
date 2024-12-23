@@ -6,45 +6,45 @@ use CodeIgniter\Model;
 
 class TanggapanModel extends Model
 {
-    protected $table            = 'tanggapan';
-    protected $primaryKey       = 'id';
+    protected $table = 'tanggapan';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = ['id_aduan', 'jenis_tanggapan', 'rincian', 'id_user', 'ket'];
+    protected $returnType = 'array';
+    protected $useSoftDeletes = false;
+    protected $protectFields = true;
+    protected $allowedFields = ['id_aduan', 'jenis_tanggapan', 'rincian', 'id_user', 'ket'];
 
     protected bool $allowEmptyInserts = false;
 
     // Dates
     protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
+    protected $deletedField = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
-    protected $skipValidation       = false;
+    protected $validationRules = [];
+    protected $validationMessages = [];
+    protected $skipValidation = false;
     protected $cleanValidationRules = true;
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    protected $beforeInsert = [];
+    protected $afterInsert = [];
+    protected $beforeUpdate = [];
+    protected $afterUpdate = [];
+    protected $beforeFind = [];
+    protected $afterFind = [];
+    protected $beforeDelete = [];
+    protected $afterDelete = [];
 
     public function getTanggapanByPengaduanid($idAduan)
     {
 
         $result = $this->db->table('tanggapan')
-            ->select('tanggapan.*, foto_tanggapan.foto, tbl_user.nama')
+            ->select('tanggapan.*,DATE_FORMAT(tanggapan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_tanggapan.foto, tbl_user.nama')
             ->join('foto_tanggapan', 'foto_tanggapan.tanggapan_id = tanggapan.id', 'left')
             ->join('tbl_user', 'tbl_user.id = tanggapan.id_user', 'left')
             ->where('tanggapan.id_aduan', $idAduan)
@@ -72,15 +72,15 @@ class TanggapanModel extends Model
                         break;
                 }
                 $tanggapanData[$id] = [
-                    'id'           => $row['id'],
-                    'id_aduan'     => $row['id_aduan'],
-                    'nama'     => $row['nama'],
-                    'jenis_tanggapan'     => $row['jenis_tanggapan'],
-                    'rincian'    => $row['rincian'],
-                    'ket'    => $row['ket'],
-                    'created_at'    => $row['created_at'],
-                    'warna'    => $warna,
-                    'foto'         => [] // Siapkan array untuk foto
+                    'id' => $row['id'],
+                    'id_aduan' => $row['id_aduan'],
+                    'nama' => $row['nama'],
+                    'jenis_tanggapan' => $row['jenis_tanggapan'],
+                    'rincian' => $row['rincian'],
+                    'ket' => $row['ket'],
+                    'created_at' => $row['created_at'],
+                    'warna' => $warna,
+                    'foto' => [] // Siapkan array untuk foto
                 ];
             }
 
@@ -93,5 +93,15 @@ class TanggapanModel extends Model
         // Return data sebagai indexed array
         return array_values($tanggapanData);
         return $data;
+    }
+    public function countByStatus($status)
+    {
+        return $this->where('jenis_tanggapan', $status)->countAllResults();
+    }
+    public function getTanggapanPengaduanId($pengaduan_id)
+    {
+        // Ambil data tanggapan berdasarkan pengaduan_id
+        return $this->where('pengaduan_id', $pengaduan_id)
+                    ->first(); // Ambil tanggapan pertama yang cocok
     }
 }

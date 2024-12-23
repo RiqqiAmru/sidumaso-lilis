@@ -10,7 +10,7 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="/assets/img/favicon.png" rel="icon">
+    <link href="/assets/img/logo.png" rel="icon">
     <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
@@ -52,7 +52,7 @@
                         <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
                             <div class="d-flex justify-content-center py-4">
-                                <a href="index.html" class="logo d-flex align-items-center w-auto">
+                                <a href="/home" class="logo d-flex align-items-center w-auto">
                                     <img src="assets/img/logo.png" alt="">
                                     <span class="d-none d-lg-block">SIDUMASO</span>
                                 </a>
@@ -66,11 +66,16 @@
                                         <h5 class="card-title text-center pb-0 fs-4">Pendaftaran Akun</h5>
                                     </div>
 
-                                    <form action="<?= base_url('/auth/create') ?>" method="post" class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
+                                    <form action="<?= base_url('/auth/create') ?>" method="post"
+                                        class="row g-3 needs-validation" novalidate enctype="multipart/form-data">
                                         <div class=" col-12">
                                             <label for="nama" class="form-label">Nama Lengkap</label>
-                                            <input type="text" name="nama" class="form-control <?= (isset(session()->getFlashdata('errors')['nama'])) ? 'is-invalid' : '' ?>" id="Nama" value="<?= old('nama') ?>" required>
-                                            <div class="invalid-feedback"><?= (isset(session()->getFlashdata('errors')['nama'])) ? session()->getFlashdata('errors')['nama'] : 'Mohon masukkan nama lengkap anda!' ?></div>
+                                            <input type="text" name="nama"
+                                                class="form-control <?= (isset(session()->getFlashdata('errors')['nama'])) ? 'is-invalid' : '' ?>"
+                                                id="Nama" value="<?= old('nama') ?>" required>
+                                            <div class="invalid-feedback">
+                                                <?= (isset(session()->getFlashdata('errors')['nama'])) ? session()->getFlashdata('errors')['nama'] : 'Mohon masukkan nama lengkap anda!' ?>
+                                            </div>
                                         </div>
 
                                         <!-- <div class="col-12">
@@ -85,36 +90,53 @@
 
                                         <div class="col-12">
                                             <label for="username" class="form-label">Username</label>
-                                            <input type="username" name="username" class="form-control <?= (isset(session()->getFlashdata('errors')['username'])) ? 'is-invalid' : '' ?>" id="username" value="<?= old('username') ?>"
-                                                required>
-                                            <div class="invalid-feedback"><?= (isset(session()->getFlashdata('errors')['username'])) ? session()->getFlashdata('errors')['username'] : 'Mohon masukkan username anda!' ?></div>
+                                            <input type="username" name="username"
+                                                class="form-control <?= (isset(session()->getFlashdata('errors')['username'])) ? 'is-invalid' : '' ?>"
+                                                id="username" value="<?= old('username') ?>" required>
+                                            <div class="invalid-feedback">
+                                                <?= (isset(session()->getFlashdata('errors')['username'])) ? session()->getFlashdata('errors')['username'] : 'Mohon masukkan username anda!' ?>
+                                            </div>
                                         </div>
 
                                         <div class="col-12">
                                             <label for="no-hp" class=" col-form-label">No Handphone</label>
-                                            <input type="text" class="form-control <?= (isset(session()->getFlashdata('errors')['no_hp'])) ? 'is-invalid' : '' ?>" name="no_hp" id="no-hp" value="<?= old('no_hp') ?>" required>
-                                            <div class="invalid-feedback"><?= (isset(session()->getFlashdata('errors')['no_hp'])) ? session()->getFlashdata('errors')['no_hp'] : 'Mohon masukkan no_hp anda!' ?></div>
+                                            <input type="text"
+                                                class="form-control <?= (isset(session()->getFlashdata('errors')['no_hp'])) ? 'is-invalid' : '' ?>"
+                                                name="no_hp" id="no-hp" value="<?= old('no_hp') ?>" required>
+                                            <div class="invalid-feedback">
+                                                <?= (isset(session()->getFlashdata('errors')['no_hp'])) ? session()->getFlashdata('errors')['no_hp'] : 'Mohon masukkan no_hp anda!' ?>
+                                            </div>
                                         </div>
 
                                         <div class="col-12">
                                             <label for="Password" class="form-label">Password</label>
-                                            <input type="password" name="password" class="form-control <?= (isset(session()->getFlashdata('errors')['password'])) ? 'is-invalid' : '' ?>" id="Password"
-                                                required>
-                                            <div class="invalid-feedback"><?= (isset(session()->getFlashdata('errors')['password'])) ? session()->getFlashdata('errors')['password'] : 'Mohon masukkan password anda!' ?></div>
+                                            <input type="password" name="password"
+                                                class="form-control <?= (isset(session()->getFlashdata('errors')['password'])) ? 'is-invalid' : '' ?>"
+                                                id="Password" required>
+                                            <div class="invalid-feedback">
+                                                <?= (isset(session()->getFlashdata('errors')['password'])) ? session()->getFlashdata('errors')['password'] : 'Mohon masukkan password anda!' ?>
+                                            </div>
                                         </div>
 
                                         <div class="col-12">
                                             <label for="password_confirm" class="form-label">Konfirmasi Password</label>
-                                            <input type="password" name="password_confirm" class="form-control <?= (isset(session()->getFlashdata('errors')['password_confirm'])) ? 'is-invalid' : '' ?>"
+                                            <input type="password" name="password_confirm"
+                                                class="form-control <?= (isset(session()->getFlashdata('errors')['password_confirm'])) ? 'is-invalid' : '' ?>"
                                                 id="Password" required>
-                                            <div class="invalid-feedback"><?= (isset(session()->getFlashdata('errors')['password_confirm'])) ? session()->getFlashdata('errors')['password_confirm'] : 'Mohon masukkan konfirmasi password' ?></div>
+                                            <div class="invalid-feedback">
+                                                <?= (isset(session()->getFlashdata('errors')['password_confirm'])) ? session()->getFlashdata('errors')['password_confirm'] : 'Mohon masukkan konfirmasi password' ?>
+                                            </div>
                                         </div>
 
                                         <div class="col-12">
                                             <label for="user_ktp" class="form-label">Upload Ktp</label>
-                                            <input type="file" class="form-control p-1 <?= (isset(session()->getFlashdata('errors')['user_ktp'])) ? 'is-invalid' : '' ?>" name="user_ktp" id="file_ktp" required value="<?= old('user_ktp') ?>">
+                                            <input type="file"
+                                                class="form-control p-1 <?= (isset(session()->getFlashdata('errors')['user_ktp'])) ? 'is-invalid' : '' ?>"
+                                                name="user_ktp" id="file_ktp" required value="<?= old('user_ktp') ?>">
                                             <small class="text-muted">Maksimal 512 KB.</small>
-                                            <div class="invalid-feedback "><?= (isset(session()->getFlashdata('errors')['user_ktp'])) ? session()->getFlashdata('errors')['user_ktp'] : 'file invalid' ?></div>
+                                            <div class="invalid-feedback ">
+                                                <?= (isset(session()->getFlashdata('errors')['user_ktp'])) ? session()->getFlashdata('errors')['user_ktp'] : 'file invalid' ?>
+                                            </div>
                                         </div>
 
 
@@ -165,7 +187,7 @@
     <script src="/assets/js/main.js"></script>
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields
-        (function() {
+        (function () {
             'use strict'
 
             // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -173,8 +195,8 @@
 
             // Loop over them and prevent submission
             Array.prototype.slice.call(forms)
-                .forEach(function(form) {
-                    form.addEventListener('submit', function(event) {
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
                         if (!form.checkValidity()) {
                             event.preventDefault()
                             event.stopPropagation()

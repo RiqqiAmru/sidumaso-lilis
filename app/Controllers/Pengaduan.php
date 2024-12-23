@@ -6,6 +6,8 @@ use App\Models\FotoPengaduanModel;
 use App\Models\FotoTanggapanModel;
 use App\Models\PengaduanModel;
 use App\Models\TanggapanModel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class Pengaduan extends BaseController
 {
@@ -40,7 +42,7 @@ class Pengaduan extends BaseController
     public function daftarPengaduan()
     {
         $data = [
-            'pengaduan' =>  $this->pengaduanModel->getPengaduanByOneUser(session('user_id')['id'])
+            'pengaduan' => $this->pengaduanModel->getPengaduanByOneUser(session('user_id')['id'])
         ];
         return view('masyarakat/pengaduan/index', $data);
     }
@@ -51,14 +53,16 @@ class Pengaduan extends BaseController
     public function store()
     {
         // Mengambil semua file yang di-upload
-        $validation =  \Config\Services::validation();
+        $validation = \Config\Services::validation();
 
         // Validasi file gambar
         $rules = [
             'jenis_pengaduan' => 'required',
             'rincian' => 'required',
             'status_pengaduan' => 'required',
-            'bukti' => 'uploaded[bukti]|max_size[bukti,2048]|is_image[bukti]|mime_in[bukti,image/jpg,image/jpeg,image/png,image/gif]',
+            'gang' => 'required',
+            'detail_lokasi' => 'required',
+            'bukti' => 'permit_empty|max_size[bukti,2048]|is_image[bukti]|mime_in[bukti,image/jpg,image/jpeg,image/png,image/gif]',
         ];
 
         // Memvalidasi file gambar
@@ -67,9 +71,6 @@ class Pengaduan extends BaseController
             return redirect()->to('/pengaduan/tambah')->withInput()->with('errors', $validation->getErrors());
         }
 
-
-
-
         $db = \Config\Database::connect();
         $db->transBegin();
         try {
@@ -77,6 +78,8 @@ class Pengaduan extends BaseController
                 'jenis_pengaduan' => $this->request->getPost('jenis_pengaduan'),
                 'rincian' => $this->request->getPost('rincian'),
                 'status_aduan' => $this->request->getPost('status_pengaduan'),
+                'gang' => $this->request->getPost('gang'),
+                'detail_lokasi' => $this->request->getPost('detail_lokasi'),
                 'ket' => 0,
                 'id_pengirim' => session('user_id')['id']
             ];
@@ -98,7 +101,7 @@ class Pengaduan extends BaseController
                         $file->move('uploads/bukti', $newName);
 
                         // Menyimpan path file yang telah di-upload
-                        $imagePaths[] =  $newName;
+                        $imagePaths[] = $newName;
                     }
                 }
                 foreach ($imagePaths as $img) {
@@ -107,7 +110,8 @@ class Pengaduan extends BaseController
                 $db->transCommit();
 
                 return redirect()->to('/pengaduan/daftarPengaduan')->with('success', 'berhasil menambah aduan');
-            };
+            }
+            ;
             dd($this->pengaduanModel->errors());
             return 'eror ketika input pengaduan';
         } catch (\Throwable $th) {
@@ -115,7 +119,6 @@ class Pengaduan extends BaseController
             // Tampilkan pesan error atau kembalikan form dengan error
             return redirect()->to('/pengaduan/tambah')->with('error', 'Terjadi kesalahan, silakan coba lagi');
         }
-
 
         // Menampilkan halaman sukses upload dan menampilkan gambar yang telah di-upload
     }
@@ -126,7 +129,76 @@ class Pengaduan extends BaseController
         return redirect()->to('pengaduan/daftarPengaduan')->with('success', 'pengaduan berhasil dihapus');
     }
 
-    public function edit($id) {}
+    public function edit($id)
+    {
+        // Ambil data pengaduan berdasarkan ID
+        $pengaduan = $this->pengaduanModel->find($id);
+
+        if (!$pengaduan) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Pengaduan tidak ditemukan');
+        }
+
+        // Kirim data pengaduan ke view
+        return view('masyarakat/pengaduan/edit', [
+            'pengaduan' => $pengaduan
+        ]);
+    }
+    public function update($id)
+    {
+        // Validasi input
+        if (
+            !$this->validate([
+                'jenis_pengaduan' => 'required',
+                'rincian' => 'required',
+                'status_aduan' => 'required',
+                'detail_lokasi' => 'required',
+                'gang' => 'required',
+                'bukti' => 'uploaded[bukti]|max_size[bukti,10240]|is_image[bukti]', // Validasi file bukti
+            ])
+        ) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Ambil data input
+        $data = [
+            'jenis_pengaduan' => $this->request->getVar('jenis_pengaduan'),
+            'rincian' => $this->request->getVar('rincian'),
+            'status_aduan' => $this->request->getVar('status_aduan'),
+            'detail_lokasi' => $this->request->getVar('detail_lokasi'),
+            'gang' => $this->request->getVar('gang'),
+            'bukti' => $this->request->getFileMultiple('bukti'), // Ambil banyak file jika ada
+        ];
+
+        // Jika ada file bukti, simpan file-file tersebut
+        if (!empty($data['bukti'])) {
+            $fileNames = [];
+            foreach ($data['bukti'] as $file) {
+                if ($file->isValid() && !$file->hasMoved()) {
+                    $fileName = $file->getRandomName();
+                    if ($file->move('uploads/bukti', $fileName)) {
+                        $fileNames[] = $fileName;
+                    } else {
+                        return redirect()->back()->with('error', 'Gagal memindahkan file bukti.');
+                    }
+                } else {
+                    return redirect()->back()->with('error', 'File bukti tidak valid: ' . $file->getErrorString());
+                }
+            }
+            $data['bukti'] = implode(',', $fileNames); // Simpan nama file yang diupload
+        } else {
+            $data['bukti'] = null; // Jika tidak ada file, simpan null
+        }
+
+        // Update data pengaduan di database
+        if ($this->pengaduanModel->update($id, $data)) {
+            return redirect()->to('/pengaduan/daftarPengaduan')->with('success', 'Pengaduan berhasil diperbarui');
+        } else {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui pengaduan');
+        }
+
+
+    }
+
 
     public function masuk()
     {
@@ -136,7 +208,7 @@ class Pengaduan extends BaseController
         }
 
         $data = [
-            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([0])
+            'pengaduan' => $this->pengaduanModel->getPengaduanWithUserWhereKetIs([0])
         ];
 
         return view('admin/pengaduan/masuk', $data);
@@ -145,7 +217,7 @@ class Pengaduan extends BaseController
     public function invalid()
     {
         $data = [
-            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([4])
+            'pengaduan' => $this->pengaduanModel->getPengaduanWithUserWhereKetIs([4])
         ];
 
         return view('admin/pengaduan/invalid', $data);
@@ -153,7 +225,7 @@ class Pengaduan extends BaseController
     public function selesai()
     {
         $data = [
-            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([3])
+            'pengaduan' => $this->pengaduanModel->getPengaduanWithUserWhereKetIs([3])
         ];
 
         return view('admin/pengaduan/selesai', $data);
@@ -161,7 +233,7 @@ class Pengaduan extends BaseController
     public function daftarProses()
     {
         $data = [
-            'pengaduan' =>  $this->pengaduanModel->getPengaduanWithUserWhereKetIs([1, 2, 5, 6])
+            'pengaduan' => $this->pengaduanModel->getPengaduanWithUserWhereKetIs([1, 2, 5, 6])
         ];
         return view('admin/pengaduan/daftarProses', $data);
     }
@@ -185,7 +257,7 @@ class Pengaduan extends BaseController
     {
         $idAduan = $this->request->getPost('id_aduan');
         $idAdmin = session('user_id')['id'];
-        $validation =  \Config\Services::validation();
+        $validation = \Config\Services::validation();
 
         $rules = [
             'jenis_tanggapan' => 'required',
@@ -261,7 +333,7 @@ class Pengaduan extends BaseController
                         $file->move('uploads/bukti', $newName);
 
                         // Menyimpan path file yang telah di-upload
-                        $imagePaths[] =  $newName;
+                        $imagePaths[] = $newName;
                     }
                 }
                 foreach ($imagePaths as $img) {
@@ -270,7 +342,8 @@ class Pengaduan extends BaseController
                 $db->transCommit();
 
                 return redirect()->to('/pengaduan/masuk')->with('success', 'berhasil menanggapi aduan');
-            };
+            }
+            ;
 
             return redirect()->to('/pengaduan/proses/' . $idAduan)->with('error', 'Terjadi kesalahan input, silakan coba lagi');
         } catch (\Throwable $th) {
@@ -285,5 +358,276 @@ class Pengaduan extends BaseController
     {
         $tanggapan = $this->tanggapanModel->getTanggapanByPengaduanid($id);
         return $this->response->setJSON($tanggapan);
+    }
+    public function laporan()
+    {
+
+        $pengaduanModel = new PengaduanModel();
+        $tanggapanModel = new TanggapanModel();
+
+        // Ambil semua pengaduan dengan status tertentu
+        $pengaduans = $pengaduanModel->getPengaduanWithTanggapan([1, 2, 3, 4, 5, 6]);
+
+        // Kirim data ke view
+        $data = [
+            'pengaduan' => $pengaduans
+        ];
+
+        return view('laporan', $data);
+    }
+    // public function filterLaporan()
+    // {
+    //     // Mengambil parameter tanggal dari URL
+    //     $start_date = $this->request->getGet('start_date');
+    //     $end_date = $this->request->getGet('end_date');
+
+    //     // Mengecek apakah parameter tanggal ada
+    //     if ($start_date && $end_date) {
+    //         // Ubah format tanggal ke format MySQL
+    //         $start_date = date('Y-m-d', strtotime($start_date));
+    //         $end_date = date('Y-m-d', strtotime($end_date));
+
+    //         // Memanggil model dengan filter berdasarkan tanggal
+    //         $pengaduan = $this->pengaduanModel->getPengaduanByDateRange($start_date, $end_date);
+    //         // var_dump($pengaduan);
+    //         // exit;
+    //     } else {
+    //         // Jika tidak ada filter, ambil semua data
+    //         $pengaduan = $this->pengaduanModel->getAllPengaduan();
+    //     }
+
+    //     // Kirim data ke view
+    //     return view('laporan', ['pengaduan' => $pengaduan]);
+    // }
+    public function filterLaporan()
+    {
+        // Mengambil parameter tanggal dan status dari URL
+        $start_date = $this->request->getGet('start_date');
+        $end_date = $this->request->getGet('end_date');
+        $status = $this->request->getGet('status'); // Menangkap parameter status
+
+
+        // Mapping status teks ke nilai numerik yang ada di field 'ket'
+        $status_map = [
+            'Menunggu' => 0,
+            'Proses' => 1,
+            'Menunggu kelengkapan data' => 2,
+            'Selesai' => 3,
+            'Invalid' => 4,
+            'Menunggu admin' => 5
+        ];
+
+        // Mengecek apakah parameter tanggal ada
+        if ($start_date && $end_date) {
+            // Ubah format tanggal ke format MySQL
+            $start_date = date('Y-m-d 00:00:00', strtotime($start_date));
+            $end_date = date('Y-m-d 23:59:59', strtotime($end_date));
+
+            // Memanggil model dengan filter berdasarkan tanggal dan status
+            if ($status && isset($status_map[$status])) {
+                $status_numerik = $status_map[$status];
+                $pengaduan = $this->pengaduanModel->getPengaduanByDateRangeAndStatus($start_date, $end_date, $status_numerik);
+            } else {
+                $pengaduan = $this->pengaduanModel->getPengaduanByDateRange($start_date, $end_date);
+            }
+        } else {
+            // Jika tidak ada filter tanggal, ambil data berdasarkan status
+            if ($status && isset($status_map[$status])) {
+                $status_numerik = $status_map[$status];
+                $pengaduan = $this->pengaduanModel->getPengaduanByStatus($status_numerik);
+            } else {
+                $pengaduan = $this->pengaduanModel->getAllPengaduan();
+            }
+        }
+
+        // Kirim data ke view
+        return view('laporan', ['pengaduan' => $pengaduan]);
+    }
+
+
+    public function printLaporan()
+    {
+        // Mengambil parameter dari URL
+        $start_date = $this->request->getGet('start_date');
+        $end_date = $this->request->getGet('end_date');
+        $status = $this->request->getGet('status');
+
+
+
+        // Mapping status ke nilai numerik
+        $status_map = [
+            'Menunggu' => 0,
+            'Proses' => 1,
+            'Menunggu kelengkapan data' => 2,
+            'Selesai' => 3,
+            'Invalid' => 4,
+            'Menunggu admin' => 5
+        ];
+
+        // Query berdasarkan filter
+        if ($start_date && $end_date) {
+            $start_date = date('Y-m-d 00:00:00', strtotime($start_date));
+            $end_date = date('Y-m-d 23:59:59', strtotime($end_date));
+            if ($status && isset($status_map[$status])) {
+                $status_numerik = $status_map[$status];
+                $pengaduan = $this->pengaduanModel->getPengaduanByDateRangeAndStatus($start_date, $end_date, $status_numerik);
+            } else {
+                $pengaduan = $this->pengaduanModel->getPengaduanByDateRange($start_date, $end_date);
+            }
+        } else {
+            if ($status && isset($status_map[$status])) {
+                $status_numerik = $status_map[$status];
+                $pengaduan = $this->pengaduanModel->getPengaduanByStatus($status_numerik);
+            } else {
+                $pengaduan = $this->pengaduanModel->getAllPengaduan();
+            }
+        }
+
+        // Mempersiapkan data untuk PDF
+        $filter_keterangan = "Laporan berdasarkan filter: ";
+        if ($start_date && $end_date) {
+            $filter_keterangan .= "Tanggal: $start_date sampai $end_date; ";
+        }
+        if ($status && isset($status_map[$status])) {
+            $filter_keterangan .= "Status: $status";
+        }
+
+        // Menyusun HTML untuk laporan
+        $html = "
+<html>
+    <head>
+        <style>
+            @page {
+                margin: 12mm; /* Margin A4 default */
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+            }
+            .kop-surat { 
+                text-align: center; 
+                font-size: 16px; 
+                margin-bottom: 20px; 
+            }
+            .laporan-title { 
+                text-align: center; 
+                font-size: 18px; 
+                font-weight: bold; 
+                margin-bottom: 20px; 
+            }
+            .filter-info { 
+                margin-bottom: 20px; 
+                font-size: 14px; 
+            }
+            table {
+                width: 100%; /* Lebar tabel 100% dari lebar halaman */
+                border-collapse: collapse; /* Hilangkan spasi antar border */
+                table-layout: fixed; /* Menggunakan table-layout fixed untuk kontrol lebar kolom */
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: left;
+                word-wrap: break-word; /* Memastikan teks dalam kolom dibungkus */
+            }
+            th {
+                font-weight: bold;
+            }
+            /* Kolom dengan lebar yang lebih disesuaikan */
+            td:nth-child(1), th:nth-child(1) {
+                width: 8%; /* Kolom nomor */
+            }
+            td:nth-child(2), th:nth-child(2) {
+                width: 23%; /* Kolom jenis pengaduan */
+            }
+            td:nth-child(3), th:nth-child(3) {
+                width: 24%; /* Kolom rincian */
+            }
+            td:nth-child(4), th:nth-child(4) {
+                width: 15%; /* Kolom status */
+            }
+            td:nth-child(5), th:nth-child(5) {
+                width: 22%; /* Kolom tanggal pengaduan */
+            }
+            td:nth-child(6), th:nth-child(6) {
+                width: 18%; /* Kolom nama pengirim */
+            }
+            td:nth-child(7), th:nth-child(7) {
+                width: 12%; /* Kolom foto */
+            }
+            td:nth-child(8), th:nth-child(8) {
+                width: 23%; /* Kolom tanggapan */
+            }
+            td img {
+                max-width: 100%; /* Mengatur gambar agar tidak meluap */
+                height: auto;
+            }
+        </style>
+    </head>
+    <body>
+         <div class='kop-surat'>
+            <img src='logo.png' alt='Logo Kabupaten'>
+            <h3>PEMERINTAH KABUPATEN PEKALONGAN</h3>
+            <h3>KECAMATAN BUARAN</h3>
+            <h3>KEPALA DESA WONOYOSO</h3>
+            <p>Sekretariat Jalan Desa Wonoyoso Kecamatan Buaran Kabupaten Pekalongan 51171</p>
+        </div>
+        <hr class='garis-pemisah'>
+        
+        <!-- Judul Laporan -->
+        <div class='laporan-title'>
+            <h4>Data Laporan Pengaduan Masyarakat</h4>
+        </div>
+        <div class='filter-info'>
+            <p><strong>Filter:</strong> $filter_keterangan</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Jenis Pengaduan</th>
+                    <th>Rincian</th>
+                    <th>Status</th>
+                    <th>Tanggal Pengaduan</th>
+                    <th>Nama Pengirim</th>
+                    <th>Foto</th>
+                    <th>Tanggapan</th>
+                </tr>
+            </thead>
+            <tbody>";
+
+        $no = 1;
+        foreach ($pengaduan as $laporan) {
+            $html .= "
+    <tr>
+        <td>{$no}</td>
+        <td>{$laporan['jenis_pengaduan']}</td>
+        <td>{$laporan['rincian']}</td>
+        <td>" . ($laporan['ket'] == 0 ? 'Menunggu' : ($laporan['ket'] == 1 ? 'Proses' : ($laporan['ket'] == 3 ? 'Selesai' : 'Invalid'))) . "</td>
+        <td>{$laporan['created_at']}</td>
+        <td>{$laporan['nama']}</td>
+        <td><img src='" . base_url('uploads/bukti/' . $laporan['foto']) . "' width='100' /></td>
+        <td>{$laporan['tanggapan_rincian']}</td>
+    </tr>";
+            $no++;
+        }
+
+        $html .= "
+            </tbody>
+        </table>
+    </body>
+</html>";
+
+        // Load DomPDF
+        $dompdf = new Dompdf();
+        $dompdf->set_option('isHtml5ParserEnabled', true);
+        $dompdf->set_option('isPhpEnabled', true);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        // Output PDF (download atau tampilkan)
+        $dompdf->stream("Laporan_Pengaduan_" . date('Ymd') . ".pdf", array("Attachment" => 0)); // 0 untuk preview, 1 untuk download
     }
 }

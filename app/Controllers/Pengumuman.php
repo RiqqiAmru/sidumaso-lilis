@@ -131,6 +131,7 @@ class Pengumuman extends Controller
     {
         $pengumumanModel = new PengumumanModel();
         $pengumuman = $pengumumanModel->find($id);
+        
 
         if (!$pengumuman) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Pengumuman tidak ditemukan');

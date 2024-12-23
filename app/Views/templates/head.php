@@ -10,7 +10,7 @@
     <meta content="" name="keywords">
 
     <!-- Favicons -->
-    <link href="/assetsadmin/img/favicon.png" rel="icon">
+    <link href="/assetsadmin/img/logo.png" rel="icon">
     <link href="/assetsadmin/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
@@ -50,7 +50,8 @@
 
             <div class="alert alert-info" role="alert">
                 <h4 class="alert-heading">Menunggu</h4>
-                <p>Mohon menunggu admin untuk memverifikasi status ktp anda. Anda tidak dapat mengajukan pengaduan sampai ktp anda terverifikasi oleh admin</p>
+                <p>Mohon menunggu admin untuk memverifikasi status ktp anda. Anda tidak dapat mengajukan pengaduan sampai
+                    ktp anda terverifikasi oleh admin</p>
                 <hr>
                 <p class="mb-0">Silahkan hubungi admin jika dalam waktu 3x24 jam tidak ada perbaruan lebih lanjut</p>
             </div>
