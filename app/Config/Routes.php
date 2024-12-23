@@ -59,8 +59,9 @@ $routes->get('/pengumuman/edit/(:num)', 'Pengumuman::edit/$1');
 $routes->post('/pengumuman/update/(:num)', 'Pengumuman::update/$1');
 $routes->get('/pengumuman/detail/(:num)', 'Pengumuman::detail/$1');
 
-$routes->get('/profile', 'AkunController::index');// Halaman Akun
+$routes->get('/profile', 'AkunController::index'); // Halaman Akun
 $routes->get('/akun/edit', 'AkunController::edit'); // Route untuk halaman edit akun
 $routes->post('/akun/update', 'AkunController::update'); // Route untuk proses update akun
+$routes->get('/akun/ubah-password', 'AkunController::changePasswordView'); // Route untuk proses update akun
+$routes->post('/akun/ubah-password', 'AkunController::changePassword'); // Route untuk proses update akun
 // Menangani proses update akun
-

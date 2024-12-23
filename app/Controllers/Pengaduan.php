@@ -42,7 +42,7 @@ class Pengaduan extends BaseController
     public function daftarPengaduan()
     {
         $data = [
-            'pengaduan' => $this->pengaduanModel->getPengaduanByOneUser(session('user_id')['id'])
+            'pengaduan' => $this->pengaduanModel->getPengaduanByOneUser(session('user_id')['id_user'])
         ];
         return view('masyarakat/pengaduan/index', $data);
     }
@@ -54,7 +54,6 @@ class Pengaduan extends BaseController
     {
         // Mengambil semua file yang di-upload
         $validation = \Config\Services::validation();
-
         // Validasi file gambar
         $rules = [
             'jenis_pengaduan' => 'required',
@@ -81,7 +80,7 @@ class Pengaduan extends BaseController
                 'gang' => $this->request->getPost('gang'),
                 'detail_lokasi' => $this->request->getPost('detail_lokasi'),
                 'ket' => 0,
-                'id_pengirim' => session('user_id')['id']
+                'id_user' => session('user_id')['id_user']
             ];
             if ($this->pengaduanModel->save($data)) {
                 $pengaduanId = $this->pengaduanModel->getInsertID();
@@ -105,13 +104,12 @@ class Pengaduan extends BaseController
                     }
                 }
                 foreach ($imagePaths as $img) {
-                    $this->fotoPengaduanModel->save(['foto' => $img, 'pengaduan_id' => $pengaduanId]);
+                    $this->fotoPengaduanModel->save(['foto' => $img, 'id_pengaduan' => $pengaduanId]);
                 }
                 $db->transCommit();
 
                 return redirect()->to('/pengaduan/daftarPengaduan')->with('success', 'berhasil menambah aduan');
-            }
-            ;
+            };
             dd($this->pengaduanModel->errors());
             return 'eror ketika input pengaduan';
         } catch (\Throwable $th) {
@@ -195,8 +193,6 @@ class Pengaduan extends BaseController
         } else {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui pengaduan');
         }
-
-
     }
 
 
@@ -342,8 +338,7 @@ class Pengaduan extends BaseController
                 $db->transCommit();
 
                 return redirect()->to('/pengaduan/masuk')->with('success', 'berhasil menanggapi aduan');
-            }
-            ;
+            };
 
             return redirect()->to('/pengaduan/proses/' . $idAduan)->with('error', 'Terjadi kesalahan input, silakan coba lagi');
         } catch (\Throwable $th) {

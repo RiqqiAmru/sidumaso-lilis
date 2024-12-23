@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class TanggapanModel extends Model
 {
     protected $table = 'tanggapan';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'id_tanggapan';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
@@ -102,6 +102,6 @@ class TanggapanModel extends Model
     {
         // Ambil data tanggapan berdasarkan pengaduan_id
         return $this->where('pengaduan_id', $pengaduan_id)
-                    ->first(); // Ambil tanggapan pertama yang cocok
+            ->first(); // Ambil tanggapan pertama yang cocok
     }
 }

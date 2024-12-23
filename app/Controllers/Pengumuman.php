@@ -105,7 +105,7 @@ class Pengumuman extends Controller
         if ($fileDokumen && $fileDokumen->isValid()) {
             // Simpan file ke folder uploads
             $fileName = $fileDokumen->getRandomName();
-            $fileDokumen->move('uploads', $fileName);
+            $fileDokumen->move('uploads/pengumuman', $fileName);
 
             // Update dengan dokumen baru
             $data = [
@@ -131,7 +131,7 @@ class Pengumuman extends Controller
     {
         $pengumumanModel = new PengumumanModel();
         $pengumuman = $pengumumanModel->find($id);
-        
+
 
         if (!$pengumuman) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Pengumuman tidak ditemukan');
@@ -139,7 +139,4 @@ class Pengumuman extends Controller
 
         return view('pengumuman/detail', ['pengumuman' => $pengumuman]);
     }
-
-
-
 }

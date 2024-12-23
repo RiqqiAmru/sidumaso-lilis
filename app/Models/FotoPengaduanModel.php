@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class FotoPengaduanModel extends Model
 {
     protected $table            = 'foto_pengaduan';
-    protected $primaryKey       = 'id';
+    protected $primaryKey       = 'id_foto_pengaduan';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;

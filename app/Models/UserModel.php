@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class UserModel extends Model
 {
     protected $table = 'tbl_user'; // Nama tabel di database
-    protected $primaryKey = 'id'; // Primary key dari tabel
+    protected $primaryKey = 'id_user'; // Primary key dari tabel
 
     protected $allowedFields = [
         'nama',
@@ -50,5 +50,17 @@ class UserModel extends Model
             return $user;
         }
         return false;
+    }
+
+    // Fungsi untuk hash password sebelum update
+    protected $beforeUpdate = ['beforeUpdatePassword'];
+
+    // Fungsi untuk hash password sebelum update
+    protected function beforeUpdatePassword(array $data)
+    {
+        if (isset($data['data']['password'])) {
+            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_BCRYPT);
+        }
+        return $data;
     }
 }

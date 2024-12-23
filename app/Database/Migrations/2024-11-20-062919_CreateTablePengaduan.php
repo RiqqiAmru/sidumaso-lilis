@@ -9,7 +9,7 @@ class CreateTablePengaduan extends Migration
     public function up()
     {
         $this->forge->addField([
-            'id'                => [
+            'id_pengaduan'                => [
                 'type'           => 'INT',
                 'constraint'     => 5,
                 'auto_increment' => true,
@@ -21,21 +21,21 @@ class CreateTablePengaduan extends Migration
             'rincian'           => [
                 'type'           => 'TEXT',
             ],
-            'status_aduan'            => [
-                'type'           => 'VARCHAR',
-                'constraint'     => '50',
-                'default'        => 'publik',  // Status default
-            ],
             'ket'   => [
                 'type'           => 'int',
                 'constraint'     => 1,
             ],
-            'id_pengirim'   => [
-                'type'           => 'int',
+            'gang' => [
+                'type'           => 'ENUM',
+                'constraint'     => "'1','2','3','4','5'",
+                'default'        => '1',
             ],
-            'id_admin'   => [
+            'detail_lokasi'           => [
+                'type'           => 'TEXT',
+            ],
+            'id_user'   => [
+                'constraint'     => 5,
                 'type'           => 'int',
-                'null'           => true,
             ],
             'created_at'        => [
                 'type'           => 'DATETIME',
@@ -46,19 +46,18 @@ class CreateTablePengaduan extends Migration
                 'null'           => true,
             ],
         ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('id_pengirim', 'tbl_user', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('id_admin', 'tbl_user', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addPrimaryKey('id_pengaduan');
+        $this->forge->addForeignKey('id_user', 'tbl_user', 'id_user', 'CASCADE', 'CASCADE');
         $this->forge->createTable('pengaduan');
 
         // Membuat tabel foto_pengaduan untuk menyimpan foto
         $this->forge->addField([
-            'id'                => [
+            'id_foto_pengaduan'                => [
                 'type'           => 'INT',
                 'constraint'     => 5,
                 'auto_increment' => true,
             ],
-            'pengaduan_id'      => [
+            'id_pengaduan'      => [
                 'type'           => 'INT',
                 'constraint'     => 5,
             ],
@@ -75,8 +74,8 @@ class CreateTablePengaduan extends Migration
                 'null'           => true,
             ],
         ]);
-        $this->forge->addPrimaryKey('id');
-        $this->forge->addForeignKey('pengaduan_id', 'pengaduan', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addPrimaryKey('id_foto_pengaduan');
+        $this->forge->addForeignKey('id_pengaduan', 'pengaduan', 'id_pengaduan', 'CASCADE', 'CASCADE');
         $this->forge->createTable('foto_pengaduan');
     }
 

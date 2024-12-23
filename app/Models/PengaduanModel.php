@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class PengaduanModel extends Model
 {
     protected $table = 'pengaduan';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'id_pengaduan';
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
@@ -17,9 +17,8 @@ class PengaduanModel extends Model
         'rincian',
         'status_aduan',
         'ket',
-        'id_pengirim',
-        'id_admin',
         'gang',
+        'id_user',
         'detail_lokasi'
     ];
 
@@ -61,7 +60,7 @@ class PengaduanModel extends Model
     public function getPengaduanWithUser()
     {
         return $this->select('pengaduan.*, tbl_user.nama ')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user')
             ->where('pengaduan.ket', 0)
             ->findAll();
     }
@@ -69,9 +68,9 @@ class PengaduanModel extends Model
     {
         $result = $this
             ->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_pengaduan.foto, tbl_user.nama')
-            ->join('foto_pengaduan', 'foto_pengaduan.pengaduan_id = pengaduan.id', 'left')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim', 'left')
-            ->where('pengaduan.id_pengirim', $userId)
+            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
+            ->where('pengaduan.id_user', $userId)
             ->orderBy('pengaduan.created_at', 'DESC')
             ->get()
             ->getResultArray();
@@ -117,8 +116,8 @@ class PengaduanModel extends Model
 
         $result = $this
             ->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_pengaduan.foto, tbl_user.nama')
-            ->join('foto_pengaduan', 'foto_pengaduan.pengaduan_id = pengaduan.id', 'left')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim', 'left')
+            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->whereIn('pengaduan.ket', $ket)
             ->get()
             ->getResultArray();
@@ -136,7 +135,7 @@ class PengaduanModel extends Model
     public function getPengaduanById($id)
     {
         return $this->select('pengaduan.*, tbl_user.nama ')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user')
             ->where('pengaduan.id', $id)
             ->first();
     }
@@ -153,7 +152,7 @@ class PengaduanModel extends Model
         // Query dengan kondisi tanggal
         return $this->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_pengaduan.foto, tbl_user.nama')
             ->join('foto_pengaduan', 'foto_pengaduan.pengaduan_id = pengaduan.id', 'left')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where("pengaduan.created_at BETWEEN '$start_date' AND '$end_date'")
             ->get()
             ->getResultArray();
@@ -174,8 +173,8 @@ class PengaduanModel extends Model
                                  WHERE tanggapan.id_aduan = pengaduan.id 
                                  ORDER BY tanggapan.created_at DESC 
                                  LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.pengaduan_id = pengaduan.id', 'left')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim', 'left')
+            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->get()
             ->getResultArray();
     }
@@ -193,11 +192,11 @@ class PengaduanModel extends Model
         tbl_user.nama, 
         IFNULL((SELECT tanggapan.rincian 
                 FROM tanggapan 
-                WHERE tanggapan.id_aduan = pengaduan.id 
+                WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan 
                 ORDER BY tanggapan.created_at DESC 
                 LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.pengaduan_id = pengaduan.id', 'left')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim', 'left');
+            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left');
 
         if (!empty($status)) {
             $builder->whereIn('pengaduan.ket', $status);
@@ -249,13 +248,4 @@ class PengaduanModel extends Model
 
         return $builder->get()->getResultArray();
     }
-
-
-
 }
-
-
-
-
-
-
