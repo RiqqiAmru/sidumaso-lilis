@@ -41,7 +41,7 @@ TABEL FOTO_TANGGAPAN = id, id_tanggapan, foto, ket(admin/pengirim)
 
 error
 
-- ketika masyarakat hendak menginputkan pengaduan, data status aduan (publik/privat) tidak ada di db
+-
 
 # SIDUMASO LILIS PROJECT
 
@@ -51,13 +51,13 @@ error
 2. back up data ,
 3. filtering laporan (nek difilter metu tanggapane tapi nek ora dipilih periode/tanpa filter tapi klik tombol filter, tanggapane rak kepanggil) kurang per jenis pengaduan juga
 4. filtering desc di pengaduan proses ,
-5. modal untuk foto tanggapan
+5. modal untuk foto tanggapan✅
 6. harusnya tombol komentar jika status proses saja ,
 7. ubah password,✅
-8. edit pengaduan,
+8. edit pengaduan, [validasi gambar susah]
 9. file bukti pengaduan diganti opsional
    -ganti view pengumuman masyarakat✅
    -keterangan di laporan tgl brp (ketika cetak laporan ada keterangan berdasarkan filter opo)
-   -ganti nama field database -> masih ada yang error (atas)
+   -ganti nama field database ✅
    -tidak ada fitur nambah jenis pengaduan
    - kepala dusun tampilan nya apa

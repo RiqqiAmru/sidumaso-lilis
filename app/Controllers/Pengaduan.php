@@ -58,7 +58,6 @@ class Pengaduan extends BaseController
         $rules = [
             'jenis_pengaduan' => 'required',
             'rincian' => 'required',
-            'status_pengaduan' => 'required',
             'gang' => 'required',
             'detail_lokasi' => 'required',
             'bukti' => 'permit_empty|max_size[bukti,2048]|is_image[bukti]|mime_in[bukti,image/jpg,image/jpeg,image/png,image/gif]',
@@ -76,7 +75,6 @@ class Pengaduan extends BaseController
             $data = [
                 'jenis_pengaduan' => $this->request->getPost('jenis_pengaduan'),
                 'rincian' => $this->request->getPost('rincian'),
-                'status_aduan' => $this->request->getPost('status_pengaduan'),
                 'gang' => $this->request->getPost('gang'),
                 'detail_lokasi' => $this->request->getPost('detail_lokasi'),
                 'ket' => 0,
@@ -85,9 +83,9 @@ class Pengaduan extends BaseController
             if ($this->pengaduanModel->save($data)) {
                 $pengaduanId = $this->pengaduanModel->getInsertID();
 
+
                 // Mengambil file yang di-upload
                 $uploadedFiles = $this->request->getFileMultiple('bukti');
-
                 // Array untuk menyimpan path gambar yang di-upload
                 $imagePaths = [];
 
@@ -104,6 +102,7 @@ class Pengaduan extends BaseController
                     }
                 }
                 foreach ($imagePaths as $img) {
+
                     $this->fotoPengaduanModel->save(['foto' => $img, 'id_pengaduan' => $pengaduanId]);
                 }
                 $db->transCommit();
@@ -141,19 +140,73 @@ class Pengaduan extends BaseController
             'pengaduan' => $pengaduan
         ]);
     }
+    // public function update($id)
+    // {
+    //     $rules = [
+    //         'jenis_pengaduan' => 'required',
+    //         'rincian' => 'required',
+    //         'detail_lokasi' => 'required',
+    //         'gang' => 'required',
+
+    //     ];
+
+
+    //     // Validasi input
+    //     if (
+    //         !$this->validate($rules)
+    //     ) {
+    //         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+    //     }
+
+    //     // Ambil data input
+    //     $data = [
+    //         'jenis_pengaduan' => $this->request->getVar('jenis_pengaduan'),
+    //         'rincian' => $this->request->getVar('rincian'),
+    //         'detail_lokasi' => $this->request->getVar('detail_lokasi'),
+    //         'gang' => $this->request->getVar('gang'),
+    //         'bukti' => $this->request->getFileMultiple('bukti'), // Ambil banyak file jika ada
+    //     ];
+
+    //     // Jika ada file bukti, simpan file-file tersebut
+    //     if (!empty($data['bukti'])) {
+    //         dd($data['bukti'][0]);
+    //         $fileNames = [];
+    //         foreach ($data['bukti'] as $file) {
+    //             if ($file->isValid() && !$file->hasMoved()) {
+    //                 $fileName = $file->getRandomName();
+    //                 if ($file->move('uploads/bukti', $fileName)) {
+    //                     $fileNames[] = $fileName;
+    //                 } else {
+    //                     return redirect()->back()->with('error', 'Gagal memindahkan file bukti.');
+    //                 }
+    //             } else {
+    //                 return redirect()->back()->with('error', 'File bukti tidak valid: ' . $file->getErrorString());
+    //             }
+    //         }
+    //         $data['bukti'] = implode(',', $fileNames); // Simpan nama file yang diupload
+    //     } else {
+    //         $data['bukti'] = null; // Jika tidak ada file, simpan null
+    //     }
+
+    //     // Update data pengaduan di database
+    //     if ($this->pengaduanModel->update($id, $data)) {
+    //         return redirect()->to('/pengaduan/daftarPengaduan')->with('success', 'Pengaduan berhasil diperbarui');
+    //     } else {
+    //         return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui pengaduan');
+    //     }
+    // }
     public function update($id)
     {
+        // Aturan validasi untuk input pengaduan
+        $rules = [
+            'jenis_pengaduan' => 'required',
+            'rincian' => 'required',
+            'detail_lokasi' => 'required',
+            'gang' => 'required',
+        ];
+
         // Validasi input
-        if (
-            !$this->validate([
-                'jenis_pengaduan' => 'required',
-                'rincian' => 'required',
-                'status_aduan' => 'required',
-                'detail_lokasi' => 'required',
-                'gang' => 'required',
-                'bukti' => 'uploaded[bukti]|max_size[bukti,10240]|is_image[bukti]', // Validasi file bukti
-            ])
-        ) {
+        if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
@@ -161,16 +214,22 @@ class Pengaduan extends BaseController
         $data = [
             'jenis_pengaduan' => $this->request->getVar('jenis_pengaduan'),
             'rincian' => $this->request->getVar('rincian'),
-            'status_aduan' => $this->request->getVar('status_aduan'),
             'detail_lokasi' => $this->request->getVar('detail_lokasi'),
             'gang' => $this->request->getVar('gang'),
-            'bukti' => $this->request->getFileMultiple('bukti'), // Ambil banyak file jika ada
         ];
 
-        // Jika ada file bukti, simpan file-file tersebut
-        if (!empty($data['bukti'])) {
+        // Ambil data pengaduan lama berdasarkan ID
+        $pengaduan = $this->pengaduanModel->find($id);
+
+        // Tangani file bukti (foto) pengaduan
+        $fileBukti = $this->request->getFileMultiple('bukti'); // Ambil banyak file jika ada
+
+        // Jika ada file bukti yang diupload
+
+        if (!empty($fileBukti)) {
+            // Menyimpan file baru
             $fileNames = [];
-            foreach ($data['bukti'] as $file) {
+            foreach ($fileBukti as $file) {
                 if ($file->isValid() && !$file->hasMoved()) {
                     $fileName = $file->getRandomName();
                     if ($file->move('uploads/bukti', $fileName)) {
@@ -182,9 +241,22 @@ class Pengaduan extends BaseController
                     return redirect()->back()->with('error', 'File bukti tidak valid: ' . $file->getErrorString());
                 }
             }
-            $data['bukti'] = implode(',', $fileNames); // Simpan nama file yang diupload
+            // Gabungkan nama file yang diupload, pisahkan dengan koma
+            $data['bukti'] = implode(',', $fileNames);
+
+            // Jika ada bukti lama, hapus file yang sudah tidak digunakan lagi
+            if (!empty($pengaduan['bukti'])) {
+                $oldFiles = explode(',', $pengaduan['bukti']);
+                foreach ($oldFiles as $oldFile) {
+                    $filePath = 'uploads/bukti/' . $oldFile;
+                    if (file_exists($filePath)) {
+                        unlink($filePath);  // Menghapus file lama
+                    }
+                }
+            }
         } else {
-            $data['bukti'] = null; // Jika tidak ada file, simpan null
+            // Jika tidak ada file baru, pertahankan bukti lama
+            $data['bukti'] = $pengaduan['bukti'];
         }
 
         // Update data pengaduan di database
@@ -239,7 +311,7 @@ class Pengaduan extends BaseController
         $pengaduan = $this->pengaduanModel->getPengaduanById($id);
         $tanggapan = $this->tanggapanModel->getTanggapanByPengaduanid($id);
 
-        $foto = $this->fotoPengaduanModel->getByPengaduanId($pengaduan['id']);
+        $foto = $this->fotoPengaduanModel->getByPengaduanId($pengaduan['id_pengaduan']);
         $data = [
             'pengaduan' => ['p' => $pengaduan, 'foto' => $foto],
             'status' => $status,
@@ -252,7 +324,7 @@ class Pengaduan extends BaseController
     public function storeTanggapanAdmin()
     {
         $idAduan = $this->request->getPost('id_aduan');
-        $idAdmin = session('user_id')['id'];
+
         $validation = \Config\Services::validation();
 
         $rules = [
@@ -289,19 +361,17 @@ class Pengaduan extends BaseController
                     break;
             }
 
-            if (session('user_id')['role'] == 'Admin') {
-                $this->pengaduanModel->update($idAduan, ['ket' => $ket, 'id_admin' => $idAdmin]);
-            } else {
-                $this->pengaduanModel->update($idAduan, ['ket' => $ket]);
-            }
+
+            $this->pengaduanModel->update($idAduan, ['ket' => $ket]);
+
 
             $data = [
-                'id_aduan' => $this->request->getPost('id_aduan'),
+                'id_pengaduan' => (int) $this->request->getPost('id_aduan'),
                 'jenis_tanggapan' => $status,
                 'rincian' => $this->request->getPost('rincian'),
-                'id_user' => session('user_id')['id'],
-                'ket' => 0,
+                'id_user' => session('user_id')['id_user'],
             ];
+
             // input tanggapan = id_aduan, jenis_tanggapan, rincian admin, 
             if ($this->tanggapanModel->save($data)) {
                 $tanggapanId = $this->tanggapanModel->getInsertID();
@@ -333,13 +403,13 @@ class Pengaduan extends BaseController
                     }
                 }
                 foreach ($imagePaths as $img) {
-                    $this->fotoTanggapanModel->insert(['foto' => $img, 'tanggapan_id' => $tanggapanId]);
+                    $this->fotoTanggapanModel->insert(['foto' => $img, 'id_tanggapan' => $tanggapanId]);
                 }
                 $db->transCommit();
 
                 return redirect()->to('/pengaduan/masuk')->with('success', 'berhasil menanggapi aduan');
             };
-
+            dd($this->tanggapanModel->errors());
             return redirect()->to('/pengaduan/proses/' . $idAduan)->with('error', 'Terjadi kesalahan input, silakan coba lagi');
         } catch (\Throwable $th) {
             $db->transRollback();

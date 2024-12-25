@@ -92,9 +92,9 @@
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const table = document.getElementById('pengaduanTable');
-    table.addEventListener('click', function (e) {
+    table.addEventListener('click', function(e) {
 
       if (e.target && e.target.classList.contains('btn-tanggapan')) {
         const idAduan = e.target.dataset.id;
@@ -114,7 +114,7 @@
         fetch(`/tanggapan/${idAduan}`)
           .then(response => response.json())
           .then(data => {
-            console.log(data);
+
             if (data) {
               const tanggapanRow = document.createElement('tr');
               tanggapanRow.classList.add('tanggapan-row');
@@ -172,6 +172,13 @@
                                 </td>
                             `;
               row.after(tanggapanRow);
+              document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
+                img.addEventListener('click', function() {
+                  console.log(this.src);
+                  const modalImage = document.getElementById('modalImage');
+                  modalImage.src = this.src;
+                });
+              });
             } else {
               alert('Tidak ada tanggapan untuk pengaduan ini.');
             }
@@ -181,7 +188,8 @@
     });
 
     document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-      img.addEventListener('click', function () {
+      img.addEventListener('click', function() {
+        console.log(this.src);
         const modalImage = document.getElementById('modalImage');
         modalImage.src = this.src;
       });

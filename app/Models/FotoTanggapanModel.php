@@ -12,7 +12,7 @@ class FotoTanggapanModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['tanggapan_id', 'ket', 'foto'];
+    protected $allowedFields    = ['id_tanggapan', 'ket', 'foto'];
 
     protected bool $allowEmptyInserts = false;
 

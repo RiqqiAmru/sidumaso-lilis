@@ -83,15 +83,14 @@ class PengaduanModel extends Model
     {
         $data = [];
         foreach ($resultArray as $row) {
-            $id = $row['id'];
+            $id = $row['id_pengaduan'];
 
             if (!isset($data[$id])) {
                 // Buat array pengaduan baru jika belum ada
                 $data[$id] = [
-                    'id' => $row['id'],
+                    'id' => $row['id_pengaduan'],
                     'nama' => $row['nama'],
                     'jenis_pengaduan' => $row['jenis_pengaduan'],
-                    'status_aduan' => $row['status_aduan'],
                     'rincian' => $row['rincian'],
                     'gang' => $row['gang'],
                     'detail_lokasi' => $row['detail_lokasi'],
@@ -136,7 +135,7 @@ class PengaduanModel extends Model
     {
         return $this->select('pengaduan.*, tbl_user.nama ')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user')
-            ->where('pengaduan.id', $id)
+            ->where('pengaduan.id_pengaduan', $id)
             ->first();
     }
     public function getPengaduan($id)
@@ -151,7 +150,7 @@ class PengaduanModel extends Model
 
         // Query dengan kondisi tanggal
         return $this->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_pengaduan.foto, tbl_user.nama')
-            ->join('foto_pengaduan', 'foto_pengaduan.pengaduan_id = pengaduan.id', 'left')
+            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where("pengaduan.created_at BETWEEN '$start_date' AND '$end_date'")
             ->get()
@@ -170,7 +169,7 @@ class PengaduanModel extends Model
                          tbl_user.nama, 
                          IFNULL((SELECT tanggapan.rincian 
                                  FROM tanggapan 
-                                 WHERE tanggapan.id_aduan = pengaduan.id 
+                                 WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
                                  ORDER BY tanggapan.created_at DESC 
                                  LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
             ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
@@ -219,11 +218,11 @@ class PengaduanModel extends Model
         tbl_user.nama, 
         (SELECT tanggapan.rincian 
          FROM tanggapan 
-         WHERE tanggapan.id_aduan = pengaduan.id 
+         WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan 
          ORDER BY tanggapan.created_at DESC 
          LIMIT 1) AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.pengaduan_id = pengaduan.id', 'left')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim', 'left')
+            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where('pengaduan.ket', $status)
             ->get()
             ->getResultArray();
@@ -237,11 +236,11 @@ class PengaduanModel extends Model
             tbl_user.nama, 
             (SELECT tanggapan.rincian 
              FROM tanggapan 
-             WHERE tanggapan.id_aduan = pengaduan.id 
+             WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan 
              ORDER BY tanggapan.created_at DESC 
              LIMIT 1) AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.pengaduan_id = pengaduan.id', 'left')
-            ->join('tbl_user', 'tbl_user.id = pengaduan.id_pengirim', 'left')
+            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where('pengaduan.ket', $status) // Pastikan filter status diterapkan dengan benar
             ->where('pengaduan.created_at >=', $start_date)
             ->where('pengaduan.created_at <=', $end_date);

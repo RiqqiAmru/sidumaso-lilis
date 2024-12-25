@@ -26,13 +26,19 @@
                                 <label for="status" class="form-label">Status</label>
                                 <select name="status" id="status" class="form-control">
                                     <option value="">Semua Status</option>
-                                    <option value="Menunggu" <?= isset($status) && $status == 'Menunggu' ? 'selected' : '' ?>>Menunggu</option>
+                                    <option value="Menunggu" <?= isset($status) && $status == 'Menunggu' ? 'selected' : '' ?>>Menunggu
+                                    </option>
                                     <option value="Proses" <?= isset($status) && $status == 'Proses' ? 'selected' : '' ?>>
                                         Proses</option>
-                                    <option value="Menunggu kelengkapan data" <?= isset($status) && $status == 'Menunggu kelengkapan data' ? 'selected' : '' ?>>Menunggu kelengkapan data</option>
-                                    <option value="Selesai" <?= isset($status) && $status == 'Selesai' ? 'selected' : '' ?>>Selesai</option>
-                                    <option value="Invalid" <?= isset($status) && $status == 'Invalid' ? 'selected' : '' ?>>Invalid</option>
-                                    <option value="Menunggu admin" <?= isset($status) && $status == 'Menunggu admin' ? 'selected' : '' ?>>Menunggu admin</option>
+                                    <option value="Menunggu kelengkapan data"
+                                        <?= isset($status) && $status == 'Menunggu kelengkapan data' ? 'selected' : '' ?>>Menunggu
+                                        kelengkapan data</option>
+                                    <option value="Selesai" <?= isset($status) && $status == 'Selesai' ? 'selected' : '' ?>>Selesai
+                                    </option>
+                                    <option value="Invalid" <?= isset($status) && $status == 'Invalid' ? 'selected' : '' ?>>Invalid
+                                    </option>
+                                    <option value="Menunggu admin" <?= isset($status) && $status == 'Menunggu admin' ? 'selected' : '' ?>>
+                                        Menunggu admin</option>
                                 </select>
                             </div>
                         </div>
@@ -43,8 +49,8 @@
                             <div class="d-flex justify-content-start">
                                 <button type="submit" class="btn btn-primary mt-4">Filter</button>
                                 <button type="button" class="btn btn-primary mt-4 ms-3">
-                                    <a href="<?= site_url('pengaduan/printLaporan') ?>"
-                                        class="text-white text-decoration-none">Cetak Laporan</a>
+                                    <a href="<?= site_url('pengaduan/printLaporan') ?>" class="text-white text-decoration-none">Cetak
+                                        Laporan</a>
                                 </button>
                             </div>
                         </div>
@@ -74,7 +80,7 @@
                             <?php if (!empty($pengaduan) && is_array($pengaduan)): ?>
                                 <?php $no = 1;
                                 foreach ($pengaduan as $p): ?>
-                                    <tr data-id="<?= $p['id'] ?>">
+                                    <tr data-id="<?= $p['id_pengaduan'] ?>">
                                         <th scope="row"><?= $no++ ?></th>
                                         <td><?= $p['created_at'] ?></td>
                                         <td><?= $p['jenis_pengaduan'] ?></td>
@@ -88,34 +94,33 @@
                                             <button class="btn">
                                                 <?php if ($p['ket'] == 0): ?>
                                                     <span class="badge rounded-pill text-bg-primary btn-tanggapan"
-                                                        data-id="<?= $p['id']; ?>">Menunggu</span>
+                                                        data-id="<?= $p['id_pengaduan']; ?>">Menunggu</span>
                                                 <?php elseif ($p['ket'] == 1): ?>
                                                     <span class="badge rounded-pill text-bg-secondary btn-tanggapan"
-                                                        data-id="<?= $p['id']; ?>">Proses</span>
+                                                        data-id="<?= $p['id_pengaduan']; ?>">Proses</span>
                                                 <?php elseif ($p['ket'] == 2): ?>
-                                                    <span class="badge rounded-pill text-bg-warning btn-tanggapan"
-                                                        data-id="<?= $p['id']; ?>">Menunggu kelengkapan
+                                                    <span class="badge rounded-pill text-bg-warning btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu
+                                                        kelengkapan
                                                         data</span>
                                                 <?php elseif ($p['ket'] == 3): ?>
                                                     <span class="badge rounded-pill text-bg-success btn-tanggapan"
-                                                        data-id="<?= $p['id']; ?>">Selesai</span>
+                                                        data-id="<?= $p['id_pengaduan']; ?>">Selesai</span>
                                                 <?php elseif ($p['ket'] == 4): ?>
                                                     <span class="badge rounded-pill text-bg-danger btn-tanggapan"
-                                                        data-id="<?= $p['id']; ?>">Invalid</span>
+                                                        data-id="<?= $p['id_pengaduan']; ?>">Invalid</span>
                                                 <?php elseif ($p['ket'] == 5 || $p['ket'] == 6): ?>
-                                                    <span class="badge rounded-pill text-bg-secondary btn-tanggapan"
-                                                        data-id="<?= $p['id']; ?>">Menunggu
+                                                    <span class="badge rounded-pill text-bg-secondary btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu
                                                         admin</span>
                                                 <?php endif ?>
                                             </button>
                                         </td>
                                         <td>
                                             <?php if (!empty($p['foto'])): ?>
-                                                <?php $fotoArray = explode(',', $p['foto']); // Memisahkan nama file foto jika dipisah dengan koma ?>
+                                                <?php $fotoArray = explode(',', $p['foto']); // Memisahkan nama file foto jika dipisah dengan koma 
+                                                ?>
                                                 <?php foreach ($fotoArray as $foto): ?>
-                                                    <img src="<?= base_url('uploads/bukti/' . esc($foto)) ?>" alt="Foto Bukti"
-                                                        class="img-thumbnail" width="100" data-bs-toggle="modal"
-                                                        data-bs-target="#imageModal">
+                                                    <img src="<?= base_url('uploads/bukti/' . esc($foto)) ?>" alt="Foto Bukti" class="img-thumbnail"
+                                                        width="100" data-bs-toggle="modal" data-bs-target="#imageModal">
                                                 <?php endforeach; ?>
                                             <?php else: ?>
                                                 <p>No photos available</p>
@@ -145,8 +150,7 @@
                         </tbody>
                     </table>
                     <!-- modal image -->
-                    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel"
-                        aria-hidden="true">
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-body">
@@ -155,8 +159,9 @@
                             </div>
                         </div>
                     </div>
-                    <script>document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-                            img.addEventListener('click', function () {
+                    <script>
+                        document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
+                            img.addEventListener('click', function() {
                                 const modalImage = document.getElementById('modalImage');
                                 modalImage.src = this.src;
                             });

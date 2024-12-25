@@ -12,7 +12,7 @@ class TanggapanModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
     protected $protectFields = true;
-    protected $allowedFields = ['id_aduan', 'jenis_tanggapan', 'rincian', 'id_user', 'ket'];
+    protected $allowedFields = ['id_pengaduan', 'jenis_tanggapan', 'rincian', 'id_user', 'ket'];
 
     protected bool $allowEmptyInserts = false;
 
@@ -45,17 +45,18 @@ class TanggapanModel extends Model
 
         $result = $this->db->table('tanggapan')
             ->select('tanggapan.*,DATE_FORMAT(tanggapan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_tanggapan.foto, tbl_user.nama')
-            ->join('foto_tanggapan', 'foto_tanggapan.tanggapan_id = tanggapan.id', 'left')
-            ->join('tbl_user', 'tbl_user.id = tanggapan.id_user', 'left')
-            ->where('tanggapan.id_aduan', $idAduan)
+            ->join('foto_tanggapan', 'foto_tanggapan.id_tanggapan = tanggapan.id_tanggapan', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = tanggapan.id_user', 'left')
+            ->where('tanggapan.id_pengaduan', $idAduan)
             ->orderBy('tanggapan.created_at', 'ASC')
             ->get()
             ->getResultArray();
 
+
         // Susun data tanggapan dengan foto sebagai array
         $tanggapanData = [];
         foreach ($result as $row) {
-            $id = $row['id'];
+            $id = $row['id_tanggapan'];
 
             if (!isset($tanggapanData[$id])) {
                 // Buat array tanggapan baru jika belum ada
@@ -72,12 +73,12 @@ class TanggapanModel extends Model
                         break;
                 }
                 $tanggapanData[$id] = [
-                    'id' => $row['id'],
-                    'id_aduan' => $row['id_aduan'],
+                    'id' => $row['id_tanggapan'],
+                    'id_aduan' => $row['id_pengaduan'],
                     'nama' => $row['nama'],
                     'jenis_tanggapan' => $row['jenis_tanggapan'],
                     'rincian' => $row['rincian'],
-                    'ket' => $row['ket'],
+
                     'created_at' => $row['created_at'],
                     'warna' => $warna,
                     'foto' => [] // Siapkan array untuk foto

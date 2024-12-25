@@ -12,7 +12,7 @@ class FotoPengaduanModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['pengaduan_id', 'foto'];
+    protected $allowedFields    = ['id_pengaduan', 'foto'];
 
     protected bool $allowEmptyInserts = false;
 
@@ -42,6 +42,6 @@ class FotoPengaduanModel extends Model
 
     public function getByPengaduanId($pengaduanId)
     {
-        return $this->where('pengaduan_id', $pengaduanId)->findAll();
+        return $this->where('id_pengaduan', $pengaduanId)->findAll();
     }
 }

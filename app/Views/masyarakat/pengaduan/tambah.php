@@ -74,21 +74,8 @@
                 </div>
               </div>
 
-              <div class="row mb-3">
-                <label for="status_pengaduan" class="col-sm-2 col-form-label">status Pengaduan</label>
-                <div class="col-sm-10">
 
-                  <select class="form-select" name="status_pengaduan" id="status_pengaduan" required>
-                    <option <?= set_select('status_pengaduan', 'publik') ?> value="publik">publik
-                    </option>
-                    <option <?= set_select('status_pengaduan', 'privat') ?> value="privat">privat
-                    </option>
-                  </select>
-                  <small class="text-muted">publik berarti semua masyarakat dapat melihat aduan ini,
-                    privat
-                    berarti hanya admin yang dapat melihat aduan ini </small>
-                </div>
-              </div>
+
               <div class="row mb-3">
                 <label for="detail_lokasi" class="col-sm-2 col-form-label">Detail Lokasi</label>
                 <div class="col-sm-10">

@@ -37,10 +37,6 @@
                     <div class="col-lg-9 col-md-8"><?= $pengaduan['p']['jenis_pengaduan'] ?></div>
                   </div>
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label ">Status Aduan</div>
-                    <div class="col-lg-9 col-md-8"><?= $pengaduan['p']['status_aduan'] ?></div>
-                  </div>
-                  <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Pengirim</div>
                     <div class="col-lg-9 col-md-8"><?= $pengaduan['p']['nama'] ?>
                     </div>
@@ -54,8 +50,8 @@
                     <div class="col-lg-3 col-md-4 label ">Gambar</div>
                     <div class="col-lg-9 col-md-8">
                       <?php foreach ($pengaduan['foto'] as $foto) : ?>
-                        <img src="<?= base_url('uploads/bukti/' . $foto['foto']) ?>" alt="Foto bukti" class="img-thumbnail"
-                          width="200">
+                        <img src="<?= base_url('uploads/bukti/' . $foto['foto']) ?>" alt="Foto bukti"
+                          class="img-thumbnail" width="200">
                       <?php endforeach ?>
                     </div>
                   </div>
@@ -117,19 +113,26 @@
                 <div id="tanggapan-admin">
                   <h5 class="card-title">Tambahkan Tanggapan</h5>
                   <form method="post" action="/pengaduan/storeTanggapanAdmin" enctype="multipart/form-data">
-                    <input type="hidden" name="id_aduan" value="<?= $pengaduan['p']['id'] ?>">
+                    <input type="hidden" name="id_aduan" value="<?= $pengaduan['p']['id_pengaduan'] ?>">
                     <div class="row mb-3">
                       <label for="jenis_tanggapan" class="col-sm-2 col-form-label">jenis Tanggapan</label>
                       <div class="col-sm-10">
                         <select class="form-select" name="jenis_tanggapan" id="jenis_tanggapan" required>
                           <?php if (session('user_id')['role'] == 'Admin'): ?>
                             <option value="Proses" <?= set_select('jenis_tanggapan', 'Proses') ?>>Proses</option>
-                            <option value="Menunggu Kelengkapan data" <?= set_select('jenis_tanggapan', 'Menunggu Kelengkapan data', $status == 'kurang') ?>>Menunggu Kelengkapan data</option>
-                            <option value="Selesai" <?= set_select('jenis_tanggapan', 'Selesai', $status == 'selesai') ?>>Selesai</option>
-                            <option value="Tidak Valid" <?= set_select('jenis_tanggapan', 'Tidak Valid', $status == 'invalid') ?>>Tidak Valid</option>
+                            <option value="Menunggu Kelengkapan data"
+                              <?= set_select('jenis_tanggapan', 'Menunggu Kelengkapan data', $status == 'kurang') ?>>
+                              Menunggu Kelengkapan data</option>
+                            <option value="Selesai" <?= set_select('jenis_tanggapan', 'Selesai', $status == 'selesai') ?>>
+                              Selesai</option>
+                            <option value="Tidak Valid"
+                              <?= set_select('jenis_tanggapan', 'Tidak Valid', $status == 'invalid') ?>>Tidak Valid
+                            </option>
                           <?php else: ?>
-                            <option value="Melengkapi Data" <?= set_select('jenis_tanggapan', 'Melengkapi Data') ?>>Melengkapi Data</option>
-                            <option value="Komentar" <?= set_select('jenis_tanggapan', 'Komentar', $status == 'komentar') ?>>Komentar</option>
+                            <option value="Melengkapi Data" <?= set_select('jenis_tanggapan', 'Melengkapi Data') ?>>
+                              Melengkapi Data</option>
+                            <option value="Komentar"
+                              <?= set_select('jenis_tanggapan', 'Komentar', $status == 'komentar') ?>>Komentar</option>
                           <?php endif ?>
                         </select>
 
@@ -139,8 +142,10 @@
                     <div class="row mb-3">
                       <label for="rincian" class="col-sm-2 col-form-label">Rincian Tanggapan</label>
                       <div class="col-sm-10">
-                        <textarea class="form-control" name="rincian" id="rincian" required><?= set_value('rincian') ?></textarea>
-                        <small class="text-muted">isikan rincian terkait tanggapan, agar bisa dilihat oleh pengirim aduan</small>
+                        <textarea class="form-control" name="rincian" id="rincian"
+                          required><?= set_value('rincian') ?></textarea>
+                        <small class="text-muted">isikan rincian terkait tanggapan, agar bisa dilihat oleh pengirim
+                          aduan</small>
                       </div>
                     </div>
 
@@ -148,7 +153,8 @@
                       <label for="user_ktp" class="col-sm-2 col-form-label">Upload Foto Tanggapan</label>
                       <div class="col-sm-10">
                         <small class="text-muted">Upload foto tanggapan/bukti penyelesaian pengaduan [opsional]</small>
-                        <input type="file" class="form-control" id="bukti" name="bukti[]" multiple onchange="previewImages()">
+                        <input type="file" class="form-control" id="bukti" name="bukti[]" multiple
+                          onchange="previewImages()">
                         <small class="text-muted">Maksimal 512 KB. boleh lebih dari 1 bukti</small>
                         <div class="form-group">
                           <label>Preview:</label>
