@@ -86,6 +86,6 @@ class AkunController extends BaseController
         // Update password
         $userModel->update($userId, ['password' => $newPassword]);
 
-        return redirect()->to('/profile')->with('success', 'Password berhasil diubah.');
+        return redirect()->back()->with('success', 'Password berhasil diubah.');
     }
 }

@@ -18,10 +18,10 @@
       <div class="alert alert-success"><?= session()->get('success') ?></div>
       <?php endif; ?>
 
-      <?php if (isset($errors) && count($errors) > 0): ?>
+      <?php if (session()->get('errors')): ?>
       <div class="alert alert-danger">
         <ul>
-          <?php foreach ($errors as $error): ?>
+          <?php foreach (session()->get('errors') as $error): ?>
           <li><?= esc($error) ?></li>
           <?php endforeach; ?>
         </ul>

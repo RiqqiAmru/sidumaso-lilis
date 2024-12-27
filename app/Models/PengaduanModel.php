@@ -118,6 +118,7 @@ class PengaduanModel extends Model
             ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->whereIn('pengaduan.ket', $ket)
+            ->orderBy('pengaduan.created_at', 'DESC')
             ->get()
             ->getResultArray();
 
@@ -149,7 +150,12 @@ class PengaduanModel extends Model
         $end_date = $end_date . ' 23:59:59'; // Menambahkan waktu ke tanggal akhir
 
         // Query dengan kondisi tanggal
-        return $this->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_pengaduan.foto, tbl_user.nama')
+        return $this->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_pengaduan.foto, tbl_user.nama,
+        IFNULL((SELECT tanggapan.rincian 
+                                 FROM tanggapan 
+                                 WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
+                                 ORDER BY tanggapan.created_at DESC 
+                                 LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
             ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where("pengaduan.created_at BETWEEN '$start_date' AND '$end_date'")
@@ -216,11 +222,11 @@ class PengaduanModel extends Model
         DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, 
         foto_pengaduan.foto, 
         tbl_user.nama, 
-        (SELECT tanggapan.rincian 
-         FROM tanggapan 
-         WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan 
-         ORDER BY tanggapan.created_at DESC 
-         LIMIT 1) AS tanggapan_rincian')
+         IFNULL((SELECT tanggapan.rincian 
+                                 FROM tanggapan 
+                                 WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
+                                 ORDER BY tanggapan.created_at DESC 
+                                 LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
             ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where('pengaduan.ket', $status)
@@ -234,11 +240,11 @@ class PengaduanModel extends Model
             DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, 
             foto_pengaduan.foto, 
             tbl_user.nama, 
-            (SELECT tanggapan.rincian 
-             FROM tanggapan 
-             WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan 
-             ORDER BY tanggapan.created_at DESC 
-             LIMIT 1) AS tanggapan_rincian')
+            IFNULL((SELECT tanggapan.rincian 
+                                 FROM tanggapan 
+                                 WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
+                                 ORDER BY tanggapan.created_at DESC 
+                                 LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
             ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where('pengaduan.ket', $status) // Pastikan filter status diterapkan dengan benar

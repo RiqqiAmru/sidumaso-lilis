@@ -506,7 +506,7 @@ class Pengaduan extends BaseController
         }
 
         // Kirim data ke view
-        return view('laporan', ['pengaduan' => $pengaduan]);
+        return view('laporan', ['pengaduan' => $pengaduan, 'start_date' => date('Y-m-d', strtotime($start_date)), 'end_date' => date('Y-m-d', strtotime($end_date)), 'status' => $status]);
     }
 
 
@@ -550,8 +550,11 @@ class Pengaduan extends BaseController
 
         // Mempersiapkan data untuk PDF
         $filter_keterangan = "Laporan berdasarkan filter: ";
+
         if ($start_date && $end_date) {
             $filter_keterangan .= "Tanggal: $start_date sampai $end_date; ";
+        } else {
+            $filter_keterangan .= "Semua Pengaduan; ";
         }
         if ($status && isset($status_map[$status])) {
             $filter_keterangan .= "Status: $status";
@@ -632,7 +635,7 @@ class Pengaduan extends BaseController
     </head>
     <body>
          <div class='kop-surat'>
-            <img src='logo.png' alt='Logo Kabupaten'>
+            <img src='http://localhost:8080/logo.png' alt='Logo Kabupaten'>
             <h3>PEMERINTAH KABUPATEN PEKALONGAN</h3>
             <h3>KECAMATAN BUARAN</h3>
             <h3>KEPALA DESA WONOYOSO</h3>
@@ -672,7 +675,7 @@ class Pengaduan extends BaseController
         <td>" . ($laporan['ket'] == 0 ? 'Menunggu' : ($laporan['ket'] == 1 ? 'Proses' : ($laporan['ket'] == 3 ? 'Selesai' : 'Invalid'))) . "</td>
         <td>{$laporan['created_at']}</td>
         <td>{$laporan['nama']}</td>
-        <td><img src='" . base_url('uploads/bukti/' . $laporan['foto']) . "' width='100' /></td>
+        <td><img src='http://localhost:8080/uploads/bukti/{$laporan['foto']}' width='100' /></td>
         <td>{$laporan['tanggapan_rincian']}</td>
     </tr>";
             $no++;
@@ -688,6 +691,7 @@ class Pengaduan extends BaseController
         $dompdf = new Dompdf();
         $dompdf->set_option('isHtml5ParserEnabled', true);
         $dompdf->set_option('isPhpEnabled', true);
+        $dompdf->set_option('log-output-file', 'log.txt');
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();

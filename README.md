@@ -49,15 +49,19 @@ error
 
 1. lupa password ,
 2. back up data ,
-3. filtering laporan (nek difilter metu tanggapane tapi nek ora dipilih periode/tanpa filter tapi klik tombol filter, tanggapane rak kepanggil) kurang per jenis pengaduan juga
-4. filtering desc di pengaduan proses ,
-5. modal untuk foto tanggapan✅
-6. harusnya tombol komentar jika status proses saja ,
-7. ubah password,✅
-8. edit pengaduan, [validasi gambar susah]
-9. file bukti pengaduan diganti opsional
-   -ganti view pengumuman masyarakat✅
-   -keterangan di laporan tgl brp (ketika cetak laporan ada keterangan berdasarkan filter opo)
-   -ganti nama field database ✅
-   -tidak ada fitur nambah jenis pengaduan
-   - kepala dusun tampilan nya apa
+3. keterangan di laporan tgl brp (ketika cetak laporan ada keterangan berdasarkan filter opo)
+4. tidak ada fitur nambah jenis pengaduan
+5. kepala dusun tampilan nya apa
+
+6. filtering desc di pengaduan proses , (WES DESC)
+7. edit pengaduan, [validasi gambar susah]
+8. file bukti pengaduan diganti opsional (SUDAH OPSIONAL)
+
+9. filtering laporan (nek difilter metu tanggapane tapi nek ora dipilih periode/tanpa filter tapi klik tombol filter, tanggapane rak kepanggil) kurang per jenis pengaduan juga✅
+10. ganti view pengumuman masyarakat✅
+11. ganti nama field database ✅
+12. ubah password,✅
+13. notif ubah password✅
+14. hapus created_at di pengumuman✅(dicek dulu nanti)
+15. modal untuk foto tanggapan✅
+16. harusnya tombol komentar jika status proses saja ,✅

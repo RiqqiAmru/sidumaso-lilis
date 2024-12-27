@@ -13,15 +13,17 @@
                     <form method="get" action="<?= base_url('pengaduan/filterLaporan'); ?>">
                         <div class="row mb-0">
                             <div class="col-md-4">
+
                                 <label for="start_date" class="form-label">Dari Tanggal</label>
                                 <input type="date" id="start_date" name="start_date" class="form-control"
-                                    value="<?= isset($start_date) ? $start_date : '' ?>">
+                                    value="<?= isset($start_date) && $start_date != '1970-01-01' ? $start_date : '' ?>">
                             </div>
                             <div class="col-md-4">
                                 <label for="end_date" class="form-label">Sampai Tanggal</label>
                                 <input type="date" id="end_date" name="end_date" class="form-control"
-                                    value="<?= isset($end_date) ? $end_date : '' ?>">
+                                    value="<?= isset($end_date) &&  $end_date != '1970-01-01' ? $end_date : '' ?>">
                             </div>
+
                             <div class="col-md-4">
                                 <label for="status" class="form-label">Status</label>
                                 <select name="status" id="status" class="form-control">
@@ -99,7 +101,8 @@
                                                     <span class="badge rounded-pill text-bg-secondary btn-tanggapan"
                                                         data-id="<?= $p['id_pengaduan']; ?>">Proses</span>
                                                 <?php elseif ($p['ket'] == 2): ?>
-                                                    <span class="badge rounded-pill text-bg-warning btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu
+                                                    <span class="badge rounded-pill text-bg-warning btn-tanggapan"
+                                                        data-id="<?= $p['id_pengaduan']; ?>">Menunggu
                                                         kelengkapan
                                                         data</span>
                                                 <?php elseif ($p['ket'] == 3): ?>
@@ -109,7 +112,8 @@
                                                     <span class="badge rounded-pill text-bg-danger btn-tanggapan"
                                                         data-id="<?= $p['id_pengaduan']; ?>">Invalid</span>
                                                 <?php elseif ($p['ket'] == 5 || $p['ket'] == 6): ?>
-                                                    <span class="badge rounded-pill text-bg-secondary btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu
+                                                    <span class="badge rounded-pill text-bg-secondary btn-tanggapan"
+                                                        data-id="<?= $p['id_pengaduan']; ?>">Menunggu
                                                         admin</span>
                                                 <?php endif ?>
                                             </button>
