@@ -9,6 +9,8 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        // truncate table
+
         $factories = [
             [
                 'nama'    => 'admin',
@@ -20,17 +22,8 @@ class UserSeeder extends Seeder
                 'row_status'    => 'Aktif',
             ],
             [
-                'nama'    => 'masyarakat',
-                'username'     => 'masyarakat',
-                'no_hp'   => '085566644477',
-                'password'    => password_hash('masyarakat', PASSWORD_DEFAULT),
-                'user_ktp'    => 'default.jpg',
-                'role'    => 'Masyarakat',
-                'row_status'    => 'Aktif',
-            ],
-            [
                 'nama'    => 'Masyarakat Non Aktif',
-                'username'     => 'masyarakat',
+                'username'     => 'non-aktif',
                 'no_hp'   => '085566644477',
                 'password'    => password_hash('masyarakat', PASSWORD_DEFAULT),
                 'user_ktp'    => 'default.jpg',
@@ -39,7 +32,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'nama'    => 'Masyarakat Menunggu',
-                'username'     => 'masyarakat',
+                'username'     => 'menunggu',
                 'no_hp'   => '085566644477',
                 'password'    => password_hash('masyarakat', PASSWORD_DEFAULT),
                 'user_ktp'    => 'default.jpg',
@@ -55,12 +48,36 @@ class UserSeeder extends Seeder
                 'role'    => 'Kepala_dusun',
                 'row_status'    => 'Aktif',
             ],
+            [
+                'nama'    => 'masyarakat',
+                'username'     => 'masyarakat',
+                'no_hp'   => '085566644477',
+                'password'    => password_hash('masyarakat', PASSWORD_DEFAULT),
+                'user_ktp'    => 'default.jpg',
+                'role'    => 'Masyarakat',
+                'row_status'    => 'Aktif',
+            ],
         ];
 
         $builder = $this->db->table('tbl_user');
 
         foreach ($factories as $factory) {
             $builder->insert($factory);
+        }
+
+        // fake user masyarakat
+        $faker = \Faker\Factory::create('id_ID');
+        for ($i = 0; $i < 10; $i++) {
+            $data = [
+                'nama'    => $faker->name,
+                'username'     => $faker->userName,
+                'no_hp'   => $faker->phoneNumber,
+                'password'    => password_hash('masyarakat', PASSWORD_DEFAULT),
+                'user_ktp'    => 'default.jpg',
+                'role'    => 'Masyarakat',
+                'row_status'    => 'Aktif',
+            ];
+            $builder->insert($data);
         }
     }
 }

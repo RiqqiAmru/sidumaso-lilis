@@ -1,14 +1,22 @@
 <?= $this->extend('templates/head'); ?>
 <?= $this->section('content'); ?>
 <main id="main" class="main">
-    <div class="pagetitle">
+    <div class="no-print pagetitle">
         <h1>Laporan</h1>
     </div>
     <section class="section">
         <div class="col-lg-12">
             <div class="card">
+                <div id="kopSurat" class="print-only text-center">
+                    <img src=' <?= base_url('assets/img/logo.png') ?>' alt='Logo Kabupaten' width="100px">
+                    <h3>PEMERINTAH KABUPATEN PEKALONGAN</h3>
+                    <h3>KECAMATAN BUARAN</h3>
+                    <h3>KEPALA DESA WONOYOSO</h3>
+                    <h6>Sekretariat Jalan Desa Wonoyoso Kecamatan Buaran Kabupaten Pekalongan 51171</h6>
+                    <hr class='garis-pemisah'>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">Laporan</h5>
+                    <h5 class="card-title">Data Laporan Pengaduan Masyarakat</h5>
                     <!-- Form Filter Tanggal -->
                     <form method="get" action="<?= base_url('pengaduan/filterLaporan'); ?>">
                         <div class="row mb-0">
@@ -49,14 +57,13 @@
                         <div class="row mb-3">
                             <!-- Tombol Filter -->
                             <div class="d-flex justify-content-start">
-                                <button type="submit" class="btn btn-primary mt-4">Filter</button>
-                                <button type="button" class="btn btn-primary mt-4 ms-3">
-                                    <a href="<?= site_url('pengaduan/printLaporan') ?>" class="text-white text-decoration-none">Cetak
+                                <button type="submit" class="btn btn-primary mt-4 no-print">Filter</button>
+                                <button type="button" class="btn btn-primary mt-4 ms-3" id="printBtn">
+                                    <a href="" class="text-white text-decoration-none">Cetak
                                         Laporan</a>
                                 </button>
                             </div>
                         </div>
-
                     </form>
 
 
@@ -175,4 +182,6 @@
                 </div>
     </section>
 </main>
+
+
 <?= $this->endSection(); ?>

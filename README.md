@@ -49,14 +49,14 @@ error
 
 1. lupa password ,
 2. back up data ,
-3. keterangan di laporan tgl brp (ketika cetak laporan ada keterangan berdasarkan filter opo)
-4. tidak ada fitur nambah jenis pengaduan
-5. kepala dusun tampilan nya apa
+3. tidak ada fitur nambah jenis pengaduan
 
-6. filtering desc di pengaduan proses , (WES DESC)
-7. edit pengaduan, [validasi gambar susah]
-8. file bukti pengaduan diganti opsional (SUDAH OPSIONAL)
+4. filtering desc di pengaduan proses , (WES DESC)
+5. edit pengaduan, [validasi gambar susah]
+6. file bukti pengaduan diganti opsional (SUDAH OPSIONAL)
 
+7. keterangan di laporan tgl brp (ketika cetak laporan ada keterangan berdasarkan filter opo)✅
+8. kepala dusun tampilan sidebar tidak ada pengumuman kr daftar pengguna✅
 9. filtering laporan (nek difilter metu tanggapane tapi nek ora dipilih periode/tanpa filter tapi klik tombol filter, tanggapane rak kepanggil) kurang per jenis pengaduan juga✅
 10. ganti view pengumuman masyarakat✅
 11. ganti nama field database ✅

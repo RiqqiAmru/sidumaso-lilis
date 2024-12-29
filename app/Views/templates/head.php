@@ -38,7 +38,72 @@
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
+    <style>
+        /* Sembunyikan tombol cetak saat mencetak */
+        .print-only {
+            display: none;
+        }
 
+        .no-print {
+            display: block;
+        }
+
+        @media print {
+            #printBtn {
+                display: none;
+            }
+
+
+
+            /*  class card jadikan full width*/
+            .card {
+                width: 100% !important;
+            }
+
+            /* Menambahkan kop surat saat mencetak */
+            #kopSurat {
+                display: block;
+                text-align: center;
+                font-weight: bold;
+                font-size: 20px;
+            }
+
+            /* Sembunyikan elemen-elemen yang tidak perlu dicetak */
+            .no-print {
+                /* important */
+                display: none !important;
+            }
+
+            .print-only {
+                display: block;
+            }
+
+            /* Atur margin halaman */
+            /* scale 80% */
+
+            @page {
+                margin: none;
+                scale: 0.8;
+            }
+
+            /* Atur font ukuran saat mencetak */
+
+
+            /* Sesuaikan tampilan tabel saat dicetak */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+
+
+            th,
+            td {
+                padding: 8px;
+                text-align: left;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -61,6 +126,31 @@
     <!-- Template Main CSS File -->
 
 
+    <script>
+        document.getElementById('printBtn').addEventListener('click', function() {
+            // Menyembunyikan elemen yang tidak ingin dicetak
+            document.getElementById('printBtn').style.display = 'none'; // Sembunyikan tombol cetak
+            // sembunyikan elemen dengan class no-print
+            document.querySelectorAll('.no-print').forEach(function(el) {
+                el.style.display = 'none';
+                console.log(el);
+            });
+            document.querySelectorAll('.print-only').forEach(function(el) {
+                el.style.display = 'block';
+            })
 
+            window.print(); // Memanggil dialog cetak
+            // Menampilkan kembali tombol cetak setelah selesai mencetak
+            window.onafterprint = function() {
+                document.getElementById('printBtn').style.display = 'block';
+                document.querySelectorAll('.no-print').forEach(function(el) {
+                    el.style.display = 'block';
+                });
+                document.querySelectorAll('.print-only').forEach(function(el) {
+                    el.style.display = 'none';
+                })
+            };
+        });
+    </script>
 
 </body>

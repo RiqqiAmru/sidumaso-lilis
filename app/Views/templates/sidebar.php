@@ -1,5 +1,5 @@
 <!-- ======= Sidebar ======= -->
-<aside id="sidebar" class="sidebar">
+<aside id="sidebar" class="sidebar no-print">
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
@@ -9,26 +9,29 @@
                 <span>Dashboard</span>
             </a>
         </li><!-- End Dashboard Nav -->
-        <?php if (session('user_id')['role'] == 'Admin'): ?>
-            <li class="nav-heading">User Manage</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#tables-dp" data-bs-toggle="collapse" href="">
-                    <i class="bi bi-layout-text-window-reverse"></i><span>Daftar Pengguna</span><i
-                        class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="tables-dp" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="<?php echo base_url('/admin/manageuser/') ?>">
-                            <i class="bi bi-circle"></i><span> Daftar Pengguna</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?php echo base_url('/admin/manageuser/addUser') ?>">
-                            <i class="bi bi-circle"></i><span>Tambah Pengguna</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Tables Nav -->
+        <?php if (session('user_id')['role'] == 'Admin' | session('user_id')['role'] == 'Kepala_dusun'): ?>
+            <?php if (session('user_id')['role'] == 'Admin'): ?>
+                <li class="nav-heading">User Manage</li>
+                <li class="nav-item">
+
+                    <a class="nav-link collapsed" data-bs-target="#tables-dp" data-bs-toggle="collapse" href="">
+                        <i class="bi bi-layout-text-window-reverse"></i><span>Daftar Pengguna</span><i
+                            class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="tables-dp" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="<?php echo base_url('/admin/manageuser/') ?>">
+                                <i class="bi bi-circle"></i><span> Daftar Pengguna</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url('/admin/manageuser/addUser') ?>">
+                                <i class="bi bi-circle"></i><span>Tambah Pengguna</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li><!-- End Tables Nav -->
+            <?php endif ?>
             <li class="nav-heading">Pengaduan</li>
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#tables-dpn" data-bs-toggle="collapse" href="#">
@@ -60,12 +63,16 @@
             </li>
 
             <li class="nav-heading">lainnya</li>
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="<?php echo base_url('Pengumuman') ?>">
-                    <i class="bi bi-question-circle"></i>
-                    <span>Pengumuman</span>
-                </a>
-            </li>
+            <?php if (session('user_id')['role'] == 'Admin'): ?>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="<?php echo base_url('Pengumuman') ?>">
+                        <i class="bi bi-question-circle"></i>
+                        <span>Pengumuman</span>
+                    </a>
+                </li>
+            <?php endif ?>
+
             <li class="nav-item">
                 <a class="nav-link collapsed" href="<?php echo base_url('pengaduan/laporan') ?>">
                     <i class="bi bi-question-circle"></i>
@@ -93,28 +100,7 @@
                     <a class="nav-link collapsed" href="<?= base_url('/pengaduan/daftarPengaduan') ?>">
                         <i class="bi bi-layout-text-window-reverse"></i><span>Daftar Pengaduan Saya</span>
                     </a>
-                    <!-- <ul id="tables-dpn" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                        <li>
-                            <a href="<= base_url('/pengaduan/daftarPengaduan') ?>">
-                                <i class="bi bi-circle"></i><span>Pengaduan </span>
-                            </a>
-                        </li>
-                        <li> -->
-                    <!-- <a href="tables-data.html">
-                                <i class="bi bi-circle"></i><span>Pengaduan Valid / Tidak Valid</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="tables-data.html">
-                                <i class="bi bi-circle"></i><span>Pengaduan Diproses</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="tables-data.html">
-                                <i class="bi bi-circle"></i><span>Pengaduan Selesai</span>
-                            </a>
-                        </li> -->
-                    <!-- </ul> -->
+
                 </li>
             <?php endif ?>
         <?php endif ?>
