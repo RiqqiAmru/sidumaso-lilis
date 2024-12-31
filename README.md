@@ -51,17 +51,20 @@ error
 2. back up data ,
 3. tidak ada fitur nambah jenis pengaduan
 
-4. filtering desc di pengaduan proses , (WES DESC)
-5. edit pengaduan, [validasi gambar susah]
-6. file bukti pengaduan diganti opsional (SUDAH OPSIONAL)
-
-7. keterangan di laporan tgl brp (ketika cetak laporan ada keterangan berdasarkan filter opo)✅
-8. kepala dusun tampilan sidebar tidak ada pengumuman kr daftar pengguna✅
-9. filtering laporan (nek difilter metu tanggapane tapi nek ora dipilih periode/tanpa filter tapi klik tombol filter, tanggapane rak kepanggil) kurang per jenis pengaduan juga✅
-10. ganti view pengumuman masyarakat✅
-11. ganti nama field database ✅
-12. ubah password,✅
-13. notif ubah password✅
-14. hapus created_at di pengumuman✅(dicek dulu nanti)
-15. modal untuk foto tanggapan✅
-16. harusnya tombol komentar jika status proses saja ,✅
+4. hapus field foto pada laporan✅
+5. menambah filtering per perihal (jenis pengaduan : infrastukrur dll)✅
+6. tampilan di daftar pengaduan gambar hanya keluar 1✅ sudah diganti
+7. bukti pengaduan bisa pdf/doc✅
+8. bukti pada edit pengaduan ✅
+9. menambah pilihan (—pilih jenis tanggapan—)✅
+10. landing page diberi informasi total pengaduan yang sedang diproses✅
+11. keterangan di laporan tgl brp (ketika cetak laporan ada keterangan berdasarkan filter opo)✅
+12. kepala dusun tampilan sidebar tidak ada pengumuman kr daftar pengguna✅
+13. filtering laporan (nek difilter metu tanggapane tapi nek ora dipilih periode/tanpa filter tapi klik tombol filter, tanggapane rak kepanggil) kurang per jenis pengaduan juga✅
+14. ganti view pengumuman masyarakat✅
+15. ganti nama field database ✅
+16. ubah password,✅
+17. notif ubah password✅
+18. hapus created_at di pengumuman✅(dicek dulu nanti)
+19. modal untuk foto tanggapan✅
+20. harusnya tombol komentar jika status proses saja ,✅

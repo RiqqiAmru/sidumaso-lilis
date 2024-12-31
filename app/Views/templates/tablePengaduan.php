@@ -8,73 +8,87 @@
       <th scope="col">Gang</th> <!-- Kolom Gang -->
       <th scope="col">Detail Lokasi</th> <!-- Kolom Detail Lokasi -->
       <?php if (session('user_id')['role'] != 'Masyarakat'): ?>
-      <th scope="col">Pengirim</th>
+        <th scope="col">Pengirim</th>
       <?php endif; ?>
       <th scope="col">Status</th>
-      <th scope="col">Foto Bukti</th>
+      <th scope="col">Bukti</th>
     </tr>
   </thead>
   <tbody>
     <?php if (!empty($pengaduan) && is_array($pengaduan)): ?>
-    <?php $no = 1;
+      <?php $no = 1;
       foreach ($pengaduan as $p): ?>
-    <tr data-id="<?= $p['id'] ?>">
-      <th scope="row"><?= $no++ ?></th>
-      <td><?= $p['created_at'] ?></td>
-      <td><?= $p['jenis_pengaduan'] ?></td>
-      <td><?= $p['rincian'] ?></td>
-      <td><?= $p['gang'] ?></td> <!-- Menampilkan data Gang -->
-      <td><?= $p['detail_lokasi'] ?></td> <!-- Menampilkan data Detail Lokasi -->
-      <?php if (session('user_id')['role'] != 'Masyarakat'): ?>
-      <td><?= $p['nama'] ?></td>
-      <?php endif; ?>
-      <td>
-        <button class="btn">
-          <?php if ($p['ket'] == 0): ?>
-          <span class="badge rounded-pill text-bg-primary btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu</span>
-          <?php elseif ($p['ket'] == 1): ?>
-          <span class="badge rounded-pill text-bg-secondary btn-tanggapan" data-id="<?= $p['id']; ?>">Proses</span>
-          <?php elseif ($p['ket'] == 2): ?>
-          <span class="badge rounded-pill text-bg-warning btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu kelengkapan
-            data</span>
-          <?php elseif ($p['ket'] == 3): ?>
-          <span class="badge rounded-pill text-bg-success btn-tanggapan" data-id="<?= $p['id']; ?>">Selesai</span>
-          <?php elseif ($p['ket'] == 4): ?>
-          <span class="badge rounded-pill text-bg-danger btn-tanggapan" data-id="<?= $p['id']; ?>">Invalid</span>
-          <?php elseif ($p['ket'] == 5 || $p['ket'] == 6): ?>
-          <span class="badge rounded-pill text-bg-secondary btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu
-            admin</span>
+        <tr data-id="<?= $p['id'] ?>">
+          <th scope="row"><?= $no++ ?></th>
+          <td><?= $p['created_at'] ?></td>
+          <td><?= $p['jenis_pengaduan'] ?></td>
+          <td><?= $p['rincian'] ?></td>
+          <td><?= $p['gang'] ?></td> <!-- Menampilkan data Gang -->
+          <td><?= $p['detail_lokasi'] ?></td> <!-- Menampilkan data Detail Lokasi -->
+          <?php if (session('user_id')['role'] != 'Masyarakat'): ?>
+            <td><?= $p['nama'] ?></td>
+          <?php endif; ?>
+          <td>
+            <button class="btn">
+              <?php if ($p['ket'] == 0): ?>
+                <span class="badge rounded-pill text-bg-primary btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu</span>
+              <?php elseif ($p['ket'] == 1): ?>
+                <span class="badge rounded-pill text-bg-secondary btn-tanggapan" data-id="<?= $p['id']; ?>">Proses</span>
+              <?php elseif ($p['ket'] == 2): ?>
+                <span class="badge rounded-pill text-bg-warning btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu kelengkapan
+                  data</span>
+              <?php elseif ($p['ket'] == 3): ?>
+                <span class="badge rounded-pill text-bg-success btn-tanggapan" data-id="<?= $p['id']; ?>">Selesai</span>
+              <?php elseif ($p['ket'] == 4): ?>
+                <span class="badge rounded-pill text-bg-danger btn-tanggapan" data-id="<?= $p['id']; ?>">Invalid</span>
+              <?php elseif ($p['ket'] == 5 || $p['ket'] == 6): ?>
+                <span class="badge rounded-pill text-bg-secondary btn-tanggapan" data-id="<?= $p['id']; ?>">Menunggu
+                  admin</span>
+              <?php endif ?>
+            </button>
+          </td>
+          <td>
+            <?php foreach ($p['foto'] as $foto): ?>
+              <?php
+              // Dapatkan ekstensi file
+              $file_extension = pathinfo($foto, PATHINFO_EXTENSION);
+              // Daftar ekstensi gambar yang diperbolehkan
+              $allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+              // Periksa apakah file tersebut termasuk dalam ekstensi gambar
+              if (in_array(strtolower($file_extension), $allowed_image_extensions)):
+              ?>
+                <!-- Jika file adalah gambar, tampilkan gambar -->
+                <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail" width="100"
+                  data-bs-toggle="modal" data-bs-target="#imageModal">
+              <?php else: ?>
+                <!-- Jika bukan gambar, tampilkan sesuatu lain (misalnya teks atau icon) -->
+                <a href="<?= base_url('uploads/bukti/' . $foto) ?>" target="_blank" rel="noopener noreferrer">download
+                  <?= $file_extension ?></a>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          </td>
+
+          <?php if (session('user_id')['role'] == 'Masyarakat' && $p['ket'] == 0): ?>
+            <td>
+              <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeletePengaduan"
+                data-bs-id='<?= $p['id'] ?>'>
+                Hapus</button>
+              <button class="btn btn-outline-info ">
+                <a href="<?= base_url('pengaduan/edit/' . $p['id']) ?>">Edit</a></button>
+            </td>
+          <?php elseif (session('user_id')['role'] == 'Admin' && $p['ket'] == 0): ?>
+            <td>
+              <button class="btn btn-outline-success">
+                <a href="<?= base_url('pengaduan/proses/' . $p['id']) ?>">Proses</a></button>
+            </td>
           <?php endif ?>
-        </button>
-      </td>
-      <td>
-        <?php foreach ($p['foto'] as $foto): ?>
-        <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail" width="100"
-          data-bs-toggle="modal" data-bs-target="#imageModal">
-        <?php endforeach ?>
-      </td>
 
-      <?php if (session('user_id')['role'] == 'Masyarakat' && $p['ket'] == 0): ?>
-      <td>
-        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeletePengaduan"
-          data-bs-id='<?= $p['id'] ?>'>
-          Hapus</button>
-        <button class="btn btn-outline-info ">
-          <a href="<?= base_url('pengaduan/edit/' . $p['id']) ?>">Edit</a></button>
-      </td>
-      <?php elseif (session('user_id')['role'] == 'Admin' && $p['ket'] == 0): ?>
-      <td>
-        <button class="btn btn-outline-success">
-          <a href="<?= base_url('pengaduan/proses/' . $p['id']) ?>">Proses</a></button>
-      </td>
-      <?php endif ?>
-
-    </tr>
-    <?php endforeach; ?>
+        </tr>
+      <?php endforeach; ?>
     <?php else: ?>
-    <tr>
-      <td colspan="9" class="text-center">Belum ada data pengaduan.</td>
-    </tr>
+      <tr>
+        <td colspan="9" class="text-center">Belum ada data pengaduan.</td>
+      </tr>
     <?php endif; ?>
   </tbody>
 </table>
@@ -92,33 +106,34 @@
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const table = document.getElementById('pengaduanTable');
-  table.addEventListener('click', function(e) {
+  document.addEventListener('DOMContentLoaded', function() {
+    const table = document.getElementById('pengaduanTable');
+    table.addEventListener('click', function(e) {
 
-    if (e.target && e.target.classList.contains('btn-tanggapan')) {
-      const idAduan = e.target.dataset.id;
-      console.log(idAduan);
-      const row = e.target.closest('tr');
+      if (e.target && e.target.classList.contains('btn-tanggapan')) {
+        const idAduan = e.target.dataset.id;
+        console.log(idAduan);
+        const row = e.target.closest('tr');
 
-      // Periksa apakah sudah ada tanggapan di bawahnya
-      if (row.nextElementSibling && row.nextElementSibling.classList.contains('tanggapan-row')) {
-        row.nextElementSibling.remove();
-        return;
-      }
+        // Periksa apakah sudah ada tanggapan di bawahnya
+        if (row.nextElementSibling && row.nextElementSibling.classList.contains('tanggapan-row')) {
+          row.nextElementSibling.remove();
+          return;
+        }
 
-      // Hapus semua tanggapan lain yang terbuka
-      document.querySelectorAll('.tanggapan-row').forEach(el => el.remove());
+        // Hapus semua tanggapan lain yang terbuka
+        document.querySelectorAll('.tanggapan-row').forEach(el => el.remove());
 
-      // Fetch tanggapan dari server
-      fetch(`/tanggapan/${idAduan}`)
-        .then(response => response.json())
-        .then(data => {
+        // Fetch tanggapan dari server
+        fetch(`/tanggapan/${idAduan}`)
+          .then(response => response.json())
+          .then(data => {
 
-          if (data) {
-            const tanggapanRow = document.createElement('tr');
-            tanggapanRow.classList.add('tanggapan-row');
-            tanggapanRow.innerHTML = `
+            if (data) {
+              const tanggapanRow = document.createElement('tr');
+              tanggapanRow.classList.add('tanggapan-row');
+
+              tanggapanRow.innerHTML = `
                 <td></td>
                                 <td colspan="6">
                                     <table class="table table-bordered">
@@ -142,10 +157,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                                     
                                                     </td>
                                                     <td>${tanggapan.rincian}</td>
-                                                    <td>
-                                                    ${tanggapan.foto && tanggapan.foto.length > 0
-                  ? tanggapan.foto.map(foto => `
-                                                    <img src="<?= base_url('uploads/bukti/') ?>${foto}" alt="Foto" style="width: 50px; margin-right: 5px; " class="img-thumbnail"  data-bs-toggle="modal" data-bs-target="#imageModal">
+                                                    <td class='flex'>
+                                                    ${tanggapan.foto && tanggapan.foto.length > 0 ? tanggapan.foto.map(foto => `
+                                                    <a href="<?= base_url('uploads/bukti/') ?>${foto}" target="_blank" class="btn btn-link">
+            Download 
+          </a>
                                                     `).join('')
                   : 'Tidak Ada'}
                                                     </td>
@@ -171,28 +187,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </table>
                                 </td>
                             `;
-            row.after(tanggapanRow);
-            document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-              img.addEventListener('click', function() {
-                console.log(this.src);
-                const modalImage = document.getElementById('modalImage');
-                modalImage.src = this.src;
+              row.after(tanggapanRow);
+              document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
+                img.addEventListener('click', function() {
+                  console.log(this.src);
+                  const modalImage = document.getElementById('modalImage');
+                  modalImage.src = this.src;
+                });
               });
-            });
-          } else {
-            alert('Tidak ada tanggapan untuk pengaduan ini.');
-          }
-        })
-        .catch(err => console.error('Error fetching tanggapan:', err));
-    }
-  });
+            } else {
+              alert('Tidak ada tanggapan untuk pengaduan ini.');
+            }
+          })
+          .catch(err => console.error('Error fetching tanggapan:', err));
+      }
+    });
 
-  document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-    img.addEventListener('click', function() {
-      console.log(this.src);
-      const modalImage = document.getElementById('modalImage');
-      modalImage.src = this.src;
+    document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
+      img.addEventListener('click', function() {
+        console.log(this.src);
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = this.src;
+      });
     });
   });
-});
 </script>

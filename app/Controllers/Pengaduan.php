@@ -6,8 +6,9 @@ use App\Models\FotoPengaduanModel;
 use App\Models\FotoTanggapanModel;
 use App\Models\PengaduanModel;
 use App\Models\TanggapanModel;
+
 use Dompdf\Dompdf;
-use Dompdf\Options;
+
 
 class Pengaduan extends BaseController
 {
@@ -15,6 +16,7 @@ class Pengaduan extends BaseController
     protected $fotoPengaduanModel;
     protected $tanggapanModel;
     protected $fotoTanggapanModel;
+    protected $db;
 
     public function __construct()
     {
@@ -22,7 +24,7 @@ class Pengaduan extends BaseController
         $this->fotoPengaduanModel = new FotoPengaduanModel();
         $this->tanggapanModel = new TanggapanModel();
         $this->fotoTanggapanModel = new FotoTanggapanModel();
-
+        $this->db = \Config\Database::connect();
 
         // Memeriksa apakah pengguna sudah login sebelum melakukan apa pun di controller ini
         if (session()->get('logged_in') == null) {
@@ -60,7 +62,8 @@ class Pengaduan extends BaseController
             'rincian' => 'required',
             'gang' => 'required',
             'detail_lokasi' => 'required',
-            'bukti' => 'permit_empty|max_size[bukti,2048]|is_image[bukti]|mime_in[bukti,image/jpg,image/jpeg,image/png,image/gif]',
+
+            'bukti' => 'max_size[bukti,541024]|mime_in[bukti,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpg,image/jpeg,image/png,image/gif]|ext_in[bukti,pdf,doc,docx,jpg,jpeg,png,gif]'
         ];
 
         // Memvalidasi file gambar
@@ -129,7 +132,7 @@ class Pengaduan extends BaseController
     public function edit($id)
     {
         // Ambil data pengaduan berdasarkan ID
-        $pengaduan = $this->pengaduanModel->find($id);
+        $pengaduan = $this->pengaduanModel->findPengaduanAndFotoByIdPengaduan($id);
 
         if (!$pengaduan) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Pengaduan tidak ditemukan');
@@ -137,64 +140,10 @@ class Pengaduan extends BaseController
 
         // Kirim data pengaduan ke view
         return view('masyarakat/pengaduan/edit', [
-            'pengaduan' => $pengaduan
+            'pengaduan' => $pengaduan[0]
         ]);
     }
-    // public function update($id)
-    // {
-    //     $rules = [
-    //         'jenis_pengaduan' => 'required',
-    //         'rincian' => 'required',
-    //         'detail_lokasi' => 'required',
-    //         'gang' => 'required',
 
-    //     ];
-
-
-    //     // Validasi input
-    //     if (
-    //         !$this->validate($rules)
-    //     ) {
-    //         return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-    //     }
-
-    //     // Ambil data input
-    //     $data = [
-    //         'jenis_pengaduan' => $this->request->getVar('jenis_pengaduan'),
-    //         'rincian' => $this->request->getVar('rincian'),
-    //         'detail_lokasi' => $this->request->getVar('detail_lokasi'),
-    //         'gang' => $this->request->getVar('gang'),
-    //         'bukti' => $this->request->getFileMultiple('bukti'), // Ambil banyak file jika ada
-    //     ];
-
-    //     // Jika ada file bukti, simpan file-file tersebut
-    //     if (!empty($data['bukti'])) {
-    //         dd($data['bukti'][0]);
-    //         $fileNames = [];
-    //         foreach ($data['bukti'] as $file) {
-    //             if ($file->isValid() && !$file->hasMoved()) {
-    //                 $fileName = $file->getRandomName();
-    //                 if ($file->move('uploads/bukti', $fileName)) {
-    //                     $fileNames[] = $fileName;
-    //                 } else {
-    //                     return redirect()->back()->with('error', 'Gagal memindahkan file bukti.');
-    //                 }
-    //             } else {
-    //                 return redirect()->back()->with('error', 'File bukti tidak valid: ' . $file->getErrorString());
-    //             }
-    //         }
-    //         $data['bukti'] = implode(',', $fileNames); // Simpan nama file yang diupload
-    //     } else {
-    //         $data['bukti'] = null; // Jika tidak ada file, simpan null
-    //     }
-
-    //     // Update data pengaduan di database
-    //     if ($this->pengaduanModel->update($id, $data)) {
-    //         return redirect()->to('/pengaduan/daftarPengaduan')->with('success', 'Pengaduan berhasil diperbarui');
-    //     } else {
-    //         return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui pengaduan');
-    //     }
-    // }
     public function update($id)
     {
         // Aturan validasi untuk input pengaduan
@@ -203,6 +152,7 @@ class Pengaduan extends BaseController
             'rincian' => 'required',
             'detail_lokasi' => 'required',
             'gang' => 'required',
+            'bukti' => 'permit_empty|mime_in[dokumen,application/pdf,application/msword,image/png,image/jpeg]|max_size[dokumen,2048]',
         ];
 
         // Validasi input
@@ -218,54 +168,70 @@ class Pengaduan extends BaseController
             'gang' => $this->request->getVar('gang'),
         ];
 
-        // Ambil data pengaduan lama berdasarkan ID
-        $pengaduan = $this->pengaduanModel->find($id);
+        // Mulai transaksi
+        $this->db->transBegin();
 
-        // Tangani file bukti (foto) pengaduan
-        $fileBukti = $this->request->getFileMultiple('bukti'); // Ambil banyak file jika ada
+        try {
+            // Ambil data pengaduan lama berdasarkan ID
+            $pengaduan = $this->pengaduanModel->find($id);
 
-        // Jika ada file bukti yang diupload
+            // Tangani file bukti (foto) pengaduan
+            $fileBukti = $this->request->getFileMultiple('bukti'); // Ambil banyak file jika ada
 
-        if (!empty($fileBukti)) {
-            // Menyimpan file baru
-            $fileNames = [];
-            foreach ($fileBukti as $file) {
-                if ($file->isValid() && !$file->hasMoved()) {
-                    $fileName = $file->getRandomName();
-                    if ($file->move('uploads/bukti', $fileName)) {
-                        $fileNames[] = $fileName;
-                    } else {
-                        return redirect()->back()->with('error', 'Gagal memindahkan file bukti.');
+            // Jika ada file bukti yang diupload
+            if (!empty($fileBukti) && $fileBukti[0]->isValid()) {
+                // Simpan file ke folder uploads
+                $imagePaths = [];
+                foreach ($fileBukti as $file) {
+                    if ($file->isValid() && !$file->hasMoved()) {
+                        // Membuat nama file yang unik
+                        $newName = $file->getRandomName();
+                        // Memindahkan file ke folder yang diinginkan
+                        if (!$file->move('uploads/bukti', $newName)) {
+                            throw new \Exception('Gagal memindahkan file.');
+                        }
+
+                        // Menyimpan path file yang telah di-upload
+                        $imagePaths[] = $newName;
                     }
-                } else {
-                    return redirect()->back()->with('error', 'File bukti tidak valid: ' . $file->getErrorString());
                 }
-            }
-            // Gabungkan nama file yang diupload, pisahkan dengan koma
-            $data['bukti'] = implode(',', $fileNames);
 
-            // Jika ada bukti lama, hapus file yang sudah tidak digunakan lagi
-            if (!empty($pengaduan['bukti'])) {
-                $oldFiles = explode(',', $pengaduan['bukti']);
-                foreach ($oldFiles as $oldFile) {
-                    $filePath = 'uploads/bukti/' . $oldFile;
+                // Hapus file lama jika ada
+                $fotoPengaduan = $this->fotoPengaduanModel->getByPengaduanId($id);
+                foreach ($fotoPengaduan as $foto) {
+                    // Pastikan file ada sebelum dihapus
+                    $filePath = 'uploads/bukti/' . $foto['foto'];
                     if (file_exists($filePath)) {
-                        unlink($filePath);  // Menghapus file lama
+                        unlink($filePath); // Hapus file
                     }
+                    $this->fotoPengaduanModel->delete($foto['id_foto_pengaduan']); // Hapus dari database
+                }
+
+                // Input foto baru ke database
+                foreach ($imagePaths as $img) {
+                    $this->fotoPengaduanModel->insert(['foto' => $img, 'id_pengaduan' => $id]);
                 }
             }
-        } else {
-            // Jika tidak ada file baru, pertahankan bukti lama
-            $data['bukti'] = $pengaduan['bukti'];
-        }
 
-        // Update data pengaduan di database
-        if ($this->pengaduanModel->update($id, $data)) {
+            // Update data pengaduan di database
+            if (!$this->pengaduanModel->update($id, $data)) {
+                throw new \Exception('Gagal memperbarui data pengaduan.');
+            }
+
+            // Commit transaksi jika semuanya berhasil
+            $this->db->transCommit();
+
+            // Redirect dengan pesan sukses
             return redirect()->to('/pengaduan/daftarPengaduan')->with('success', 'Pengaduan berhasil diperbarui');
-        } else {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui pengaduan');
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi kesalahan
+            $this->db->transRollback();
+
+            // Menangkap error dan mengirimkan pesan error ke halaman sebelumnya
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui pengaduan: ' . $e->getMessage());
         }
     }
+
 
 
     public function masuk()
@@ -440,73 +406,55 @@ class Pengaduan extends BaseController
 
         return view('laporan', $data);
     }
-    // public function filterLaporan()
-    // {
-    //     // Mengambil parameter tanggal dari URL
-    //     $start_date = $this->request->getGet('start_date');
-    //     $end_date = $this->request->getGet('end_date');
 
-    //     // Mengecek apakah parameter tanggal ada
-    //     if ($start_date && $end_date) {
-    //         // Ubah format tanggal ke format MySQL
-    //         $start_date = date('Y-m-d', strtotime($start_date));
-    //         $end_date = date('Y-m-d', strtotime($end_date));
 
-    //         // Memanggil model dengan filter berdasarkan tanggal
-    //         $pengaduan = $this->pengaduanModel->getPengaduanByDateRange($start_date, $end_date);
-    //         // var_dump($pengaduan);
-    //         // exit;
-    //     } else {
-    //         // Jika tidak ada filter, ambil semua data
-    //         $pengaduan = $this->pengaduanModel->getAllPengaduan();
-    //     }
-
-    //     // Kirim data ke view
-    //     return view('laporan', ['pengaduan' => $pengaduan]);
-    // }
     public function filterLaporan()
     {
         // Mengambil parameter tanggal dan status dari URL
         $start_date = $this->request->getGet('start_date');
         $end_date = $this->request->getGet('end_date');
         $status = $this->request->getGet('status'); // Menangkap parameter status
-
-
-        // Mapping status teks ke nilai numerik yang ada di field 'ket'
+        $perihal = $this->request->getGet('perihal'); // Menangkap parameter status
+        if ($end_date) {
+            $start_date = date('Y-m-d 00:00:00', strtotime($start_date));
+            $end_date = date('Y-m-d 23:59:59', strtotime($end_date));
+        }
         $status_map = [
             'Menunggu' => 0,
             'Proses' => 1,
             'Menunggu kelengkapan data' => 2,
             'Selesai' => 3,
             'Invalid' => 4,
-            'Menunggu admin' => 5
+            'Menunggu admin' => 6
         ];
+        // Mapping status teks ke nilai numerik yang ada di field 'ket'
 
-        // Mengecek apakah parameter tanggal ada
-        if ($start_date && $end_date) {
-            // Ubah format tanggal ke format MySQL
-            $start_date = date('Y-m-d 00:00:00', strtotime($start_date));
-            $end_date = date('Y-m-d 23:59:59', strtotime($end_date));
+        $pengaduan = $this->pengaduanModel->getFilteredPengaduan($start_date, $end_date, ($status) ? $status_map[$status] : '', $perihal);
+        // // Mengecek apakah parameter tanggal ada
+        // if ($start_date && $end_date) {
+        //     // Ubah format tanggal ke format MySQL
+        //     $start_date = date('Y-m-d 00:00:00', strtotime($start_date));
+        //     $end_date = date('Y-m-d 23:59:59', strtotime($end_date));
 
-            // Memanggil model dengan filter berdasarkan tanggal dan status
-            if ($status && isset($status_map[$status])) {
-                $status_numerik = $status_map[$status];
-                $pengaduan = $this->pengaduanModel->getPengaduanByDateRangeAndStatus($start_date, $end_date, $status_numerik);
-            } else {
-                $pengaduan = $this->pengaduanModel->getPengaduanByDateRange($start_date, $end_date);
-            }
-        } else {
-            // Jika tidak ada filter tanggal, ambil data berdasarkan status
-            if ($status && isset($status_map[$status])) {
-                $status_numerik = $status_map[$status];
-                $pengaduan = $this->pengaduanModel->getPengaduanByStatus($status_numerik);
-            } else {
-                $pengaduan = $this->pengaduanModel->getAllPengaduan();
-            }
-        }
+        //     // Memanggil model dengan filter berdasarkan tanggal dan status
+        //     if ($status && isset($status_map[$status])) {
+        //         $status_numerik = $status_map[$status];
+        //         $pengaduan = $this->pengaduanModel->getPengaduanByDateRangeAndStatus($start_date, $end_date, $status_numerik);
+        //     } else {
+        //         $pengaduan = $this->pengaduanModel->getPengaduanByDateRange($start_date, $end_date);
+        //     }
+        // } else {
+        //     // Jika tidak ada filter tanggal, ambil data berdasarkan status
+        //     if ($status && isset($status_map[$status])) {
+        //         $status_numerik = $status_map[$status];
+        //         $pengaduan = $this->pengaduanModel->getPengaduanByStatus($status_numerik);
+        //     } else {
+        //         $pengaduan = $this->pengaduanModel->getAllPengaduan();
+        //     }
+        // }
 
         // Kirim data ke view
-        return view('laporan', ['pengaduan' => $pengaduan, 'start_date' => date('Y-m-d', strtotime($start_date)), 'end_date' => date('Y-m-d', strtotime($end_date)), 'status' => $status]);
+        return view('laporan', ['pengaduan' => $pengaduan, 'start_date' => date('Y-m-d', strtotime($start_date)), 'end_date' => date('Y-m-d', strtotime($end_date)), 'status' => $status, 'perihal' => $perihal]);
     }
 
 

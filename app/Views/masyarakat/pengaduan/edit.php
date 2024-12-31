@@ -15,13 +15,13 @@
 
   <!-- Menampilkan pesan error jika ada -->
   <?php if (session()->getFlashdata('errors')): ?>
-  <div class="alert alert-danger" role="alert">
-    <ul>
-      <?php foreach (session()->getFlashdata('errors') as $error): ?>
-      <li><?= esc($error) ?></li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
+    <div class="alert alert-danger" role="alert">
+      <ul>
+        <?php foreach (session()->getFlashdata('errors') as $error): ?>
+          <li><?= esc($error) ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </div>
   <?php endif; ?>
 
   <section class="section">
@@ -34,17 +34,18 @@
 
             <!-- Menampilkan pesan error atau sukses -->
             <?php if (session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger">
-              <?= session()->getFlashdata('error'); ?>
-            </div>
+              <div class="alert alert-danger">
+                <?= session()->getFlashdata('error'); ?>
+              </div>
             <?php endif; ?>
             <?php if (session()->getFlashdata('success')): ?>
-            <div class="alert alert-success">
-              <?= session()->getFlashdata('success'); ?>
-            </div>
+              <div class="alert alert-success">
+                <?= session()->getFlashdata('success'); ?>
+              </div>
             <?php endif; ?>
 
-            <form action="<?= site_url('pengaduan/update/' . $pengaduan['id_pengaduan']); ?>" method="post"
+
+            <form action="<?= site_url('pengaduan/update/' . $pengaduan['id']); ?>" method="post"
               enctype="multipart/form-data">
               <?= csrf_field(); ?>
 
@@ -114,13 +115,29 @@
                     Opsional</small>
                   <div class="form-group">
                     <label>Preview:</label>
-                    <div id="image-preview-container" style="display: flex; flex-wrap: wrap;">
+                    <div id="image-preview-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
                       <!-- Tampilkan gambar yang sudah ada -->
-                      <?php if (!empty($pengaduan['bukti'])): ?>
-                      <?php $files = explode(',', $pengaduan['bukti']); ?>
-                      <?php foreach ($files as $file): ?>
-                      <img src="<?= base_url('uploads/bukti/' . $file) ?>" alt="Bukti" width="100" height="100">
-                      <?php endforeach; ?>
+                      <?php if (!empty($pengaduan['foto'])): ?>
+
+                        <?php foreach ($pengaduan['foto'] as $foto): ?>
+                          <?php
+                          // Dapatkan ekstensi file
+                          $file_extension = pathinfo($foto, PATHINFO_EXTENSION);
+                          // Daftar ekstensi gambar yang diperbolehkan
+                          $allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+                          // Periksa apakah file tersebut termasuk dalam ekstensi gambar
+                          if (in_array(strtolower($file_extension), $allowed_image_extensions)):
+                          ?>
+                            <!-- Jika file adalah gambar, tampilkan gambar -->
+                            <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail"
+                              width="100" data-bs-toggle="modal" data-bs-target="#imageModal">
+                          <?php else: ?>
+                            <!-- Jika bukan gambar, tampilkan sesuatu lain (misalnya teks atau icon) -->
+                            <a href="<?= base_url('uploads/bukti/' . $foto) ?>" target="_blank"
+                              rel="noopener noreferrer">download
+                              <?= $file_extension ?></a>
+                          <?php endif; ?>
+                        <?php endforeach; ?>
                       <?php endif; ?>
                     </div>
                   </div>
@@ -144,33 +161,47 @@
 </main><!-- End #main -->
 
 <script>
-function previewImages() {
-  var previewContainer = document.getElementById('image-preview-container');
-  previewContainer.innerHTML = ''; // Clear preview container sebelum menampilkan gambar baru
+  function previewImages() {
+    var previewContainer = document.getElementById('image-preview-container');
+    previewContainer.innerHTML = ''; // Clear preview container sebelum menampilkan gambar baru
 
-  var files = document.getElementById('bukti').files;
+    var files = document.getElementById('bukti').files;
 
-  if (files.length === 0) {
-    previewContainer.innerHTML = '<p>No file selected</p>';
-    return;
+    if (files.length === 0) {
+      previewContainer.innerHTML = '<p>No file selected</p>';
+      return;
+    }
+
+    Array.from(files).forEach(function(file) {
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+        var fileType = file.type;
+        console.log(fileType);
+        if (fileType.startsWith('image/')) {
+          var img = document.createElement('img');
+          img.src = e.target.result;
+          img.style.width = '150px'; // Atur ukuran gambar
+          img.style.margin = '10px';
+          img.style.borderRadius = '8px';
+          img.style.objectFit = 'contain';
+
+          previewContainer.appendChild(img);
+        } else {
+          var link = document.createElement('a');
+          // link border
+
+          link.href = event.target.result;
+          link.target = '_blank';
+          link.textContent = 'download ' + file.name;
+          previewContainer.appendChild(link);
+
+        }
+      };
+
+      reader.readAsDataURL(file); // Membaca file gambar sebagai URL data
+    });
   }
-
-  Array.from(files).forEach(function(file) {
-    var reader = new FileReader();
-
-    reader.onload = function(e) {
-      var img = document.createElement('img');
-      img.src = e.target.result;
-      img.style.width = '150px'; // Atur ukuran gambar
-      img.style.margin = '10px';
-      img.style.borderRadius = '8px';
-      img.style.objectFit = 'contain';
-      previewContainer.appendChild(img);
-    };
-
-    reader.readAsDataURL(file); // Membaca file gambar sebagai URL data
-  });
-}
 </script>
 
 <?= $this->endSection(); ?>

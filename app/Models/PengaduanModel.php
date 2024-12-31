@@ -82,7 +82,9 @@ class PengaduanModel extends Model
     public function gabungDataPengaduanDanFoto($resultArray)
     {
         $data = [];
+
         foreach ($resultArray as $row) {
+
             $id = $row['id_pengaduan'];
 
             if (!isset($data[$id])) {
@@ -102,7 +104,7 @@ class PengaduanModel extends Model
 
             // Tambahkan foto jika ada
             if (!empty($row['foto'])) {
-                $data[$id]['foto'] = is_array($row['foto']) ? $row['foto'] : [$row['foto']];
+                $data[$id]['foto'][] = $row['foto'];
             }
         }
 
@@ -139,6 +141,20 @@ class PengaduanModel extends Model
             ->where('pengaduan.id_pengaduan', $id)
             ->first();
     }
+
+    public function findPengaduanAndFotoByIdPengaduan($id)
+    {
+        $result = $this
+            ->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_pengaduan.foto, tbl_user.nama')
+            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
+            ->where('pengaduan.id_pengaduan', $id)
+            ->orderBy('pengaduan.created_at', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        return $this->gabungDataPengaduanDanFoto($result);
+    }
     public function getPengaduan($id)
     {
         return $this->find($id); // Mengambil data pengaduan berdasarkan primary key
@@ -150,13 +166,12 @@ class PengaduanModel extends Model
         $end_date = $end_date . ' 23:59:59'; // Menambahkan waktu ke tanggal akhir
 
         // Query dengan kondisi tanggal
-        return $this->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, foto_pengaduan.foto, tbl_user.nama,
+        return $this->select('pengaduan.*, DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at,  tbl_user.nama,
         IFNULL((SELECT tanggapan.rincian 
                                  FROM tanggapan 
                                  WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
                                  ORDER BY tanggapan.created_at DESC 
                                  LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where("pengaduan.created_at BETWEEN '$start_date' AND '$end_date'")
             ->get()
@@ -171,14 +186,12 @@ class PengaduanModel extends Model
         // Query untuk mengambil semua data pengaduan
         return $this->select('pengaduan.*, 
                          DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, 
-                         foto_pengaduan.foto, 
                          tbl_user.nama, 
                          IFNULL((SELECT tanggapan.rincian 
                                  FROM tanggapan 
                                  WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
                                  ORDER BY tanggapan.created_at DESC 
                                  LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->get()
             ->getResultArray();
@@ -193,14 +206,14 @@ class PengaduanModel extends Model
 
         $builder = $this->select('pengaduan.*, 
         DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, 
-        foto_pengaduan.foto, 
+        
         tbl_user.nama, 
         IFNULL((SELECT tanggapan.rincian 
                 FROM tanggapan 
                 WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan 
                 ORDER BY tanggapan.created_at DESC 
                 LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
+
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left');
 
         if (!empty($status)) {
@@ -220,14 +233,12 @@ class PengaduanModel extends Model
     {
         return $this->select('pengaduan.*, 
         DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, 
-        foto_pengaduan.foto, 
         tbl_user.nama, 
          IFNULL((SELECT tanggapan.rincian 
                                  FROM tanggapan 
                                  WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
                                  ORDER BY tanggapan.created_at DESC 
                                  LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where('pengaduan.ket', $status)
             ->get()
@@ -238,18 +249,46 @@ class PengaduanModel extends Model
     {
         $builder = $this->select('pengaduan.*, 
             DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, 
-            foto_pengaduan.foto, 
             tbl_user.nama, 
             IFNULL((SELECT tanggapan.rincian 
                                  FROM tanggapan 
                                  WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
                                  ORDER BY tanggapan.created_at DESC 
                                  LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
-            ->join('foto_pengaduan', 'foto_pengaduan.id_pengaduan = pengaduan.id_pengaduan', 'left')
             ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left')
             ->where('pengaduan.ket', $status) // Pastikan filter status diterapkan dengan benar
             ->where('pengaduan.created_at >=', $start_date)
             ->where('pengaduan.created_at <=', $end_date);
+
+        return $builder->get()->getResultArray();
+    }
+    public function getFilteredPengaduan($start_date = '', $end_date = '', $status = '', $perihal = '')
+    {
+        $builder = $this->select('pengaduan.*, 
+        DATE_FORMAT(pengaduan.created_at, "%d-%m-%Y %H:%i:%s") AS created_at, 
+        tbl_user.nama, 
+        IFNULL((SELECT tanggapan.rincian 
+        FROM tanggapan 
+        WHERE tanggapan.id_pengaduan = pengaduan.id_pengaduan
+        ORDER BY tanggapan.created_at DESC 
+        LIMIT 1), "Tidak ada tanggapan") AS tanggapan_rincian')
+            ->join('tbl_user', 'tbl_user.id_user = pengaduan.id_user', 'left');
+
+        // apa maksud escape di parameter ketiga where
+        // dd($status, $builder->get()->getResultArray());
+
+        if ($start_date && $end_date) {
+            $builder->where('pengaduan.created_at >=', $start_date)
+                ->where('pengaduan.created_at <=', $end_date);
+        }
+
+        if ($status) {
+            $builder->where('pengaduan.ket', $status);
+        }
+
+        if ($perihal) {
+            $builder->where('pengaduan.jenis_pengaduan', $perihal);
+        }
 
         return $builder->get()->getResultArray();
     }

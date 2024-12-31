@@ -49,10 +49,27 @@
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Gambar</div>
                     <div class="col-lg-9 col-md-8">
-                      <?php foreach ($pengaduan['foto'] as $foto) : ?>
-                        <img src="<?= base_url('uploads/bukti/' . $foto['foto']) ?>" alt="Foto bukti"
-                          class="img-thumbnail" width="200">
-                      <?php endforeach ?>
+
+                      <?php foreach ($pengaduan['foto'] as $foto): ?>
+                      <?php
+
+                        // Dapatkan ekstensi file
+                        $file_extension = pathinfo($foto['foto'], PATHINFO_EXTENSION);
+                        // Daftar ekstensi gambar yang diperbolehkan
+                        $allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+                        // Periksa apakah file tersebut termasuk dalam ekstensi gambar
+                        if (in_array(strtolower($file_extension), $allowed_image_extensions)):
+                        ?>
+                      <!-- Jika file adalah gambar, tampilkan gambar -->
+                      <img src="<?= base_url('uploads/bukti/' . $foto['foto']) ?>" alt="Foto bukti"
+                        class="img-thumbnail" width="100" data-bs-toggle="modal" data-bs-target="#imageModal">
+                      <?php else: ?>
+                      <!-- Jika bukan gambar, tampilkan sesuatu lain (misalnya teks atau icon) -->
+                      <a href="<?= base_url('uploads/bukti/' . $foto['foto']) ?>" target="_blank"
+                        rel="noopener noreferrer">download
+                        <?= $file_extension ?></a>
+                      <?php endif; ?>
+                      <?php endforeach; ?>
                     </div>
                   </div>
                 </div>
@@ -60,53 +77,53 @@
                 <hr>
 
                 <?php if (session()->getFlashdata('errors')): ?>
-                  <div class="alert alert-danger" role="alert">
-                    <ul>
-                      <?php foreach (session()->getFlashdata('errors') as $error): ?>
-                        <li><?= esc($error) ?></li>
-                      <?php endforeach; ?>
-                    </ul>
-                  </div>
+                <div class="alert alert-danger" role="alert">
+                  <ul>
+                    <?php foreach (session()->getFlashdata('errors') as $error): ?>
+                    <li><?= esc($error) ?></li>
+                    <?php endforeach; ?>
+                  </ul>
+                </div>
                 <?php endif; ?>
                 <?php if (session()->getFlashdata('error')): ?>
-                  <div class="alert alert-danger" role="alert">
-                    <?= session()->getFlashdata('error') ?>
-                  </div>
+                <div class="alert alert-danger" role="alert">
+                  <?= session()->getFlashdata('error') ?>
+                </div>
                 <?php endif; ?>
 
                 <!-- tabel tanggapan -->
                 <?php if ($tanggapan): ?>
-                  <div>
-                    <table class="table table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Tanggal</th>
-                          <th>Status</th>
-                          <th>Rincian</th>
-                          <th>Foto</th>
-                          <th>Admin</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php foreach ($tanggapan as $item) : ?>
-                          <tr>
+                <div>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Tanggal</th>
+                        <th>Status</th>
+                        <th>Rincian</th>
+                        <th>Foto</th>
+                        <th>Admin</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php foreach ($tanggapan as $item) : ?>
+                      <tr>
 
-                            <td><?= $item['created_at'] ?></td>
-                            <td><?= $item['jenis_tanggapan'] ?></td>
-                            <td><?= $item['rincian'] ?></td>
-                            <td>
-                              <?php foreach ($item['foto'] as $foto) : ?>
-                                <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail"
-                                  width="100">
-                              <?php endforeach ?>
-                            </td>
-                            <td><?= $item['nama'] ?></td>
-                          </tr>
-                        <?php endforeach ?>
-                      </tbody>
-                    </table>
-                  </div>
-                  <hr>
+                        <td><?= $item['created_at'] ?></td>
+                        <td><?= $item['jenis_tanggapan'] ?></td>
+                        <td><?= $item['rincian'] ?></td>
+                        <td>
+                          <?php foreach ($item['foto'] as $foto) : ?>
+                          <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail"
+                            width="100">
+                          <?php endforeach ?>
+                        </td>
+                        <td><?= $item['nama'] ?></td>
+                      </tr>
+                      <?php endforeach ?>
+                    </tbody>
+                  </table>
+                </div>
+                <hr>
                 <?php endif; ?>
 
                 <!-- tanggapan admin -->
@@ -118,21 +135,22 @@
                       <label for="jenis_tanggapan" class="col-sm-2 col-form-label">jenis Tanggapan</label>
                       <div class="col-sm-10">
                         <select class="form-select" name="jenis_tanggapan" id="jenis_tanggapan" required>
+                          <option value="">--pilih tanggapan--</option>
                           <?php if (session('user_id')['role'] == 'Admin'): ?>
-                            <option value="Proses" <?= set_select('jenis_tanggapan', 'Proses') ?>>Proses</option>
-                            <option value="Menunggu Kelengkapan data"
-                              <?= set_select('jenis_tanggapan', 'Menunggu Kelengkapan data', $status == 'kurang') ?>>
-                              Menunggu Kelengkapan data</option>
-                            <option value="Selesai" <?= set_select('jenis_tanggapan', 'Selesai', $status == 'selesai') ?>>
-                              Selesai</option>
-                            <option value="Tidak Valid"
-                              <?= set_select('jenis_tanggapan', 'Tidak Valid', $status == 'invalid') ?>>Tidak Valid
-                            </option>
+                          <option value="Proses" <?= set_select('jenis_tanggapan', 'Proses') ?>>Proses</option>
+                          <option value="Menunggu Kelengkapan data"
+                            <?= set_select('jenis_tanggapan', 'Menunggu Kelengkapan data', $status == 'kurang') ?>>
+                            Menunggu Kelengkapan data</option>
+                          <option value="Selesai" <?= set_select('jenis_tanggapan', 'Selesai', $status == 'selesai') ?>>
+                            Selesai</option>
+                          <option value="Tidak Valid"
+                            <?= set_select('jenis_tanggapan', 'Tidak Valid', $status == 'invalid') ?>>Tidak Valid
+                          </option>
                           <?php else: ?>
-                            <option value="Melengkapi Data" <?= set_select('jenis_tanggapan', 'Melengkapi Data') ?>>
-                              Melengkapi Data</option>
-                            <option value="Komentar"
-                              <?= set_select('jenis_tanggapan', 'Komentar', $status == 'komentar') ?>>Komentar</option>
+                          <option value="Melengkapi Data" <?= set_select('jenis_tanggapan', 'Melengkapi Data') ?>>
+                            Melengkapi Data</option>
+                          <option value="Komentar"
+                            <?= set_select('jenis_tanggapan', 'Komentar', $status == 'komentar') ?>>Komentar</option>
                           <?php endif ?>
                         </select>
 
@@ -190,32 +208,46 @@
 
 </main><!-- End #main -->
 <script>
-  function previewImages() {
-    var previewContainer = document.getElementById('image-preview-container');
-    previewContainer.innerHTML = ''; // Clear preview container sebelum menampilkan gambar baru
+function previewImages() {
+  var previewContainer = document.getElementById('image-preview-container');
+  previewContainer.innerHTML = ''; // Clear preview container sebelum menampilkan gambar baru
 
-    var files = document.getElementById('bukti').files;
+  var files = document.getElementById('bukti').files;
 
-    if (files.length === 0) {
-      previewContainer.innerHTML = '<p>No file selected</p>';
-      return;
-    }
+  if (files.length === 0) {
+    previewContainer.innerHTML = '<p>No file selected</p>';
+    return;
+  }
 
-    Array.from(files).forEach(function(file) {
-      var reader = new FileReader();
+  Array.from(files).forEach(function(file) {
+    var reader = new FileReader();
 
-      reader.onload = function(e) {
+    reader.onload = function(e) {
+      var fileType = file.type;
+      console.log(fileType);
+      if (fileType.startsWith('image/')) {
         var img = document.createElement('img');
         img.src = e.target.result;
         img.style.width = '150px'; // Atur ukuran gambar
         img.style.margin = '10px';
         img.style.borderRadius = '8px';
         img.style.objectFit = 'contain';
-        previewContainer.appendChild(img);
-      };
 
-      reader.readAsDataURL(file); // Membaca file gambar sebagai URL data
-    });
-  }
+        previewContainer.appendChild(img);
+      } else {
+        var link = document.createElement('a');
+        // link border
+
+        link.href = event.target.result;
+        link.target = '_blank';
+        link.textContent = 'download ' + file.name;
+        previewContainer.appendChild(link);
+
+      }
+    };
+
+    reader.readAsDataURL(file); // Membaca file gambar sebagai URL data
+  });
+}
 </script>
 <?= $this->endSection(); ?>

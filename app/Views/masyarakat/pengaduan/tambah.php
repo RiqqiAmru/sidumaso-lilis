@@ -99,14 +99,14 @@
               </div>
 
               <div class="row mb-3">
-                <label for="bukti" class="col-sm-2 col-form-label">Upload Foto Bukti</label>
+                <label for="bukti" class="col-sm-2 col-form-label">Upload Bukti</label>
                 <div class="col-sm-10">
                   <input type="file" class="form-control" id="bukti" name="bukti[]" multiple onchange="previewImages()">
                   <small class="text-muted">Maksimal 512 KB. Boleh lebih dari 1 bukti.
                     Opsional</small>
                   <div class="form-group">
                     <label>Preview:</label>
-                    <div id="image-preview-container" style="display: flex; flex-wrap: wrap;">
+                    <div id="image-preview-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
                       <!-- Preview gambar akan muncul di sini -->
                     </div>
                   </div>
@@ -144,13 +144,27 @@ function previewImages() {
     var reader = new FileReader();
 
     reader.onload = function(e) {
-      var img = document.createElement('img');
-      img.src = e.target.result;
-      img.style.width = '150px'; // Atur ukuran gambar
-      img.style.margin = '10px';
-      img.style.borderRadius = '8px';
-      img.style.objectFit = 'contain';
-      previewContainer.appendChild(img);
+      var fileType = file.type;
+      console.log(fileType);
+      if (fileType.startsWith('image/')) {
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.width = '150px'; // Atur ukuran gambar
+        img.style.margin = '10px';
+        img.style.borderRadius = '8px';
+        img.style.objectFit = 'contain';
+
+        previewContainer.appendChild(img);
+      } else {
+        var link = document.createElement('a');
+        // link border
+
+        link.href = event.target.result;
+        link.target = '_blank';
+        link.textContent = 'download ' + file.name;
+        previewContainer.appendChild(link);
+
+      }
     };
 
     reader.readAsDataURL(file); // Membaca file gambar sebagai URL data
