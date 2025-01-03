@@ -9,14 +9,13 @@ class Home extends BaseController
 
         // Ambil data pengumuman
         $pengumumanModel = new \App\Models\PengumumanModel();
+        $tanggapanModel = new \App\Models\TanggapanModel();
 
         // Ambil 4 pengumuman terbaru
         $pengumuman = $pengumumanModel->orderBy('updated_at', 'DESC')->findAll(4);
-
+        $jumlahProses = $tanggapanModel->countByStatus('Proses');
         // Kirim data ke view
-        return view('landing', ['pengumuman' => $pengumuman]);
-
-
+        return view('landing', ['pengumuman' => $pengumuman, 'jumlahProses' => $jumlahProses]);
     }
     public function saran(): string
     {

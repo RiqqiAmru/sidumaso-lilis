@@ -151,10 +151,20 @@
 
         </div>
 
+        <div class="row" style="background: antiquewhite; padding: 10px;">
+          <div class="col text-center " data-aos="fade-up" data-aos-delay="400">
+            <h5>Pengaduan Yang Di Proses</h5>
+            <h2><?= $jumlahProses ?></h2>
+          </div>
+
+        </div>
+
       </div>
+
 
     </section><!-- /Featured Services Section -->
 
+    <!-- buat section baru yg menampilkan jumlah pengaduan yang diprose -->
 
 
     <section>
@@ -187,6 +197,7 @@
                 antara masyarakat dengan pemerintah desa melalui proses pengaduan yang terstruktur dan
                 mudah diakses.
               </p>
+
             </div>
           </div>
 
@@ -211,54 +222,54 @@
 
         <div class="row gy-4">
           <?php if (!empty($pengumuman)): ?>
-          <?php foreach ($pengumuman as $p): ?>
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-            <div class="service-item item-cyan position-relative" style="margin-bottom: 20px;">
-              <div class="row align-items-start">
-                <!-- Kolom untuk Gambar -->
-                <div class="col-md-4 mb-3">
-                  <?php if (in_array(pathinfo($p['dokumen'], PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])): ?>
-                  <img src="/uploads/pengumuman/<?= esc($p['dokumen']); ?>" alt="Preview Dokumen"
-                    style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
-                  <?php else: ?>
-                  <p class="text-muted">Preview tidak tersedia untuk file non-gambar.</p>
-                  <?php endif; ?>
-                </div>
-                <!-- Kolom untuk Konten Pengumuman -->
-                <div class="col-md-8">
-                  <h3><?= esc($p['judul']); ?></h3>
-                  <p><?= esc(substr($p['deskripsi'], 0, 100)) . '...'; ?></p>
-                  <a href="/pengumuman/detail/<?= esc($p['id_pengumuman']); ?>" class="read-more stretched-link">
-                    Baca Selengkapnya
-                  </a>
+            <?php foreach ($pengumuman as $p): ?>
+              <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-item item-cyan position-relative" style="margin-bottom: 20px;">
+                  <div class="row align-items-start">
+                    <!-- Kolom untuk Gambar -->
+                    <div class="col-md-4 mb-3">
+                      <?php if (in_array(pathinfo($p['dokumen'], PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif'])): ?>
+                        <img src="/uploads/pengumuman/<?= esc($p['dokumen']); ?>" alt="Preview Dokumen"
+                          style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+                      <?php else: ?>
+                        <p class="text-muted">Preview tidak tersedia untuk file non-gambar.</p>
+                      <?php endif; ?>
+                    </div>
+                    <!-- Kolom untuk Konten Pengumuman -->
+                    <div class="col-md-8">
+                      <h3><?= esc($p['judul']); ?></h3>
+                      <p><?= esc(substr($p['deskripsi'], 0, 100)) . '...'; ?></p>
+                      <a href="/pengumuman/detail/<?= esc($p['id_pengumuman']); ?>" class="read-more stretched-link">
+                        Baca Selengkapnya
+                      </a>
 
+                    </div>
+                  </div>
                 </div>
+
               </div>
-            </div>
-
-          </div>
-          <?php endforeach; ?>
+            <?php endforeach; ?>
           <?php else: ?>
-          <p>Tidak ada pengumuman yang tersedia.</p>
+            <p>Tidak ada pengumuman yang tersedia.</p>
           <?php endif; ?>
         </div>
 
 
         <style>
-        img {
-          max-width: 100%;
-          height: auto;
-          border-radius: 8px;
-          /* Rounded corners */
-        }
+          img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            /* Rounded corners */
+          }
 
-        .service-item img {
-          margin-bottom: 20px;
-          height: 150px;
-          /* Fixed height for consistency */
-          object-fit: cover;
-          /* Crop image to fit the container */
-        }
+          .service-item img {
+            margin-bottom: 20px;
+            height: 150px;
+            /* Fixed height for consistency */
+            object-fit: cover;
+            /* Crop image to fit the container */
+          }
         </style>
 
 

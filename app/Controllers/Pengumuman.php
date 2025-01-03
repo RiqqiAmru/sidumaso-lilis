@@ -137,6 +137,9 @@ class Pengumuman extends Controller
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Pengumuman tidak ditemukan');
         }
 
+        if (!session('user_id')) {
+            return view('pengumuman/detail2', ['pengumuman' => $pengumuman]);
+        }
         return view('pengumuman/detail', ['pengumuman' => $pengumuman]);
     }
 }
