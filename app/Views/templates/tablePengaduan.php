@@ -21,6 +21,7 @@
       <?php endif; ?>
       <th scope="col">Status</th>
       <th scope="col">Bukti</th>
+      <th scope="col">Aksi</th>
     </tr>
   </thead>
   <tbody>
@@ -65,7 +66,7 @@
               $allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
               // Periksa apakah file tersebut termasuk dalam ekstensi gambar
               if (in_array(strtolower($file_extension), $allowed_image_extensions)):
-                ?>
+              ?>
                 <!-- Jika file adalah gambar, tampilkan gambar -->
                 <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail" width="100"
                   data-bs-toggle="modal" data-bs-target="#imageModal">
@@ -77,20 +78,18 @@
             <?php endforeach; ?>
           </td>
 
-          <?php if (session('user_id')['role'] == 'Masyarakat' && $p['ket'] == 0): ?>
-            <td>
+          <td>
+            <?php if (session('user_id')['role'] == 'Masyarakat' && $p['ket'] == 0): ?>
               <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeletePengaduan"
                 data-bs-id='<?= $p['id'] ?>'>
                 Hapus</button>
               <button class="btn btn-outline-info ">
                 <a href="<?= base_url('pengaduan/edit/' . $p['id']) ?>">Edit</a></button>
-            </td>
-          <?php elseif ((session('user_id')['role'] == 'Admin' | session('user_id')['role'] == 'Kepala_dusun') && $p['ket'] == 0): ?>
-            <td>
+            <?php elseif ((session('user_id')['role'] == 'Admin' | session('user_id')['role'] == 'Kepala_dusun') && $p['ket'] == 0): ?>
               <button class="btn btn-outline-success">
                 <a href="<?= base_url('pengaduan/proses/' . $p['id']) ?>">Proses</a></button>
-            </td>
-          <?php endif ?>
+            <?php endif ?>
+          </td>
 
         </tr>
       <?php endforeach; ?>
@@ -127,7 +126,7 @@
   }
 </style>
 <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
     // Inisialisasi DataTables
     $('#pengaduanTable').DataTable({
       "paging": true,
@@ -149,22 +148,38 @@
           "previous": "Sebelumnya"
         }
       },
-      "columns": [
-        { "data": "no" },
-        { "data": "tanggal" },
-        { "data": "perihal" },
-        { "data": "rincian" },
-        { "data": "gang" },
-        { "data": "detail_lokasi" },
-        <?php if (session('user_id')['role'] != 'Masyarakat') { ?>
-                        { "data": "pengirim" }, // Pengirim hanya muncul jika bukan masyarakat
-        <?php } ?>
-      { "data": "status" },
-        { "data": "bukti" }
+      "columns": [{
+          "data": "no"
+        },
+        {
+          "data": "tanggal"
+        },
+        {
+          "data": "perihal"
+        },
+        {
+          "data": "rincian"
+        },
+        {
+          "data": "gang"
+        },
+        {
+          "data": "detail_lokasi"
+        },
+        <?php if (session('user_id')['role'] != 'Masyarakat'): ?> {
+            "data": "pengirim"
+          }, // Pengirim hanya muncul jika bukan masyarakat
+        <?php endif ?> {
+          "data": "status"
+        },
+        {
+          "data": "bukti"
+        }, {
+          "data": "aksi"
+        }
       ]
     });
   });
-
 </script>
 
 <!-- modal image -->
@@ -180,9 +195,9 @@
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const table = document.getElementById('pengaduanTable');
-    table.addEventListener('click', function (e) {
+    table.addEventListener('click', function(e) {
 
       if (e.target && e.target.classList.contains('btn-tanggapan')) {
         const idAduan = e.target.dataset.id;
@@ -218,7 +233,7 @@
                                                 <th>Rincian</th>
                                                 <th>Foto</th>
                                                 <th></th>
-                                                <th></th>
+                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -263,7 +278,7 @@
                             `;
               row.after(tanggapanRow);
               document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-                img.addEventListener('click', function () {
+                img.addEventListener('click', function() {
                   console.log(this.src);
                   const modalImage = document.getElementById('modalImage');
                   modalImage.src = this.src;
@@ -278,7 +293,7 @@
     });
 
     document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-      img.addEventListener('click', function () {
+      img.addEventListener('click', function() {
         console.log(this.src);
         const modalImage = document.getElementById('modalImage');
         modalImage.src = this.src;
