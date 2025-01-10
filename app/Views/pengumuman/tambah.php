@@ -6,11 +6,11 @@
 
     <div class="pagetitle">
         <h1>Halaman Tambah Pengumuman</h1>
-        <nav>
+        <!-- <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item active">Tambah Pengumuman</li>
             </ol>
-        </nav>
+        </nav> -->
     </div><!-- End Page Title -->
 
     <?php if (session()->getFlashdata('errors')): ?>

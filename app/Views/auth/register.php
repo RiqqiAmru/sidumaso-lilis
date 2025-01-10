@@ -129,7 +129,8 @@
                                         </div>
 
                                         <div class="col-12">
-                                            <label for="user_ktp" class="form-label">Upload Ktp</label>
+                                            <label for="user_ktp" class="form-label">Upload Ktp atau Bukti
+                                                Domisili</label>
                                             <input type="file"
                                                 class="form-control p-1 <?= (isset(session()->getFlashdata('errors')['user_ktp'])) ? 'is-invalid' : '' ?>"
                                                 name="user_ktp" id="file_ktp" required value="<?= old('user_ktp') ?>">

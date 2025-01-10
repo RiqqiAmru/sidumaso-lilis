@@ -99,6 +99,7 @@ class Auth extends BaseController
     {
         // Hapus session dan redirect ke halaman login
         session()->destroy();
+        // dd(session());
         return redirect()->to(base_url('/home'));
     }
 

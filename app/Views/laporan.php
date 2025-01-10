@@ -35,19 +35,18 @@
               <div class="col-md-3">
                 <label for="end_date" class="form-label">Sampai Tanggal</label>
                 <input type="date" id="end_date" name="end_date" class="form-control"
-                  value="<?= isset($end_date) &&  $end_date != '1970-01-01' ? $end_date : '' ?>">
+                  value="<?= isset($end_date) && $end_date != '1970-01-01' ? $end_date : '' ?>">
               </div>
 
               <div class="col-md-3">
                 <label for="status" class="form-label">Status</label>
                 <select name="status" id="status" class="form-control">
-                  <option value="">Semua Status</option>
+                  <option value="A">Semua Status</option>
                   <option value="Menunggu" <?= isset($status) && $status == 'Menunggu' ? 'selected' : '' ?>>Menunggu
                   </option>
                   <option value="Proses" <?= isset($status) && $status == 'Proses' ? 'selected' : '' ?>>
                     Proses</option>
-                  <option value="Menunggu kelengkapan data"
-                    <?= isset($status) && $status == 'Menunggu kelengkapan data' ? 'selected' : '' ?>>Menunggu
+                  <option value="Menunggu kelengkapan data" <?= isset($status) && $status == 'Menunggu kelengkapan data' ? 'selected' : '' ?>>Menunggu
                     kelengkapan data</option>
                   <option value="Selesai" <?= isset($status) && $status == 'Selesai' ? 'selected' : '' ?>>Selesai
                   </option>
@@ -65,19 +64,16 @@
                   <option value="Infrastukrur" <?= isset($perihal) && $perihal == 'Infrastukrur' ? 'selected' : '' ?>>
                     Infrastruktur
                   </option>
-                  <option value="Sengketa Lahan"
-                    <?= isset($perihal) && $perihal == 'Sengketa Lahan' ? 'selected' : '' ?>>
+                  <option value="Sengketa Lahan" <?= isset($perihal) && $perihal == 'Sengketa Lahan' ? 'selected' : '' ?>>
                     Sengketa Lahan
                   </option>
-                  <option value="Keamanan dan Ketertiban"
-                    <?= isset($perihal) && $perihal == 'Keamanan dan Ketertiban' ? 'selected' : '' ?>>
+                  <option value="Keamanan dan Ketertiban" <?= isset($perihal) && $perihal == 'Keamanan dan Ketertiban' ? 'selected' : '' ?>>
                     Keamanan dan Ketertiban
                   </option>
                   <option value="lingkungan" <?= isset($perihal) && $perihal == 'lingkungan' ? 'selected' : '' ?>>
                     lingkungan
                   </option>
-                  <option value="pengelolaan dana desa"
-                    <?= isset($perihal) && $perihal == 'pengelolaan dana desa' ? 'selected' : '' ?>>
+                  <option value="pengelolaan dana desa" <?= isset($perihal) && $perihal == 'pengelolaan dana desa' ? 'selected' : '' ?>>
                     pengelolaan dana desa
                   </option>
                   <option value="lainnya" <?= isset($perihal) && $perihal == 'lainnya' ? 'selected' : '' ?>>
@@ -193,7 +189,7 @@
           </div>
           <script>
             document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-              img.addEventListener('click', function() {
+              img.addEventListener('click', function () {
                 const modalImage = document.getElementById('modalImage');
                 modalImage.src = this.src;
               });

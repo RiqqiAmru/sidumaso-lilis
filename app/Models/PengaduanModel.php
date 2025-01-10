@@ -283,8 +283,16 @@ class PengaduanModel extends Model
         }
 
         if ($status) {
-            $builder->where('pengaduan.ket', $status);
+            if ($status != 'A') {
+                // dd($status);
+                if ($status == '7') {
+                    $builder->where('pengaduan.ket', 0);
+                } else {
+                    $builder->where('pengaduan.ket', $status);
+                }
+            }
         }
+
 
         if ($perihal) {
             $builder->where('pengaduan.jenis_pengaduan', $perihal);

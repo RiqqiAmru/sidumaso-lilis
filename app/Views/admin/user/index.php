@@ -3,20 +3,20 @@
 
 <main id="main" class="main">
   <?php if (session()->getFlashdata('message')): ?>
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <?= session()->getFlashdata('message'); ?>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <?= session()->getFlashdata('message'); ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   <?php endif; ?>
   <div class="pagetitle">
     <h1>Daftar Pengguna</h1>
-    <nav>
+    <!-- <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
         <li class="breadcrumb-item">Tables</li>
         <li class="breadcrumb-item active">General</li>
       </ol>
-    </nav>
+    </nav> -->
   </div><!-- End Page Title -->
 
   <section class="section">
@@ -28,14 +28,14 @@
           <div class="card-body">
             <h5 class="card-title">Daftar Pengguna</h5>
             <?php if (session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger">
-              <?= session()->getFlashdata('error'); ?>
-            </div>
+              <div class="alert alert-danger">
+                <?= session()->getFlashdata('error'); ?>
+              </div>
             <?php endif; ?>
             <?php if (session()->getFlashdata('success')): ?>
-            <div class="alert alert-success">
-              <?= session()->getFlashdata('success'); ?>
-            </div>
+              <div class="alert alert-success">
+                <?= session()->getFlashdata('success'); ?>
+              </div>
             <?php endif; ?>
             <a href="<?= base_url('admin/user/tambah'); ?>" button type="button" class="btn btn-primary rounded-pill"
               style="margin-bottom: 25px;">Tambah
@@ -57,40 +57,40 @@
               </thead>
               <tbody>
                 <?php if (!empty($users) && is_array($users)): ?>
-                <?php $no = 1;
-                                    foreach ($users as $user): ?>
-                <tr>
-                  <th scope="row"><?= $no++ ?></th>
-                  <td><?= $user['nama'] ?></td>
-                  <td><?= $user['username'] ?></td>
-                  <td><?= $user['no_hp'] ?></td>
-                  <td><?= ucfirst($user['role']) ?></td>
-                  <td><?= ucfirst($user['row_status']) ?></td>
-                  <td>
-                    <img src="<?= base_url('uploads/ktp/' . $user['user_ktp']) ?>" alt="Foto KTP" width="100">
-                  </td>
-                  <td>
-                    <?php if ($user['row_status'] != 'Non-aktif'): ?>
-                    <button data-bs-name='<?= $user['username'] ?>' class="btn btn-danger" data-bs-toggle="modal"
-                      data-bs-target="#exampleModal" data-bs-id='<?= $user['id_user'] ?>'>
-                      hapus</button>
-                    <?php endif ?>
-                    <?php if ($user['row_status'] == 'Menunggu'): ?>
-                    <button data-bs-name='<?= $user['username'] ?>' class="btn btn-warning" data-bs-toggle="modal"
-                      data-bs-target="#modalVerifikasi" data-bs-id='<?= $user['id_user'] ?>'
-                      data-bs-ktp="<?= $user['user_ktp'] ?>">
-                      verifikasi</button>
-                    <?php endif ?>
-                    <a href="<?= base_url('admin/manageuser/edit/' . $user['id_user']) ?>"
-                      class="btn btn-primary  me-2">Edit
-                    </a>
-                  </td>
-                </tr>
-                <?php endforeach; ?>
+                  <?php $no = 1;
+                  foreach ($users as $user): ?>
+                    <tr>
+                      <th scope="row"><?= $no++ ?></th>
+                      <td><?= $user['nama'] ?></td>
+                      <td><?= $user['username'] ?></td>
+                      <td><?= $user['no_hp'] ?></td>
+                      <td><?= ucfirst($user['role']) ?></td>
+                      <td><?= ucfirst($user['row_status']) ?></td>
+                      <td>
+                        <img src="<?= base_url('uploads/ktp/' . $user['user_ktp']) ?>" alt="Foto KTP" width="100">
+                      </td>
+                      <td>
+                        <?php if ($user['row_status'] != 'Non-aktif'): ?>
+                          <button data-bs-name='<?= $user['username'] ?>' class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal" data-bs-id='<?= $user['id_user'] ?>'>
+                            hapus</button>
+                        <?php endif ?>
+                        <?php if ($user['row_status'] == 'Menunggu'): ?>
+                          <button data-bs-name='<?= $user['username'] ?>' class="btn btn-warning" data-bs-toggle="modal"
+                            data-bs-target="#modalVerifikasi" data-bs-id='<?= $user['id_user'] ?>'
+                            data-bs-ktp="<?= $user['user_ktp'] ?>">
+                            verifikasi</button>
+                        <?php endif ?>
+                        <a href="<?= base_url('admin/manageuser/edit/' . $user['id_user']) ?>"
+                          class="btn btn-primary  me-2">Edit
+                        </a>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
                 <?php else: ?>
-                <tr>
-                  <td colspan="9" class="text-center">Belum ada data pengguna.</td>
-                </tr>
+                  <tr>
+                    <td colspan="9" class="text-center">Belum ada data pengguna.</td>
+                  </tr>
                 <?php endif; ?>
               </tbody>
             </table>
@@ -158,42 +158,42 @@
     </div>
   </section>
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Mendapatkan elemen modal
-    var modal = document.getElementById('exampleModal');
+    document.addEventListener('DOMContentLoaded', function () {
+      // Mendapatkan elemen modal
+      var modal = document.getElementById('exampleModal');
 
-    // Menangkap event show.bs.modal
-    modal.addEventListener('show.bs.modal', function(event) {
-      var button = event.relatedTarget; // Tombol yang membuka modal
+      // Menangkap event show.bs.modal
+      modal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // Tombol yang membuka modal
 
-      // Mengambil data dari tombol (data-bs-name dan data-bs-email)
-      var name = button.getAttribute('data-bs-name');
-      var id = button.getAttribute('data-bs-id');
+        // Mengambil data dari tombol (data-bs-name dan data-bs-email)
+        var name = button.getAttribute('data-bs-name');
+        var id = button.getAttribute('data-bs-id');
 
-      // Memasukkan data ke dalam input di dalam modal
-      document.getElementById('nama_modal').innerText = name;
-      document.getElementById('form_hapus_user').action = "<?= base_url('/admin/user/delete') ?>" + "/" + id
-    });
+        // Memasukkan data ke dalam input di dalam modal
+        document.getElementById('nama_modal').innerText = name;
+        document.getElementById('form_hapus_user').action = "<?= base_url('/admin/user/delete') ?>" + "/" + id
+      });
 
-    var modalVerifikasi = document.getElementById('modalVerifikasi');
+      var modalVerifikasi = document.getElementById('modalVerifikasi');
 
-    // Menangkap event show.bs.modal
-    modalVerifikasi.addEventListener('show.bs.modal', function(event) {
-      var button = event.relatedTarget; // Tombol yang membuka modal
+      // Menangkap event show.bs.modal
+      modalVerifikasi.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // Tombol yang membuka modal
 
-      // Mengambil data dari tombol (data-bs-name dan data-bs-email)
-      var name = button.getAttribute('data-bs-name');
-      var id = button.getAttribute('data-bs-id');
-      var ktp = button.getAttribute('data-bs-ktp');
+        // Mengambil data dari tombol (data-bs-name dan data-bs-email)
+        var name = button.getAttribute('data-bs-name');
+        var id = button.getAttribute('data-bs-id');
+        var ktp = button.getAttribute('data-bs-ktp');
 
 
-      // Memasukkan data ke dalam input di dalam modal
-      document.getElementById('nama_modal').innerText = name;
-      document.getElementById('foto_ktp').src = "<?= base_url('/uploads/ktp') ?>" + "/" + ktp;
-      document.getElementById('form_verifikasi_user').action = "<?= base_url('/admin/user/verifikasi') ?>" +
-        "/" + id
-    });
-  })
+        // Memasukkan data ke dalam input di dalam modal
+        document.getElementById('nama_modal').innerText = name;
+        document.getElementById('foto_ktp').src = "<?= base_url('/uploads/ktp') ?>" + "/" + ktp;
+        document.getElementById('form_verifikasi_user').action = "<?= base_url('/admin/user/verifikasi') ?>" +
+          "/" + id
+      });
+    })
   </script>
 
 

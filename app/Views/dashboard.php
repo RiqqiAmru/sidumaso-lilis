@@ -33,7 +33,7 @@
                         <p class="card-text">
                           <?= esc(strlen($p['deskripsi']) > 100 ? substr($p['deskripsi'], 0, 100) . '...' : $p['deskripsi']); ?>
                           <?php if (strlen($p['deskripsi']) > 100): ?>
-                            <a href="/pengumuman/detail/<?= $p['id']; ?>" class="text-primary">Baca
+                            <a href="/pengumuman/detail/<?= $p['id_pengumuman']; ?>" class="text-primary">Baca
                               selengkapnya</a>
                           <?php endif; ?>
                         </p>

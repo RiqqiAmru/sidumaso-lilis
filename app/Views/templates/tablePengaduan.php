@@ -1,3 +1,12 @@
+<!-- Tambahkan pustaka DataTables melalui CDN -->
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <table class="table table-bordered" id="pengaduanTable">
   <thead>
     <tr>
@@ -56,7 +65,7 @@
               $allowed_image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
               // Periksa apakah file tersebut termasuk dalam ekstensi gambar
               if (in_array(strtolower($file_extension), $allowed_image_extensions)):
-              ?>
+                ?>
                 <!-- Jika file adalah gambar, tampilkan gambar -->
                 <img src="<?= base_url('uploads/bukti/' . $foto) ?>" alt="Foto bukti" class="img-thumbnail" width="100"
                   data-bs-toggle="modal" data-bs-target="#imageModal">
@@ -76,7 +85,7 @@
               <button class="btn btn-outline-info ">
                 <a href="<?= base_url('pengaduan/edit/' . $p['id']) ?>">Edit</a></button>
             </td>
-          <?php elseif (session('user_id')['role'] == 'Admin' && $p['ket'] == 0): ?>
+          <?php elseif ((session('user_id')['role'] == 'Admin' | session('user_id')['role'] == 'Kepala_dusun') && $p['ket'] == 0): ?>
             <td>
               <button class="btn btn-outline-success">
                 <a href="<?= base_url('pengaduan/proses/' . $p['id']) ?>">Proses</a></button>
@@ -92,6 +101,71 @@
     <?php endif; ?>
   </tbody>
 </table>
+<style>
+  table#pengaduanTable {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  table#pengaduanTable th,
+  table#pengaduanTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+
+  table#pengaduanTable th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+
+  table#pengaduanTable {
+    table-layout: auto;
+    /* Mengatur lebar kolom otomatis */
+    word-wrap: break-word;
+    /* Jika teks terlalu panjang, otomatis dipotong */
+  }
+</style>
+<script>
+  $(document).ready(function () {
+    // Inisialisasi DataTables
+    $('#pengaduanTable').DataTable({
+      "paging": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "lengthMenu": [5, 10, 25, 50],
+      "language": {
+        "search": "Cari:",
+        "lengthMenu": "Tampilkan _MENU_ data per halaman",
+        "zeroRecords": "Data tidak ditemukan",
+        "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ data",
+        "infoEmpty": "Tidak ada data tersedia",
+        "infoFiltered": "(difilter dari _MAX_ total data)",
+        "paginate": {
+          "first": "Awal",
+          "last": "Akhir",
+          "next": "Berikutnya",
+          "previous": "Sebelumnya"
+        }
+      },
+      "columns": [
+        { "data": "no" },
+        { "data": "tanggal" },
+        { "data": "perihal" },
+        { "data": "rincian" },
+        { "data": "gang" },
+        { "data": "detail_lokasi" },
+        <?php if (session('user_id')['role'] != 'Masyarakat') { ?>
+                        { "data": "pengirim" }, // Pengirim hanya muncul jika bukan masyarakat
+        <?php } ?>
+      { "data": "status" },
+        { "data": "bukti" }
+      ]
+    });
+  });
+
+</script>
 
 <!-- modal image -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
@@ -106,9 +180,9 @@
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const table = document.getElementById('pengaduanTable');
-    table.addEventListener('click', function(e) {
+    table.addEventListener('click', function (e) {
 
       if (e.target && e.target.classList.contains('btn-tanggapan')) {
         const idAduan = e.target.dataset.id;
@@ -167,7 +241,7 @@
                                                     </td>
                                                     <td>${tanggapan.nama}</td>
                                                     <td>
-                                        ${index === data.length - 1 && (tanggapan.jenis_tanggapan == 'Proses' | tanggapan.jenis_tanggapan == 'Melengkapi Data' | tanggapan.jenis_tanggapan == 'Komentar') && '<?= session('user_id')['role'] ?>' == 'Admin' ? `
+                                        ${index === data.length - 1 && (tanggapan.jenis_tanggapan == 'Proses' | tanggapan.jenis_tanggapan == 'Melengkapi Data' | tanggapan.jenis_tanggapan == 'Komentar') && '<?= session('user_id')['role'] ?>' == 'Admin' | '<?= session('user_id')['role'] ?>' == 'Kepala_dusun' ? `
                                                      <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}" class="btn badge rounded-pill text-bg-primary " >proses</a> </br>
                                                      <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/selesai" class="btn badge rounded-pill text-bg-success " >tandai selesai</a> </br>
                                                      <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/kurang" class="btn badge rounded-pill text-bg-warning " >data kurang lengkap</a></br>
@@ -176,7 +250,7 @@
                                                      ${index === data.length - 1 && tanggapan.jenis_tanggapan == 'Menunggu Kelengkapan data' && '<?= session('user_id')['role'] ?>' == 'Masyarakat' ? `
                                                      <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/lengkapi" class="btn badge rounded-pill text-bg-info " >lengkapi data</a>
                                                      `: ''}
-                                        ${index === data.length - 1 && (tanggapan.jenis_tanggapan == 'Proses' ) && '<?= session('user_id')['role'] ?>' == 'Masyarakat' ? `
+                                        ${index === data.length - 1 && (tanggapan.jenis_tanggapan == 'Proses') && '<?= session('user_id')['role'] ?>' == 'Masyarakat' ? `
 <a href="<?= base_url('pengaduan/proses/') ?>${tanggapan.id_aduan}/komentar" class="btn badge rounded-pill text-bg-primary " >komentar</a> </br>
                                                      `: ''}
 
@@ -189,7 +263,7 @@
                             `;
               row.after(tanggapanRow);
               document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-                img.addEventListener('click', function() {
+                img.addEventListener('click', function () {
                   console.log(this.src);
                   const modalImage = document.getElementById('modalImage');
                   modalImage.src = this.src;
@@ -204,7 +278,7 @@
     });
 
     document.querySelectorAll('img[data-bs-toggle="modal"]').forEach(img => {
-      img.addEventListener('click', function() {
+      img.addEventListener('click', function () {
         console.log(this.src);
         const modalImage = document.getElementById('modalImage');
         modalImage.src = this.src;

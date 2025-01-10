@@ -12,8 +12,8 @@
     <h1>Daftar Pengaduan Saya</h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<?= base_url('/pengaduan') ?>">Home</a></li>
-        <li class="breadcrumb-item active">Pengaduan</li>
+        <!-- <li class="breadcrumb-item"><a href="<= base_url('/pengaduan') ?>">Home</a></li> -->
+        <!-- <li class="breadcrumb-item active">Pengaduan</li> -->
       </ol>
     </nav>
   </div><!-- End Page Title -->

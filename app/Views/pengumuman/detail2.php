@@ -58,15 +58,15 @@
                                 if ($pengumuman['dokumen']):
                                     // Jika file adalah gambar
                                     if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif'])):
-                                ?>
-                                        <img src="<?= base_url('/uploads/pengumuman/' . $pengumuman['dokumen']); ?>" alt="Dokumen Pengumuman"
-                                            class="img-fluid" style="max-height: 300px;">
-                                    <?php
-                                    // Jika file adalah PDF
+                                        ?>
+                                        <img src="<?= base_url('/uploads/pengumuman/' . $pengumuman['dokumen']); ?>"
+                                            alt="Dokumen Pengumuman" class="img-fluid" style="max-height: 300px;">
+                                        <?php
+                                        // Jika file adalah PDF
                                     elseif ($fileExtension == 'pdf'):
-                                    ?>
-                                        <iframe src="<?= base_url('/uploads/pengumuman/' . $pengumuman['dokumen']); ?>" width="100%"
-                                            height="500px"></iframe>
+                                        ?>
+                                        <iframe src="<?= base_url('/uploads/pengumuman/' . $pengumuman['dokumen']); ?>"
+                                            width="100%" height="500px"></iframe>
                                     <?php else: ?>
                                         <p>Dokumen tidak dapat dipreview.</p>
                                     <?php endif; ?>
@@ -86,7 +86,13 @@
                                 <h5>Deskripsi:</h5>
                                 <p><?= nl2br(esc($pengumuman['deskripsi'])); ?></p>
                             </div>
-
+                            <?php if ($pengumuman['dokumen']): ?>
+                                <a href="/uploads/pengumuman/<?= esc($pengumuman['dokumen']); ?>"
+                                    class="btn btn-link btn-sm">Download
+                                    Dokumen</a>
+                            <?php else: ?>
+                                <span>Tidak ada dokumen</span>
+                            <?php endif; ?>
                         </div>
                     </div>
 

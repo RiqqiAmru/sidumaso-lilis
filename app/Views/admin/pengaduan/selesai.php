@@ -4,10 +4,10 @@
 <main id="main" class="main">
 
   <div class="pagetitle">
-    <h1>Daftar Pengaduan yang Selesai</h1>
+    <h1>Daftar Pengaduan</h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="<?= base_url('/pengaduan') ?>">Home</a></li>
+        <li class="breadcrumb-item"><a href="<?= base_url('/Dashboard') ?>">Dashboard</a></li>
         <li class="breadcrumb-item active">Pengaduan Selesai</li>
       </ol>
     </nav>
@@ -27,7 +27,8 @@
           </div>
         </div>
 
-        <div class="modal fade" id="modalDeletePengaduan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modalDeletePengaduan" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -52,11 +53,11 @@
     </div>
   </section>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       // Mendapatkan elemen modal
       var modal = document.getElementById('modalDeletePengaduan');
       // Menangkap event show.bs.modal
-      modal.addEventListener('show.bs.modal', function(event) {
+      modal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget; // Tombol yang membuka modal
 
         // Mengambil data dari tombol (data-bs-name dan data-bs-email)

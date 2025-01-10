@@ -111,7 +111,8 @@ class Pengaduan extends BaseController
                 $db->transCommit();
 
                 return redirect()->to('/pengaduan/daftarPengaduan')->with('success', 'berhasil menambah aduan');
-            };
+            }
+            ;
             dd($this->pengaduanModel->errors());
             return 'eror ketika input pengaduan';
         } catch (\Throwable $th) {
@@ -374,7 +375,8 @@ class Pengaduan extends BaseController
                 $db->transCommit();
 
                 return redirect()->to('/pengaduan/masuk')->with('success', 'berhasil menanggapi aduan');
-            };
+            }
+            ;
             dd($this->tanggapanModel->errors());
             return redirect()->to('/pengaduan/proses/' . $idAduan)->with('error', 'Terjadi kesalahan input, silakan coba lagi');
         } catch (\Throwable $th) {
@@ -397,7 +399,7 @@ class Pengaduan extends BaseController
         $tanggapanModel = new TanggapanModel();
 
         // Ambil semua pengaduan dengan status tertentu
-        $pengaduans = $pengaduanModel->getPengaduanWithTanggapan([1, 2, 3, 4, 5, 6]);
+        $pengaduans = $pengaduanModel->getPengaduanWithTanggapan([0, 1, 2, 3, 4, 5, 6]);
 
         // Kirim data ke view
         $data = [
@@ -420,14 +422,17 @@ class Pengaduan extends BaseController
             $end_date = date('Y-m-d 23:59:59', strtotime($end_date));
         }
         $status_map = [
-            'Menunggu' => 0,
+            'Menunggu' => 7,
             'Proses' => 1,
             'Menunggu kelengkapan data' => 2,
             'Selesai' => 3,
             'Invalid' => 4,
+            'A' => 'A',
             'Menunggu admin' => 6
+
         ];
         // Mapping status teks ke nilai numerik yang ada di field 'ket'
+
 
         $pengaduan = $this->pengaduanModel->getFilteredPengaduan($start_date, $end_date, ($status) ? $status_map[$status] : '', $perihal);
         // // Mengecek apakah parameter tanggal ada
